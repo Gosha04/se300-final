@@ -1,13 +1,12 @@
 package com.se300.store.controller;
 
-import com.se300.store.model.User;
+import java.io.IOException;
+
 import com.se300.store.service.AuthenticationService;
 import com.se300.store.servlet.BaseServlet;
+
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-
-import java.io.IOException;
-import java.util.Collection;
 
 /**
  * REST API controller for User operations
@@ -33,6 +32,20 @@ public class UserController extends BaseServlet {
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String userId = extractResourceId(request);
+
+        if (userId == null) {
+            sendJsonResponse(response, authenticationService.getAllUsers(), HttpServletResponse.SC_OK);
+            return;
+        }
+
+        Object user = authenticationService.getUserByEmail(userId);
+        if (user == null) {
+            sendErrorResponse(response, HttpServletResponse.SC_NOT_FOUND, "User not found");
+            return;
+        }
+
+        sendJsonResponse(response, user, HttpServletResponse.SC_OK);
     }
 
     /**
@@ -41,6 +54,15 @@ public class UserController extends BaseServlet {
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String pathInfo = request.getPathInfo();
+
+        if (pathInfo != null) {
+            authenticationService.registerUser(request.getParameter("email"), request.getParameter("password"),
+             request.getParameter("name"));
+            
+            return;
+        } 
+        sendErrorResponse(response, HttpServletResponse.SC_BAD_REQUEST, "New User Paramaters Incorrect");
     }
 
     /**
@@ -49,6 +71,16 @@ public class UserController extends BaseServlet {
      */
     @Override
     protected void doPut(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String pathInfo = request.getPathInfo();
+
+        if (pathInfo != null) {
+            authenticationService.updateUser(request.getParameter("email"), request.getParameter("password"),
+             request.getParameter("name"));
+            
+            return;
+        } 
+        
+        sendErrorResponse(response, HttpServletResponse.SC_BAD_REQUEST, "Update User Paramaters Incorrect");
     }
 
     /**
@@ -57,5 +89,14 @@ public class UserController extends BaseServlet {
      */
     @Override
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String pathInfo = request.getPathInfo();
+
+        if (pathInfo != null) {
+            authenticationService.deleteUser(request.getParameter("email"));
+
+            return;
+        }
+
+        sendErrorResponse(response, HttpServletResponse.SC_BAD_REQUEST, "Delete User Paramaters Incorrect");
     }
 }
