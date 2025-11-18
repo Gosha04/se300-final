@@ -21,6 +21,8 @@ public class StoreController extends BaseServlet {
 
     //TODO: Implement REST CRUD API for Store operations
 
+    private static final String TOKEN = "admin";
+
     private final StoreService storeService;
 
     public StoreController(StoreService storeService) {
@@ -34,6 +36,28 @@ public class StoreController extends BaseServlet {
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String storeId = extractResourceId(request);
+        
+          // GET ALL STORES
+        if (storeId == null) {
+            Collection<Store> stores = storeService.getAllStores();
+            sendJsonResponse(response, stores);
+            return;
+        }
+
+        // GET SINGLE STORE
+        Store store = null;
+        try {
+            store = storeService.showStore(storeId, TOKEN);
+        } catch (StoreException ignored) {}
+
+        if (store == null) {
+            sendErrorResponse(response, HttpServletResponse.SC_NOT_FOUND,
+                    "Store Does Not Exist");
+        } else {
+            sendJsonResponse(response, store);
+        }
+
     }
 
     /**
@@ -42,6 +66,35 @@ public class StoreController extends BaseServlet {
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+
+        String storeId = request.getParameter("storeId");
+        String name = request.getParameter("name");
+        String address = request.getParameter("address");
+
+        if (storeId == null || name == null || address == null) {
+            sendErrorResponse(response, 400, "storeId, name, and address required");
+            return;
+        }
+
+        // Check if store already exists
+        Store existing = null;
+        try {
+            existing = storeService.showStore(storeId, TOKEN);
+        } catch (StoreException ignored) {}
+
+        if (existing != null) {
+            sendErrorResponse(response, 400, "Store Already Exists");
+            return;
+        }
+
+        // Create store
+        Store created = null;
+        try {
+            created = storeService.provisionStore(storeId, name, address, TOKEN);
+        } catch (StoreException ignored) {}
+
+        sendJsonResponse(response, created, HttpServletResponse.SC_CREATED);
+
     }
 
     /**
@@ -50,6 +103,41 @@ public class StoreController extends BaseServlet {
      */
     @Override
     protected void doPut(HttpServletRequest request, HttpServletResponse response) throws IOException {
+
+        String storeId = extractResourceId(request);
+        String description = request.getParameter("description");
+        String address = request.getParameter("address");
+
+        if (storeId == null) {
+            sendErrorResponse(response, 400, "storeId path parameter required");
+            return;
+        }
+
+        if (description == null && address == null) {
+            sendErrorResponse(response, 400, "Need description or address");
+            return;
+        }
+
+        // Check existence
+        Store store = null;
+        try {
+            store = storeService.showStore(storeId, TOKEN);
+        } catch (StoreException ignored) {}
+
+        if (store == null) {
+            sendErrorResponse(response, HttpServletResponse.SC_NOT_FOUND,
+                    "Store Does Not Exist");
+            return;
+        }
+
+        // Update store
+        Store updated = null;
+        try {
+            updated = storeService.updateStore(storeId, description, address);
+        } catch (StoreException ignored) {}
+
+        sendJsonResponse(response, updated);
+
     }
 
     /**
@@ -58,5 +146,32 @@ public class StoreController extends BaseServlet {
      */
     @Override
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
+
+        String storeId = extractResourceId(request);
+
+        if (storeId == null) {
+            sendErrorResponse(response, 400, "storeId path parameter required");
+            return;
+        }
+
+        // Check existence
+        Store store = null;
+        try {
+            store = storeService.showStore(storeId, TOKEN);
+        } catch (StoreException ignored) {}
+
+        if (store == null) {
+            sendErrorResponse(response, HttpServletResponse.SC_NOT_FOUND,
+                    "Store Does Not Exist");
+            return;
+        }
+
+        // Delete
+        try {
+            storeService.deleteStore(storeId);
+        } catch (StoreException ignored) {}
+
+        response.setStatus(HttpServletResponse.SC_NO_CONTENT);
+
     }
 }
