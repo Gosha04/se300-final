@@ -17,7 +17,7 @@ import jakarta.servlet.http.HttpServletResponse;
  */
 public class UserController extends BaseServlet {
 
-    //TODO: Implement REST CRUD API for User operations
+    //COMPLETE: Implement REST CRUD API for User operations
 
     private final AuthenticationService authenticationService;
 

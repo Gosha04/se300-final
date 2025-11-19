@@ -12,11 +12,11 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class DataManager {
 
-    //TODO: Implement Fake Persistent Data Storage for the application
+    //COMPLETE: Implement Fake Persistent Data Storage for the application
 
     private static volatile DataManager instance;
 
-    //TODO: Use ConcurrentHashMap for thread-safety
+    //COMPLETE: Use ConcurrentHashMap for thread-safety
     private final Map<String, Object> dataStore;
 
     // Private constructor to prevent instantiation

@@ -19,7 +19,7 @@ import java.util.Collection;
  */
 public class StoreController extends BaseServlet {
 
-    //TODO: Implement REST CRUD API for Store operations
+    //COMPLETE: Implement REST CRUD API for Store operations
 
     private static final String TOKEN = "admin";
 
