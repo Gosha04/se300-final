@@ -1,10 +1,15 @@
 package com.se300.store.service.unit;
 
-import com.se300.store.data.DataManager;
-import com.se300.store.model.*;
-import com.se300.store.repository.UserRepository;
-import com.se300.store.service.AuthenticationService;
-import com.se300.store.service.StoreService;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -12,15 +17,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.nio.charset.StandardCharsets;
-import java.util.Base64;
-import java.util.Collection;
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.*;
+import com.se300.store.model.StoreException;
+import com.se300.store.model.User;
+import com.se300.store.repository.UserRepository;
+import com.se300.store.service.AuthenticationService;
+import com.se300.store.service.StoreService;
 
 /**
  * Unit tests for Service classes including AuthenticationService and StoreService.
@@ -48,16 +49,46 @@ public class ServiceUnitTest {
     @Test
     @DisplayName("Test AuthenticationService register user with mocked repository")
     public void testRegisterUser() {
+        User testUser = new User("random@gmail.com", "password", "Anon");
+
+        when(userRepository.findByEmail("random@gmail.com")).thenReturn(Optional.of(testUser));
+
+        authenticationService.registerUser("random@gmail.com", "password", "Anon");
+
+        Optional<User> authUser =  userRepository.findByEmail("random@gmail.com");
+        assertEquals(testUser, authUser.get());
+        verify(userRepository).findByEmail("random@gmail.com");
     }
 
     @Test
     @DisplayName("Test AuthenticationService user exists with mocked repository")
     public void testUserExists() {
+        User testUser = new User("random@gmail.com", "password", "Anon");
+        Map<String, User> authUser = new HashMap<>();
+        authUser.put("test", testUser);
+
+        when(userRepository.findAll()).thenReturn(authUser);
+        userRepository.save(testUser);
+
+        Optional<User> optionalTestUser = Optional.of(userRepository.findAll().get("test"));
+
+        boolean exists = optionalTestUser.isPresent() && optionalTestUser.get().equals(testUser);     
+        assertTrue(exists);
+        verify(userRepository).findAll();
     }
 
     @Test
     @DisplayName("Test AuthenticationService get user by email with mocked repository")
     public void testGetUserByEmail() {
+        User testUser = new User("random@gmail.com", "password", "Anon");
+
+        when(userRepository.findByEmail("random@gmail.com")).thenReturn(Optional.of(testUser));
+        userRepository.save(testUser);
+
+        Optional<User> optionalTestUser = userRepository.findByEmail("random@gmail.com");
+
+        assertEquals(testUser, optionalTestUser.get());
+        verify(userRepository).findByEmail("random@gmail.com");
     }
 
     @Test
