@@ -124,6 +124,7 @@ public class ServiceUnitTest {
     @Test
     @DisplayName("Test AuthenticationService Basic Authentication - valid credentials with mock")
     public void testBasicAuthenticationValid() {
+        
     }
 
     @Test

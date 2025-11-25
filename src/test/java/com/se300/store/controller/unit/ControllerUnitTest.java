@@ -92,6 +92,23 @@ public class ControllerUnitTest {
     @Test
     @DisplayName("Mock: Create store - verify service call")
     public void testCreateStoreWithMock() throws Exception {
+        Store store = new Store("123", "address", "desc");
+
+        when(storeService.showStore("123", "admin")).thenReturn(null);
+        when(storeService.provisionStore("123", "MyStore", "address", "admin")).thenReturn(store);
+
+        given()
+            .contentType(ContentType.URLENC)
+            .param("storeId", "123")
+            .param("name", "MyStore")
+            .param("address", "address")
+        .when()
+            .post("/api/v1/stores")
+        .then()
+            .statusCode(201)
+            .body("id", equalTo("123"));
+
+        verify(storeService).provisionStore("123", "MyStore", "address", "admin");
     }
 
     @Test
