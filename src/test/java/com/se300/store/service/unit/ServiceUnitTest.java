@@ -4,6 +4,7 @@ package com.se300.store.service.unit;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -89,7 +90,7 @@ public class ServiceUnitTest {
         Optional<User> optionalTestUser = userRepository.findByEmail("random@gmail.com");
 
         assertEquals(testUser, optionalTestUser.get());
-        verify(userRepository, org.mockito.Mockito.times(2)).findByEmail("random@gmail.com");
+        verify(userRepository, times(2)).findByEmail("random@gmail.com");
     }
 
     @Test
@@ -103,13 +104,21 @@ public class ServiceUnitTest {
         authenticationService.updateUser("random@gmail.com", "password", "Name");
 
         assertNotEquals(testUser, userRepository.findByEmail("random@gmail.com"));
-        verify(userRepository, org.mockito.Mockito.times(2)).findByEmail("random@gmail.com");
-
+        verify(userRepository, times(2)).findByEmail("random@gmail.com");
     }
 
     @Test
     @DisplayName("Test AuthenticationService delete user with mocked repository")
     public void testDeleteUser() {
+        User testUser = new User("random@gmail.com", "password", "Anon");
+
+        when(userRepository.findByEmail("random@gmail.com")).thenReturn(Optional.of(testUser));
+        userRepository.save(testUser);
+
+        authenticationService.deleteUser("random@gmail.com");
+
+        assertNotEquals(userRepository.findByEmail("random@gmail.com"), testUser);
+        verify(userRepository).findByEmail("random@gmail.com");
     }
 
     @Test
