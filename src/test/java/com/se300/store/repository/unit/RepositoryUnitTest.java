@@ -67,7 +67,7 @@ public class RepositoryUnitTest {
     @DisplayName("Test StoreRepository findById with mocked DataManager")
     public void testStoreRepositoryFindById() {
         Store store = mock(Store.class);
-        when(store.getId()).thenReturn("store-1");
+        // when(store.getId()).thenReturn("store-1");
 
         Map<String, Store> storeMap = new HashMap<>();
         storeMap.put("store-1", store);
@@ -87,7 +87,7 @@ public class RepositoryUnitTest {
     @DisplayName("Test StoreRepository existsById with mocked DataManager")
     public void testStoreRepositoryExistsById() {
         Store store = mock(Store.class);
-        when(store.getId()).thenReturn("store-1");
+        // when(store.getId()).thenReturn("store-1");
 
         Map<String, Store> storeMap = new HashMap<>();
         storeMap.put("store-1", store);
@@ -102,8 +102,8 @@ public class RepositoryUnitTest {
     @Test
     @DisplayName("Test StoreRepository delete with mocked DataManager")
     public void testStoreRepositoryDelete() {
-         Store store = mock(Store.class);
-        when(store.getId()).thenReturn("store-1");
+        Store store = mock(Store.class);
+        // when(store.getId()).thenReturn("store-1");
 
         Map<String, Store> storeMap = new HashMap<>();
         storeMap.put("store-1", store);
@@ -165,7 +165,7 @@ public class RepositoryUnitTest {
     @DisplayName("Test UserRepository findByEmail with mocked DataManager")
     public void testUserRepositoryFindByEmail() {
         User user = mock(User.class);
-        when(user.getEmail()).thenReturn("user@store.com");
+        // when(user.getEmail()).thenReturn("user@store.com");
 
         Map<String, User> userMap = new HashMap<>();
         userMap.put("user@store.com", user);
@@ -184,8 +184,8 @@ public class RepositoryUnitTest {
     @Test
     @DisplayName("Test UserRepository existsByEmail with mocked DataManager")
     public void testUserRepositoryExistsByEmail() {
-         User user = mock(User.class);
-        when(user.getEmail()).thenReturn("user@store.com");
+        User user = mock(User.class);
+        // when(user.getEmail()).thenReturn("user@store.com");
 
         Map<String, User> userMap = new HashMap<>();
         userMap.put("user@store.com", user);
@@ -201,7 +201,7 @@ public class RepositoryUnitTest {
     @DisplayName("Test UserRepository delete with mocked DataManager")
     public void testUserRepositoryDelete() {
         User user = mock(User.class);
-        when(user.getEmail()).thenReturn("user@store.com");
+        // when(user.getEmail()).thenReturn("user@store.com");
 
         Map<String, User> userMap = new HashMap<>();
         userMap.put("user@store.com", user);
@@ -215,13 +215,13 @@ public class RepositoryUnitTest {
         verify(dataManager).put("users", userMap);
     }
 
-    @Test
+    @Test 
     @DisplayName("Test UserRepository findAll with mocked DataManager")
     public void testUserRepositoryFindAll() {
         User user1 = mock(User.class);
-        when(user1.getEmail()).thenReturn("u1@store.com");
+        // when(user1.getEmail()).thenReturn("u1@store.com");
         User user2 = mock(User.class);
-        when(user2.getEmail()).thenReturn("u2@store.com");
+        // when(user2.getEmail()).thenReturn("u2@store.com");
 
         Map<String, User> userMap = new HashMap<>();
         userMap.put("u1@store.com", user1);
@@ -255,6 +255,6 @@ public class RepositoryUnitTest {
         assertTrue(result.isEmpty());
 
         verify(dataManager).get("users");
-        verify(dataManager).put(eq("users"), any(Map.class));
+        verify(dataManager, times(2)).put(eq("users"), any(Map.class));
     }
 }
