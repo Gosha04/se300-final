@@ -3,6 +3,9 @@ package com.se300.store.controller.unit;
 import static io.restassured.RestAssured.given;
 import static io.restassured.RestAssured.when;
 import static org.hamcrest.Matchers.equalTo;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -118,14 +121,14 @@ public class ControllerUnitTest {
     @Test
     @DisplayName("Mock: Get all stores - verify service call")
     public void testGetAllStoresWithMock() throws Exception {
-        Store store = new Store("all-1", "addr", "desc");
+        Store store = new Store("123", "addr", "desc");
         when(storeService.getAllStores()).thenReturn(java.util.List.of(store));
 
         when()
             .get("/api/v1/stores")
         .then()
             .statusCode(200)
-            .body("[0].id", equalTo("all-1"));
+            .body("[0].id", equalTo("123"));
 
         verify(storeService).getAllStores();
     }
@@ -133,22 +136,72 @@ public class ControllerUnitTest {
     @Test
     @DisplayName("Mock: Get store by ID - verify service call")
     public void testGetStoreByIdWithMock() throws Exception {
-        
+        Store store = new Store("123", "addr", "desc");
+        when(storeService.showStore("123", "admin")).thenReturn(store);
+
+        when()
+            .get("/api/v1/stores/123")
+        .then()
+            .statusCode(200)
+            .body("id", equalTo("123"));
+
+        verify(storeService).showStore("123", "admin");
     }
 
     @Test
     @DisplayName("Mock: Update store - verify service call")
     public void testUpdateStoreWithMock() throws Exception {
+        Store store = new Store("123", "addr", "desc");
+
+        when(storeService.showStore(eq("123"), "admin"))
+            .thenReturn(store);
+
+        when(storeService.updateStore("123", "description", "address"))
+                .thenReturn(store);
+
+        given()
+            .param("description", "description")  
+            .param("address", "address")          
+        .when()
+            .put("/api/v1/stores/123")
+        .then()
+            .statusCode(200)
+            .body("id", equalTo("123"));
+        verify(storeService).updateStore("123", "description", "address");
     }
+
 
     @Test
     @DisplayName("Mock: Delete store - verify service call")
     public void testDeleteStoreWithMock() throws Exception {
+        Store store = new Store("123", "addr", "desc");
+
+        when(storeService.showStore(eq("123"), anyString()))
+            .thenReturn(store);
+
+        doNothing().when(storeService).deleteStore("123");
+  
+        given()
+        .when()
+            .delete("/api/v1/stores/123")
+        .then()
+            .statusCode(204);
+        verify(storeService).deleteStore("123");
     }
 
     @Test
     @DisplayName("Mock: Store error handling - service throws exception")
     public void testStoreErrorHandlingWithMock() throws Exception {
+        when(storeService.showStore("123", "admin")).thenThrow(new com.se300.store.model.StoreException("show", "failure"));
+
+        given()
+        .when()
+            .get("/api/v1/stores/123")
+        .then()
+            .statusCode(404)
+            .body("message", equalTo("Store Does Not Exist"));
+
+        verify(storeService).showStore("123", "admin");
     }
 
     // ==================== USER CONTROLLER MOCK TESTS ====================
