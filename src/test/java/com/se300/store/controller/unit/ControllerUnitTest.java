@@ -1,29 +1,33 @@
 package com.se300.store.controller.unit;
 
-import com.se300.store.controller.StoreController;
-import com.se300.store.controller.UserController;
-import com.se300.store.model.Store;
-import com.se300.store.model.User;
-import com.se300.store.service.AuthenticationService;
-import com.se300.store.service.StoreService;
-import io.restassured.RestAssured;
-import io.restassured.http.ContentType;
+import static io.restassured.RestAssured.given;
+import static io.restassured.RestAssured.when;
+import static org.hamcrest.Matchers.equalTo;
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import java.io.File;
+
 import org.apache.catalina.Context;
 import org.apache.catalina.LifecycleException;
 import org.apache.catalina.startup.Tomcat;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.io.File;
-import java.util.Arrays;
-import java.util.Collection;
+import com.se300.store.controller.StoreController;
+import com.se300.store.controller.UserController;
+import com.se300.store.model.Store;
+import com.se300.store.service.AuthenticationService;
+import com.se300.store.service.StoreService;
 
-import static io.restassured.RestAssured.*;
-import static org.hamcrest.Matchers.*;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
+import io.restassured.RestAssured;
+import io.restassured.http.ContentType;
 
 /**
  * Unit tests for Store and User controllers using Mockito and RestAssured.
@@ -114,11 +118,22 @@ public class ControllerUnitTest {
     @Test
     @DisplayName("Mock: Get all stores - verify service call")
     public void testGetAllStoresWithMock() throws Exception {
+        Store store = new Store("all-1", "addr", "desc");
+        when(storeService.getAllStores()).thenReturn(java.util.List.of(store));
+
+        when()
+            .get("/api/v1/stores")
+        .then()
+            .statusCode(200)
+            .body("[0].id", equalTo("all-1"));
+
+        verify(storeService).getAllStores();
     }
 
     @Test
     @DisplayName("Mock: Get store by ID - verify service call")
     public void testGetStoreByIdWithMock() throws Exception {
+        
     }
 
     @Test
