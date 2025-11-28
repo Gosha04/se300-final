@@ -4,7 +4,7 @@ import java.io.IOException;
 
 import com.se300.store.service.AuthenticationService;
 import com.se300.store.servlet.BaseServlet;
-
+import com.se300.store.model.User;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -89,14 +89,21 @@ public class UserController extends BaseServlet {
      */
     @Override
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String email = request.getParameter("email");
+
         String pathInfo = request.getPathInfo();
 
         if (pathInfo != null) {
-            authenticationService.deleteUser(request.getParameter("email"));
+            User user = authenticationService.getUserByEmail(email);
+            if (user == null) {
+                sendErrorResponse(response, 404, "User not found");
+                return;
+            }
 
+            authenticationService.deleteUser(email);
+            response.setStatus(204);
             return;
         }
-
-        sendErrorResponse(response, HttpServletResponse.SC_BAD_REQUEST, "Delete User Paramaters Incorrect");
+        sendErrorResponse(response, 400, "Delete User Parameters Incorrect");
     }
 }
