@@ -149,8 +149,7 @@ public class RepositoryUnitTest {
         Map<String, User> userMap = new HashMap<>();
         when(dataManager.get("users")).thenReturn(userMap);
 
-        User user = mock(User.class);
-        when(user.getEmail()).thenReturn("new@store.com");
+        User user = new User("new@store.com", "pass123", "New User");
 
         userRepository.save(user);
 
@@ -164,8 +163,7 @@ public class RepositoryUnitTest {
     @Test
     @DisplayName("Test UserRepository findByEmail with mocked DataManager")
     public void testUserRepositoryFindByEmail() {
-        User user = mock(User.class);
-        // when(user.getEmail()).thenReturn("user@store.com");
+        User user = new User("user@store.com", "pw", "Some User");
 
         Map<String, User> userMap = new HashMap<>();
         userMap.put("user@store.com", user);
@@ -184,8 +182,7 @@ public class RepositoryUnitTest {
     @Test
     @DisplayName("Test UserRepository existsByEmail with mocked DataManager")
     public void testUserRepositoryExistsByEmail() {
-        User user = mock(User.class);
-        // when(user.getEmail()).thenReturn("user@store.com");
+         User user = new User("user@store.com", "pw", "Some User");
 
         Map<String, User> userMap = new HashMap<>();
         userMap.put("user@store.com", user);
@@ -200,8 +197,7 @@ public class RepositoryUnitTest {
     @Test
     @DisplayName("Test UserRepository delete with mocked DataManager")
     public void testUserRepositoryDelete() {
-        User user = mock(User.class);
-        // when(user.getEmail()).thenReturn("user@store.com");
+        User user = new User("user@store.com", "pw", "Some User");
 
         Map<String, User> userMap = new HashMap<>();
         userMap.put("user@store.com", user);
@@ -218,10 +214,8 @@ public class RepositoryUnitTest {
     @Test 
     @DisplayName("Test UserRepository findAll with mocked DataManager")
     public void testUserRepositoryFindAll() {
-        User user1 = mock(User.class);
-        // when(user1.getEmail()).thenReturn("u1@store.com");
-        User user2 = mock(User.class);
-        // when(user2.getEmail()).thenReturn("u2@store.com");
+         User user1 = new User("u1@store.com", "pw1", "User One");
+        User user2 = new User("u2@store.com", "pw2", "User Two");
 
         Map<String, User> userMap = new HashMap<>();
         userMap.put("u1@store.com", user1);
@@ -245,10 +239,11 @@ public class RepositoryUnitTest {
     @Test
     @DisplayName("Test Repository operations with null DataManager response")
     public void testRepositoryWithNullDataManager() {
+
         when(dataManager.get("stores")).thenReturn(null);
         assertThrows(NullPointerException.class, () -> storeRepository.findAll());
 
-        when(dataManager.get("users")).thenReturn(null); 
+        when(dataManager.get("users")).thenReturn(null);
 
         Map<String, User> result = userRepository.findAll();
         assertNotNull(result);
