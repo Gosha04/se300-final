@@ -6,6 +6,7 @@ import com.se300.store.model.Store;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Store Repository represents the store data access layer
@@ -69,6 +70,11 @@ public class StoreRepository {
      */
     @SuppressWarnings("unchecked")
     private Map<String, Store> getStoresMap() {
-        return dataManager.get(STORES_KEY);
+        Map<String, Store> stores = dataManager.get(STORES_KEY);
+        if (stores == null) {
+            stores = new ConcurrentHashMap<>();
+            dataManager.put(STORES_KEY, stores);
+        }
+        return stores;
     }
 }

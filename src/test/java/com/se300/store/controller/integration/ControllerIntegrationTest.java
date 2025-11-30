@@ -1,13 +1,22 @@
 package com.se300.store.controller.integration;
 
+import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.equalTo;
+
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
+
 import com.se300.store.SmartStoreApplication;
 import com.se300.store.data.DataManager;
+
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
-import org.junit.jupiter.api.*;
-
-import static io.restassured.RestAssured.*;
-import static org.hamcrest.Matchers.*;
 
 /**
  * Integration tests for Store and User controllers using RestAssured.
@@ -58,10 +67,22 @@ public class ControllerIntegrationTest {
 
     @Test
     @Order(1)
-    @DisplayName("Integration: Create store via REST API")
+    @DisplayName("Integration: Create store via REST API") 
     public void testCreateStore() {
-
+        given()
+            .contentType(ContentType.URLENC)
+            .param("storeId", "1")
+            .param("name", "testName")
+            .param("address", "testAddress")
+        .when()
+            .post("/api/v1/stores")
+        .then()
+            .statusCode(201)
+            .body("id", equalTo("1"))
+            .body("description", equalTo("testName"))
+            .body("address", equalTo("testAddress"));
     }
+
 
     @Test
     @Order(2)

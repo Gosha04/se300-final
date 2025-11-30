@@ -40,7 +40,7 @@ import io.restassured.RestAssured;
 @ExtendWith(MockitoExtension.class)
 public class ControllerUnitTest {
 
-    //TODO: Implement Unit Tests for Smart Store Controllers
+    //COMPLETE: Implement Unit Tests for Smart Store Controllers
 
     @Mock
     private StoreService storeService;
