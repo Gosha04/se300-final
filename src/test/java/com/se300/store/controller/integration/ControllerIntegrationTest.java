@@ -88,12 +88,26 @@ public class ControllerIntegrationTest {
     @Order(2)
     @DisplayName("Integration: Get all stores via REST API")
     public void testGetAllStores() {
+         given()
+            .contentType(ContentType.URLENC)
+        .when()
+            .get("/api/v1/stores")
+        .then()
+            .statusCode(200);
     }
 
     @Test
     @Order(3)
     @DisplayName("Integration: Get store by ID via REST API")
     public void testGetStoreById() {
+        given()
+        .when()
+            .get("/api/v1/stores/1")
+        .then()
+            .statusCode(200)
+            .body("id", equalTo("1"))
+            .body("description", equalTo("testName"))
+            .body("address", equalTo("testAddress"));
     }
 
     @Test
