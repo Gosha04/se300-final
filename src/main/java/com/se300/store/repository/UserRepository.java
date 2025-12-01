@@ -1,11 +1,12 @@
 package com.se300.store.repository;
 
-import com.se300.store.data.DataManager;
-import com.se300.store.model.User;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
+
+import com.se300.store.data.DataManager;
+import com.se300.store.model.User;
 
 /**
  * User Repository represents the user data access layer
@@ -23,7 +24,7 @@ public class UserRepository {
         this.dataManager = dataManager;
         // Initialize user storage in DataManager if not exists
         if (!dataManager.containsKey(USERS_KEY)) {
-            Map<String, User> users = new HashMap<>();
+            Map<String, User> users = new ConcurrentHashMap<>();
             // Add default test users
             users.put("admin@store.com", new User("admin@store.com", "admin123", "Admin User"));
             users.put("user@store.com", new User("user@store.com", "user123", "Regular User"));
@@ -35,6 +36,9 @@ public class UserRepository {
      * Find user by email
      */
     public Optional<User> findByEmail(String email) {
+        if (email == null) {
+            return Optional.empty();
+        }
         Map<String, User> users = getUsersMap();
         return Optional.ofNullable(users.get(email));
     }
@@ -79,7 +83,7 @@ public class UserRepository {
     private Map<String, User> getUsersMap() {
         Map<String, User> users = dataManager.get(USERS_KEY);
         if (users == null) {
-            users = new HashMap<>();
+            users = new ConcurrentHashMap<>();
             dataManager.put(USERS_KEY, users);
         }
         return users;

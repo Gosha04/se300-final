@@ -1,10 +1,12 @@
 package com.se300.store.controller;
 
 import java.io.IOException;
+import java.util.Collection;
 
+import com.se300.store.model.User;
 import com.se300.store.service.AuthenticationService;
 import com.se300.store.servlet.BaseServlet;
-import com.se300.store.model.User;
+
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -33,19 +35,20 @@ public class UserController extends BaseServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String userId = extractResourceId(request);
-
         if (userId == null) {
-            sendJsonResponse(response, authenticationService.getAllUsers(), HttpServletResponse.SC_OK);
+            Collection<User> users = authenticationService.getAllUsers();
+            sendJsonResponse(response, users, HttpServletResponse.SC_OK);
             return;
         }
 
         Object user = authenticationService.getUserByEmail(userId);
-        if (user == null) {
-            sendErrorResponse(response, HttpServletResponse.SC_NOT_FOUND, "User not found");
-            return;
-        }
 
-        sendJsonResponse(response, user, HttpServletResponse.SC_OK);
+        if (user == null) {
+            sendErrorResponse(response, HttpServletResponse.SC_NOT_FOUND,
+                    "User Does Not Exist");
+        } else {
+            sendJsonResponse(response, user);
+        }
     }
 
     /**
@@ -54,15 +57,29 @@ public class UserController extends BaseServlet {
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String pathInfo = request.getPathInfo();
+        String pathInfo = request.getPathInfo(); 
 
-        if (pathInfo != null) {
-            authenticationService.registerUser(request.getParameter("email"), request.getParameter("password"),
-             request.getParameter("name"));
-            
-            return;
-        } 
-        sendErrorResponse(response, HttpServletResponse.SC_BAD_REQUEST, "New User Paramaters Incorrect");
+        if (pathInfo == null || "/".equals(pathInfo)) {
+            String email    = request.getParameter("email");
+            String password = request.getParameter("password");
+            String name     = request.getParameter("name");
+
+            if (email == null || password == null || name == null) {
+                sendErrorResponse(response, HttpServletResponse.SC_BAD_REQUEST, "New User Parameters Incorrect");
+                return;
+            }
+
+            if (authenticationService.getUserByEmail(email) == null) {
+                User created = authenticationService.registerUser(email, password, name);
+                sendJsonResponse(response, created, HttpServletResponse.SC_CREATED);
+                return;
+            } else {
+                sendErrorResponse(response, HttpServletResponse.SC_BAD_REQUEST, "Duplicate User");
+            }
+
+        }
+
+    sendErrorResponse(response, HttpServletResponse.SC_NOT_FOUND, "Endpoint not found");
     }
 
     /**
@@ -71,16 +88,39 @@ public class UserController extends BaseServlet {
      */
     @Override
     protected void doPut(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String pathInfo = request.getPathInfo();
-
-        if (pathInfo != null) {
-            authenticationService.updateUser(request.getParameter("email"), request.getParameter("password"),
-             request.getParameter("name"));
-            
-            return;
-        } 
+        String userId = extractResourceId(request);
+        String password = request.getParameter("password");
+        String name     = request.getParameter("name");
         
-        sendErrorResponse(response, HttpServletResponse.SC_BAD_REQUEST, "Update User Paramaters Incorrect");
+       if (userId == null) {
+            sendErrorResponse(response, 400, "email path parameter required");
+            return;
+        }
+
+        if (userId == null || name == null) {
+            sendErrorResponse(response, 400, "Need password or name");
+            return;
+        }
+
+        // Check existence
+        User user = null;
+        try {
+            user = authenticationService.getUserByEmail(userId);
+        } catch (Exception ignored) {}
+
+        if (user == null) {
+            sendErrorResponse(response, HttpServletResponse.SC_NOT_FOUND,
+                    "User Does Not Exist");
+            return;
+        }
+
+        // Update store
+        User updated = null;
+        try {
+            updated = authenticationService.updateUser(userId, password, name);
+        } catch (Exception ignored) {}
+
+        sendJsonResponse(response, updated);
     }
 
     /**
@@ -89,7 +129,7 @@ public class UserController extends BaseServlet {
      */
     @Override
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String email = request.getParameter("email");
+        String email = extractResourceId(request);
 
         String pathInfo = request.getPathInfo();
 

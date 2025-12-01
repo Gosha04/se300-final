@@ -1,12 +1,10 @@
 package com.se300.store.service;
 
-import com.se300.store.model.User;
-import com.se300.store.repository.UserRepository;
-
-import java.nio.charset.StandardCharsets;
-import java.util.Base64;
 import java.util.Collection;
 import java.util.Optional;
+
+import com.se300.store.model.User;
+import com.se300.store.repository.UserRepository;
 
 /**
  * This class is responsible for authenticating users and managing user data.

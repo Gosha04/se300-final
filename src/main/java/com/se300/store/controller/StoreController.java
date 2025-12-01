@@ -76,7 +76,6 @@ public class StoreController extends BaseServlet {
             return;
         }
 
-        // Check if store already exists
         Store existing = null;
         try {
             existing = storeService.showStore(storeId, TOKEN);
@@ -87,7 +86,6 @@ public class StoreController extends BaseServlet {
             return;
         }
 
-        // Create store
         Store created = null;
         try {
             created = storeService.provisionStore(storeId, name, address, TOKEN);
@@ -113,12 +111,11 @@ public class StoreController extends BaseServlet {
             return;
         }
 
-        if (description == null && address == null) {
+        if (description == null || address == null) {
             sendErrorResponse(response, 400, "Need description or address");
             return;
         }
 
-        // Check existence
         Store store = null;
         try {
             store = storeService.showStore(storeId, TOKEN);
@@ -130,7 +127,6 @@ public class StoreController extends BaseServlet {
             return;
         }
 
-        // Update store
         Store updated = null;
         try {
             updated = storeService.updateStore(storeId, description, address);
