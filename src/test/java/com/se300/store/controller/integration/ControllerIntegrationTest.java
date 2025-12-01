@@ -26,7 +26,7 @@ import io.restassured.RestAssured;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class ControllerIntegrationTest {
 
-    //TODO: Implement Integration Tests for Smart Store Controllers
+    //COMPLETE: Implement Integration Tests for Smart Store Controllers
 
     private static SmartStoreApplication application;
     private static final int TEST_PORT = 8080;
