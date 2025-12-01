@@ -1,6 +1,11 @@
 package com.se300.store.model;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -193,6 +198,13 @@ public class Basket {
         //Clear Basket and remove Customer association
         this.customer.assignBasket(null);
         this.customer = null;
+    }
+
+    /**
+     * Helper method allowing us to test whether things are being removed from the basket
+     */
+    public Map<String, Integer> getProducts() {
+        return Collections.unmodifiableMap(this.productMap);
     }
 
     /**

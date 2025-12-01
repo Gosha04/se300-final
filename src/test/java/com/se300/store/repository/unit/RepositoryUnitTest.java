@@ -1,10 +1,22 @@
 package com.se300.store.repository.unit;
 
-import com.se300.store.data.DataManager;
-import com.se300.store.model.Store;
-import com.se300.store.model.User;
-import com.se300.store.repository.StoreRepository;
-import com.se300.store.repository.UserRepository;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -12,15 +24,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.*;
+import com.se300.store.data.DataManager;
+import com.se300.store.model.Store;
+import com.se300.store.model.User;
+import com.se300.store.repository.StoreRepository;
+import com.se300.store.repository.UserRepository;
 
 /**
  * Unit tests for the Repository classes including StoreRepository and UserRepository.
@@ -31,7 +39,7 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 public class RepositoryUnitTest {
 
-    //TODO: Implement Unit Tests for the Smart Store Repositories
+    //COMPLETE: Implement Unit Tests for the Smart Store Repositories
 
     @Mock
     private DataManager dataManager;
@@ -239,9 +247,13 @@ public class RepositoryUnitTest {
     @Test
     @DisplayName("Test Repository operations with null DataManager response")
     public void testRepositoryWithNullDataManager() {
-
         when(dataManager.get("stores")).thenReturn(null);
-        assertThrows(NullPointerException.class, () -> storeRepository.findAll());
+        Map<String, Store> stores = storeRepository.findAll();
+        assertNotNull(stores);
+        assertTrue(stores.isEmpty());
+
+        verify(dataManager).get("stores");
+        verify(dataManager).put(eq("stores"), any(Map.class)); 
 
         when(dataManager.get("users")).thenReturn(null);
 

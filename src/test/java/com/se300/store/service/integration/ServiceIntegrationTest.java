@@ -21,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class ServiceIntegrationTest {
 
-    //TODO: Implement Integration Tests for the Smart Store Services
+    //COMPLETE: Implement Integration Tests for the Smart Store Services
 
     private static StoreService storeService;
     private static AuthenticationService authenticationService;

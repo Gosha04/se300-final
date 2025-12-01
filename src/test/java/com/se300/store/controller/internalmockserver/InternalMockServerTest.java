@@ -19,7 +19,7 @@ import static org.mockserver.model.HttpResponse.response;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class InternalMockServerTest {
 
-    //TODO: Implement Internal Mock Server to test internal Smart Store API calls
+    //COMPLETE: Implement Internal Mock Server to test internal Smart Store API calls
 
     private static ClientAndServer mockServer;
     private static final int MOCK_SERVER_PORT = 8888;

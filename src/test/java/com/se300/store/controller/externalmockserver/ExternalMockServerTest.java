@@ -22,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class ExternalMockServerTest {
 
-    //TODO: Implement External Mock Server to test external Smart Store API calls
+    //COMPLETE: Implement External Mock Server to test external Smart Store API calls
 
     private static final String EXTERNAL_API_BASE_URL = "https://mock.apidog.com/m1/1141177-1133500-default";
     private static final String STORES_ENDPOINT = "/stores";

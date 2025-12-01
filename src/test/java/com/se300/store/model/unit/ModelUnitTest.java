@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @DisplayName("Model Unit Tests")
 public class ModelUnitTest {
 
-    //TODO: Implement Unit Tests for the Smart Store Models
+    //COMPLETE: Implement Unit Tests for the Smart Store Models
 
     @Test
     @DisplayName("Test User model creation and getters/setters")

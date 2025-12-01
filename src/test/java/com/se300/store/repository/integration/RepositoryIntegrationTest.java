@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class RepositoryIntegrationTest {
 
-    //TODO: Implement Integration Tests for the Smart Store Repositories
+    //COMPLETE: Implement Integration Tests for the Smart Store Repositories
 
     private static DataManager dataManager;
     private static StoreRepository storeRepository;

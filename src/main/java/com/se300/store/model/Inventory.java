@@ -124,7 +124,7 @@ public class Inventory {
     synchronized public void updateInventory(int count) throws StoreException {
 
         //Check to see if count within proper bounds
-        if(count < 0 || (this.count + count) > capacity)
+        if((this.count - count) < 0 || (this.count + count) > capacity)
             throw new StoreException("Update Inventory", "Inventory Is Smaller Than O " +
                     "or Larger Than Shelf Capacity");
 

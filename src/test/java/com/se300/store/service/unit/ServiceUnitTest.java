@@ -90,7 +90,7 @@ public class ServiceUnitTest {
         Optional<User> optionalTestUser = userRepository.findByEmail("random@gmail.com");
 
         assertEquals(testUser, optionalTestUser.get());
-        verify(userRepository, times(2)).findByEmail("random@gmail.com");
+        verify(userRepository, times(1)).findByEmail("random@gmail.com");
     }
 
     @Test
