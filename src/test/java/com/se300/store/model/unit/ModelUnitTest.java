@@ -1,9 +1,38 @@
 package com.se300.store.model.unit;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.Date;
-import com.se300.store.model.*;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.*;
+
+import com.se300.store.model.Aisle;
+import com.se300.store.model.AisleLocation;
+import com.se300.store.model.Shelf;
+import com.se300.store.model.Basket;
+import com.se300.store.model.Customer;
+import com.se300.store.model.CommandException;
+import com.se300.store.model.CustomerAgeGroup;
+import com.se300.store.model.CustomerType;
+import com.se300.store.model.Inventory;
+import com.se300.store.model.InventoryLocation;
+import com.se300.store.model.InventoryType;
+import com.se300.store.model.Product;
+import com.se300.store.model.Sensor;
+import com.se300.store.model.ShelfLevel;
+import com.se300.store.model.Store;
+import com.se300.store.model.StoreException;
+import com.se300.store.model.StoreLocation;
+import com.se300.store.model.Temperature;
+import com.se300.store.model.User;
 
 /**
  * The ModelUnitTest class contains unit tests for various models used in the Smart Store application.
@@ -149,7 +178,7 @@ public class ModelUnitTest {
     @Test
     @DisplayName("Test Store model creation and basic operations")
     public void testStoreModel() throws StoreException {
-         Store store = new Store("s1", "123 Main St", "Flagship store");
+        Store store = new Store("s1", "123 Main St", "Flagship store");
 
         assertEquals("s1", store.getId());
         assertEquals("123 Main St", store.getAddress());
@@ -167,6 +196,8 @@ public class ModelUnitTest {
 
         // Add aisle
         Aisle aisle = store.addAisle("A1", "Front Aisle", "Entry aisle", null); // AisleLocation can be null
+        aisle.addShelf("SH1", "temp", ShelfLevel.high, "sdf", Temperature.ambient);
+        assertThrows(StoreException.class, () -> aisle.addShelf("SH1", "temp", ShelfLevel.low, "sdf", Temperature.ambient));
         assertNotNull(aisle);
 
         // Get aisle that exists
@@ -178,6 +209,18 @@ public class ModelUnitTest {
 
         assertThrows(StoreException.class,
             () -> store.getAisle("DOES_NOT_EXIST"));
+
+        assertAll(
+            () -> assertDoesNotThrow(() -> aisle.setNumber("12")),
+            () -> assertEquals("12", aisle.getNumber()),
+            () -> assertDoesNotThrow(() -> aisle.setName("Snacks")),
+            () -> assertEquals("Snacks", aisle.getName()),
+            () -> assertDoesNotThrow(() -> aisle.setDescription("Chips and crackers")),
+            () -> assertEquals("Chips and crackers", aisle.getDescription()),
+            () -> assertDoesNotThrow(() -> aisle.setAisleLocation(AisleLocation.floor)),
+            () -> assertNotNull(aisle.getAisleLocation()),
+            () -> assertEquals(AisleLocation.floor, aisle.getAisleLocation())
+        );
 
         //Customer operations
 
@@ -216,6 +259,36 @@ public class ModelUnitTest {
         String s = store.toString();
         assertTrue(s.contains("s2"));
         assertTrue(s.contains("456 Second St"));
+
+        Sensor sen = new Sensor("Sensor", "No", null, "camera");
+        store.addDevice(sen);
+
+        assertAll(
+            () -> assertDoesNotThrow(() -> sen.setName("Collin")),
+            () -> assertDoesNotThrow(() -> sen.setId("a")),
+            () -> assertDoesNotThrow(() -> sen.setStoreLocation(null)),
+            () -> assertDoesNotThrow(() -> sen.setType("camera"))
+        );
+
+        Inventory inv = new Inventory(s, null, 0, 0, null, null);
+        Sensor dev = new Sensor("d1", null, null, null);
+        assertAll(
+            () -> assertDoesNotThrow(() -> inv.setId(" ")),
+            () -> assertDoesNotThrow(() -> inv.setInventoryLocation(new InventoryLocation("s1", "A1", "SH1"))),
+            () -> assertNotNull(inv.getInventoryLocation()),
+            () -> assertDoesNotThrow(() -> inv.setCapacity(0)),
+            () -> assertDoesNotThrow(() -> inv.setProductId(null)),
+            () -> assertDoesNotThrow(() -> inv.setType(InventoryType.standard)),
+            () -> assertNotNull(inv.getType())
+        );
+
+        assertAll(
+            () -> assertDoesNotThrow(() -> store.addInventory(inv)),
+            () -> assertThrows(StoreException.class, () -> store.addInventory(inv)),
+
+            () -> assertDoesNotThrow(() -> store.addDevice(dev)),
+            () -> assertThrows(StoreException.class, () -> store.addDevice(dev))
+        );
     }
 
     @Test
@@ -256,6 +329,8 @@ public class ModelUnitTest {
             "0x999"
         );
         guestBasket.setCustomer(guest);
+        store.addBasket(guestBasket);
+        assertThrows(StoreException.class, () -> store.addBasket(guestBasket));
         assertThrows(StoreException.class,
             () -> guestBasket.addProduct("p1", 1));
 
@@ -349,7 +424,7 @@ public class ModelUnitTest {
 
     @Test
     @DisplayName("Test Store Exception")
-    public void testStoreException() {
+    public void testStoreException() throws StoreException {
         StoreException ex = new StoreException("Add Product", "Not enough inventory");
 
         assertEquals("Add Product", ex.getAction());
@@ -362,5 +437,44 @@ public class ModelUnitTest {
 
         assertEquals("Update Inventory", ex.getAction());
         assertEquals("Capacity exceeded", ex.getReason());
+
+        InventoryLocation inv = new InventoryLocation(null, null, null);
+        assertDoesNotThrow(() -> inv.setShelfId("SH1"));
+        assertNotNull(inv.getShelfId());
+
+        CommandException commandException = new CommandException(null, null);
+        assertDoesNotThrow(() -> commandException.setCommand("sds"));
+        assertNotNull(commandException.getCommand());
+        assertDoesNotThrow(() -> commandException.setReason("sdfs"));
+
+        Aisle aisle = new Aisle("A1", "Front Aisle", "Entry aisle", null);
+
+        aisle.setNumber("01");
+        aisle.setName("Dairy");
+        aisle.setDescription("Cold stuff");
+        aisle.setAisleLocation(AisleLocation.floor);
+
+        assertAll(
+            () -> assertEquals("01", aisle.getNumber()),
+            () -> assertEquals("Dairy", aisle.getName()),
+            () -> assertEquals("Cold stuff", aisle.getDescription()),
+            () -> assertSame(AisleLocation.floor, aisle.getAisleLocation())
+        );
+
+        Shelf shelf = new Shelf("S1", "Snacks", ShelfLevel.low, "Chips", Temperature.ambient);
+
+        shelf.setId("S2");
+        shelf.setName("Drinks");
+        shelf.setLevel(ShelfLevel.high);
+        shelf.setDescription("Sodas");
+        shelf.setTemperature(Temperature.frozen);
+
+        assertAll(
+            () -> assertEquals("S2", shelf.getId()),
+            () -> assertEquals("Drinks", shelf.getName()),
+            () -> assertEquals(ShelfLevel.high, shelf.getLevel()),
+            () -> assertEquals("Sodas", shelf.getDescription()),
+            () -> assertEquals(Temperature.frozen, shelf.getTemperature())
+        );
     }
 }

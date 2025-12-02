@@ -8,12 +8,15 @@ import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -181,8 +184,13 @@ public class RepositoryUnitTest {
         assertTrue(found.isPresent());
         assertSame(user, found.get());
 
+        Optional<User> nullUser = userRepository.findByEmail(null);
+
+        assertEquals(nullUser, Optional.empty());
+
         Optional<User> notFound = userRepository.findByEmail("missing@store.com");
         assertFalse(notFound.isPresent());
+        assertEquals(nullUser, Optional.empty());
 
         verify(dataManager, times(2)).get("users");
     }
@@ -263,5 +271,31 @@ public class RepositoryUnitTest {
 
         verify(dataManager).get("users");
         verify(dataManager, times(2)).put(eq("users"), any(Map.class));
+    }
+
+    @Test
+    void testKeysAndSizeAndRemove() {
+        DataManager dataManager = DataManager.getInstance(); 
+        Map<String, Store> storeMap = new HashMap<>();
+        Map<String, User> usermap = new HashMap<>();
+
+        dataManager.put("stores", storeMap);
+        dataManager.put("users", usermap);
+
+        assertEquals(2, dataManager.size());
+
+        Iterable<String> keys = dataManager.keys();
+        List<String> list = new ArrayList<>();
+        keys.forEach(list::add);
+        assertTrue(list.contains("stores"));
+        assertTrue(list.contains("users"));
+
+        dataManager.remove("stores");
+        assertEquals(1, dataManager.size());
+        keys = dataManager.keys();
+        list.clear();
+        keys.forEach(list::add);
+        assertFalse(list.contains("stores"));
+        assertTrue(list.contains("users"));
     }
 }

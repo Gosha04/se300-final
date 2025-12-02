@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UserRepository.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">final</a> &gt; <a href="index.source.html" class="el_package">com.se300.store.repository</a> &gt; <span class="el_source">UserRepository.java</span></div><h1>UserRepository.java</h1><pre class="source lang-java linenums">package com.se300.store.repository;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
+
+import com.se300.store.data.DataManager;
+import com.se300.store.model.User;
+
+/**
+ * User Repository represents the user data access layer
+ *
+ * @author  Sergey L. Sundukovskiy
+ * @version 1.0
+ * @since   2025-11-06
+ */
+public class UserRepository {
+
+    private static final String USERS_KEY = &quot;users&quot;;
+    private final DataManager dataManager;
+
+<span class="fc" id="L23">    public UserRepository(DataManager dataManager) {</span>
+<span class="fc" id="L24">        this.dataManager = dataManager;</span>
+        // Initialize user storage in DataManager if not exists
+<span class="pc bpc" id="L26" title="1 of 2 branches missed.">        if (!dataManager.containsKey(USERS_KEY)) {</span>
+<span class="fc" id="L27">            Map&lt;String, User&gt; users = new ConcurrentHashMap&lt;&gt;();</span>
+            // Add default test users
+<span class="fc" id="L29">            users.put(&quot;admin@store.com&quot;, new User(&quot;admin@store.com&quot;, &quot;admin123&quot;, &quot;Admin User&quot;));</span>
+<span class="fc" id="L30">            users.put(&quot;user@store.com&quot;, new User(&quot;user@store.com&quot;, &quot;user123&quot;, &quot;Regular User&quot;));</span>
+<span class="fc" id="L31">            dataManager.put(USERS_KEY, users);</span>
+        }
+<span class="fc" id="L33">    }</span>
+
+    /**
+     * Find user by email
+     */
+    public Optional&lt;User&gt; findByEmail(String email) {
+<span class="fc bfc" id="L39" title="All 2 branches covered.">        if (email == null) {</span>
+<span class="fc" id="L40">            return Optional.empty();</span>
+        }
+<span class="fc" id="L42">        Map&lt;String, User&gt; users = getUsersMap();</span>
+<span class="fc" id="L43">        return Optional.ofNullable(users.get(email));</span>
+    }
+
+    /**
+     * Save or update a user
+     */
+    public void save(User user) {
+<span class="fc" id="L50">        Map&lt;String, User&gt; users = getUsersMap();</span>
+<span class="fc" id="L51">        users.put(user.getEmail(), user);</span>
+<span class="fc" id="L52">        dataManager.put(USERS_KEY, users);</span>
+<span class="fc" id="L53">    }</span>
+
+    /**
+     * Check if user exists by email
+     */
+    public boolean existsByEmail(String email) {
+<span class="fc" id="L59">        Map&lt;String, User&gt; users = getUsersMap();</span>
+<span class="fc" id="L60">        return users.containsKey(email);</span>
+    }
+
+    /**
+     * Delete user by email
+     */
+    public void delete(String email) {
+<span class="fc" id="L67">        Map&lt;String, User&gt; users = getUsersMap();</span>
+<span class="fc" id="L68">        users.remove(email);</span>
+<span class="fc" id="L69">        dataManager.put(USERS_KEY, users);</span>
+<span class="fc" id="L70">    }</span>
+
+    /**
+     * Get all users
+     */
+    public Map&lt;String, User&gt; findAll() {
+<span class="fc" id="L76">        return new HashMap&lt;&gt;(getUsersMap());</span>
+    }
+
+    /**
+     * Helper method to get users map from DataManager
+     */
+    @SuppressWarnings(&quot;unchecked&quot;)
+    private Map&lt;String, User&gt; getUsersMap() {
+<span class="fc" id="L84">        Map&lt;String, User&gt; users = dataManager.get(USERS_KEY);</span>
+<span class="fc bfc" id="L85" title="All 2 branches covered.">        if (users == null) {</span>
+<span class="fc" id="L86">            users = new ConcurrentHashMap&lt;&gt;();</span>
+<span class="fc" id="L87">            dataManager.put(USERS_KEY, users);</span>
+        }
+<span class="fc" id="L89">        return users;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

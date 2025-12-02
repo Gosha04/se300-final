@@ -4,7 +4,6 @@ import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.anyOf;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
@@ -15,10 +14,10 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.PrintStream;
 import java.util.Map;
-
-import javax.validation.constraints.Null;
 
 import org.apache.catalina.Context;
 import org.apache.catalina.startup.Tomcat;
@@ -216,7 +215,11 @@ public class EndToEndSmartStoreTest {
 
         Inventory inv = storeService.provisionInventory("I1", "S2", "A1",
          "SH1", 100, 100, "P1", InventoryType.standard, "token");
-
+        
+        assertThrows(StoreException.class, () -> storeService.provisionInventory("I1", "S2", "A1",
+         "SH1", 100, 100, "P1", InventoryType.standard, "token"));
+        assertThrows(StoreException.class, () -> storeService.provisionInventory("I1",
+         "S2", "A1","SH1", -1, 0, "P1", InventoryType.standard, "token"));
         assertEquals(a, storeService.showAisle("S2", "A1", "token"));
         assertEquals(inv, storeService.showInventory("I1", "token"));
         assertEquals(sh, storeService.showShelf("S2","A1","SH1","token"));
@@ -236,6 +239,7 @@ public class EndToEndSmartStoreTest {
          CustomerType.registered, "anon@gmail.com", "Los Angeles", "Token");
 
         StoreLocation custLoc = new StoreLocation("S2", "A1");
+        StoreLocation testLoc = new StoreLocation("S2", null);
 
         storeService.provisionAisle("S2", "A2", "Random", "Random",
          AisleLocation.floor, "token");
@@ -245,7 +249,6 @@ public class EndToEndSmartStoreTest {
         Basket bask = storeService.provisionBasket("B1", "token");
         storeService.assignCustomerBasket("C1", "B1", "token");
         storeService.addBasketProduct("B1", "P1", 2, "token");
-
         assertEquals(bask.getProducts().size(), 1); // Only one product type
 
         assertNotNull(cust);
@@ -253,7 +256,8 @@ public class EndToEndSmartStoreTest {
         assertEquals(bask, storeService.showBasket("B1", "token"));
         assertEquals(bask.getCustomer(), cust);
         assertEquals(storeService.getCustomerBasket("C1", "token"), bask);
-
+        assertThrows(StoreException.class, () -> storeService.addBasketProduct("B1", null, 0, "token"));
+        // assertThrows(StoreException.class, () -> storeService.addBasketProduct("B1", "P1", 0, "token"));
         storeService.updateCustomer("C1", "S2", "A2", "token");
 
         assertEquals(cust.getStoreLocation().toString(), new StoreLocation("S2", "A2").toString());
@@ -264,8 +268,19 @@ public class EndToEndSmartStoreTest {
         assertEquals(1, bask.getProducts().size());
         
         storeService.clearBasket("B1", "token");
-
         assertEquals(bask.getProducts().size(), 0);
+
+        // storeService.showCustomer("C1", "token").setStoreLocation(null);
+        // assertThrows(StoreException.class, () -> storeService.removeBasketProduct("B1", "P1", 1, "token"));
+        
+        // storeService.showCustomer("C1", "token").setStoreLocation(custLoc);
+        // // storeService.assignCustomerBasket("C1", "B1", "token");
+        // assertThrows(StoreException.class, () -> storeService.showBasket("B1", "token").addProduct("P1", 10));
+        // storeService.updateInventory("I1", 20, "token");
+        // assertThrows(StoreException.class, () -> storeService.removeBasketProduct("B1", "P1", 10, "token"));
+        // storeService.updateInventory("I1", -10, "token");
+        // storeService.removeBasketProduct("B1", "P1", 10, "token");
+        // storeService.clearBasket("B1", "token");
     }
 
     @Test
@@ -325,6 +340,8 @@ public class EndToEndSmartStoreTest {
         assertThrows(StoreException.class,
                 () -> storeService.addBasketProduct("B1", "нет", 1, "token"),
                 "Нечего");
+        
+        assertThrows(StoreException.class, () -> storeService.provisionBasket("B1", "token"));
 
         assertDoesNotThrow(() ->
                 storeService.showBasket("B1", "token").setCustomer(storeService.showCustomer("C1", "token")));
@@ -495,6 +512,14 @@ public class EndToEndSmartStoreTest {
     @DisplayName("E2E: Complete store.script data processing with assertions")
     public void testStoreScriptEndToEnd() throws Exception {
         CommandProcessor commandProcessor = new CommandProcessor();
-        commandProcessor.processCommandFile("scr/test/resources/store.script"); 
+        assertDoesNotThrow(() -> commandProcessor.processCommandFile("src/test/resources/store.script")); 
+
+        ByteArrayOutputStream errContent = new ByteArrayOutputStream();
+        System.setErr(new PrintStream(errContent)); 
+
+        commandProcessor.processCommandFile("does_not_exist.txt");
+
+        String output = errContent.toString();
+        assertTrue(output.contains("NoSuchFileException"));
     }
 }
