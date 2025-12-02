@@ -155,7 +155,7 @@ public class ControllerUnitTest {
     public void testUpdateStoreWithMock() throws Exception {
         Store store = new Store("123", "addr", "desc");
 
-        when(storeService.showStore(eq("123"), "admin"))
+        when(storeService.showStore("123", "admin"))
             .thenReturn(store);
 
         when(storeService.updateStore("123", "description", "address"))
@@ -274,7 +274,7 @@ public class ControllerUnitTest {
             .get("/api/v1/users/test@gmail.com")
         .then()
             .statusCode(404)
-            .body("message", equalTo("User not found"));
+            .body("message", equalTo("User Does Not Exist"));
         
         verify(authenticationService).getUserByEmail("test@gmail.com");
     }
@@ -305,12 +305,15 @@ public class ControllerUnitTest {
     @Test
     @DisplayName("Mock: Delete user - verify service call")
     public void testDeleteUserWithMock() throws Exception {
+        User user = new User("test@gmail.com" , "fd", "dfs");
+
+        when(authenticationService.getUserByEmail("test@gmail.com")).thenReturn(user);
+
         given()
-            .param("email", "test@gmail.com")
         .when()
             .delete("/api/v1/users/test@gmail.com") 
         .then()
-            .statusCode(200); 
+            .statusCode(204); 
 
         verify(authenticationService).deleteUser("test@gmail.com");
     }
@@ -349,7 +352,7 @@ public class ControllerUnitTest {
         .then()
             .statusCode(400);
 
-        verify(authenticationService).registerUser("test@gmail.com", "5678", "NewName");
+        verify(authenticationService, never()).registerUser("test@gmail.com", "5678", "NewName");
     }
 
     @Test

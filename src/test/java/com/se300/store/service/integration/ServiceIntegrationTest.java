@@ -1,17 +1,43 @@
 package com.se300.store.service.integration;
 
-import com.se300.store.data.DataManager;
-import com.se300.store.model.*;
-import com.se300.store.repository.StoreRepository;
-import com.se300.store.repository.UserRepository;
-import com.se300.store.service.AuthenticationService;
-import com.se300.store.service.StoreService;
-import org.junit.jupiter.api.*;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Collection;
 import java.util.HashMap;
 
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
+
+import com.se300.store.data.DataManager;
+import com.se300.store.model.Aisle;
+import com.se300.store.model.Basket;
+import com.se300.store.model.Customer;
+import com.se300.store.model.CustomerType;
+import com.se300.store.model.Device;
+import com.se300.store.model.Inventory;
+import com.se300.store.model.InventoryType;
+import com.se300.store.model.Product;
+import com.se300.store.model.SensorType;
+import com.se300.store.model.Shelf;
+import com.se300.store.model.ShelfLevel;
+import com.se300.store.model.Store;
+import com.se300.store.model.StoreException;
+import com.se300.store.model.Temperature;
+import com.se300.store.model.User;
+import com.se300.store.repository.StoreRepository;
+import com.se300.store.repository.UserRepository;
+import com.se300.store.service.AuthenticationService;
+import com.se300.store.service.StoreService;
 
 /**
  * This class contains integration tests for verifying the correct functionality
@@ -62,26 +88,22 @@ public class ServiceIntegrationTest {
     @Order(2)
     @DisplayName("Integration: Store with Aisles and Shelves")
     public void testStoreWithAislesAndShelves() throws StoreException {
-        storeService.provisionStore("S2","Groc","45","t");
-        Aisle a = storeService.provisionAisle("S2","A1","Fresh","Produce",null,"t");
+        storeService.provisionStore("S1", "Main Store", "123 Road", "token");
+        Aisle a = storeService.provisionAisle("S1","A1","Fresh","Produce",null,"t");
         assertEquals("A1",a.getNumber());
-        Shelf sh = storeService.provisionShelf("S2","A1","SH1","Top",ShelfLevel.high,"Cool",Temperature.ambient,"t");
+        Shelf sh = storeService.provisionShelf("S1","A1","SH1","Top",ShelfLevel.high,"Cool",Temperature.ambient,"t");
         assertEquals("SH1",sh.getId());
-        assertNotNull(storeService.showShelf("S2","A1","SH1","t"));
+        assertNotNull(storeService.showShelf("S1","A1","SH1","t"));
     }
 
     @Test
     @Order(3)
     @DisplayName("Integration: Product and Inventory workflow")
     public void testProductAndInventoryWorkflow() throws StoreException {
-        storeService.provisionStore("S3","HW","222","t");
-        storeService.provisionAisle("S3","A1","Gen","Tools",null,"t");
-        storeService.provisionShelf("S3","A1","SH1","Mid",ShelfLevel.medium,"Shelf",Temperature.ambient,"t");
-
         Product p = storeService.provisionProduct("P1","Hammer","Strong","1pc","Tools",9.99,Temperature.ambient,"t");
         assertEquals("P1",p.getId());
 
-        Inventory inv = storeService.provisionInventory("I1","S3","A1","SH1",10,5,"P1",InventoryType.standard,"t");
+        Inventory inv = storeService.provisionInventory("I1","S1","A1","SH1",10,5,"P1",InventoryType.standard,"t");
         assertEquals("I1",inv.getId());
 
         Inventory before = storeService.showInventory("I1","t");
@@ -97,18 +119,14 @@ public class ServiceIntegrationTest {
     @Order(4)
     @DisplayName("Integration: Customer and Basket workflow")
     public void testCustomerAndBasketWorkflow() throws StoreException {
-        storeService.provisionStore("S4", "Market", "55 Way", "token");
-        storeService.provisionAisle("S4", "A1", "Items", "General", null, "token");
-
-        
         Customer customer = storeService.provisionCustomer(
                 "C1", "John", "Doe", CustomerType.registered, "john@mail.com", "addr", "token");
         assertNotNull(customer);
 
         
-        Customer updated = storeService.updateCustomer("C1", "S4", "A1", "token");
+        Customer updated = storeService.updateCustomer("C1", "S1", "A1", "token");
         assertNotNull(updated.getStoreLocation());
-        assertEquals("S4", updated.getStoreLocation().getStoreId());
+        assertEquals("S1", updated.getStoreLocation().getStoreId());
         assertEquals("A1", updated.getStoreLocation().getAisleId());
         assertNotNull(updated.getLastSeen());
 
@@ -118,13 +136,12 @@ public class ServiceIntegrationTest {
         Basket assigned = storeService.assignCustomerBasket("C1", "B1", "token");
         assertEquals("B1", assigned.getId());
 
-        // Retrieve customer's basket and verify links
         Basket customerBasket = storeService.getCustomerBasket("C1", "token");
         assertEquals("B1", customerBasket.getId());
         assertNotNull(customerBasket.getCustomer());
         assertEquals("C1", customerBasket.getCustomer().getId());
         assertNotNull(customerBasket.getStore());
-        assertEquals("S4", customerBasket.getStore().getId());
+        assertEquals("S1", customerBasket.getStore().getId());
     }
 
     @Test
@@ -165,13 +182,9 @@ public class ServiceIntegrationTest {
     @Order(6)
     @DisplayName("Integration: Device provisioning and events")
     public void testDeviceProvisioningAndEvents() throws StoreException {
-        
-        storeService.provisionStore("S5", "Electronics", "88 Tech Rd", "token");
-        storeService.provisionAisle("S5", "A1", "Sensors", "Devices", null, "token");
-
         String deviceType = SensorType.values()[0].name();
 
-        Device device = storeService.provisionDevice("D1", "TempSensor", deviceType, "S5", "A1", "token");
+        Device device = storeService.provisionDevice("D1", "TempSensor", deviceType, "S1", "A1", "token");
         assertNotNull(device);
         assertEquals("D1", device.getId());
 
