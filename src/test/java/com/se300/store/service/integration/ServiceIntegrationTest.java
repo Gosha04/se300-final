@@ -119,27 +119,31 @@ public class ServiceIntegrationTest {
     @Order(4)
     @DisplayName("Integration: Customer and Basket workflow")
     public void testCustomerAndBasketWorkflow() throws StoreException {
+        String customerId = "C_INTEGRATION_1";
+        String basketId   = "B_INTEGRATION_1";
+
         Customer customer = storeService.provisionCustomer(
-                "C1", "John", "Doe", CustomerType.registered, "john@mail.com", "addr", "token");
+                customerId, "John", "Doe", CustomerType.registered,
+                "john+integration@mail.com", "addr", "token");
         assertNotNull(customer);
 
-        
-        Customer updated = storeService.updateCustomer("C1", "S1", "A1", "token");
+        // S1 / A1 are still assumed to exist from earlier tests in this class
+        Customer updated = storeService.updateCustomer(customerId, "S1", "A1", "token");
         assertNotNull(updated.getStoreLocation());
         assertEquals("S1", updated.getStoreLocation().getStoreId());
         assertEquals("A1", updated.getStoreLocation().getAisleId());
         assertNotNull(updated.getLastSeen());
 
-        
-        Basket basket = storeService.provisionBasket("B1", "token");
+        Basket basket = storeService.provisionBasket(basketId, "token");
         assertNotNull(basket);
-        Basket assigned = storeService.assignCustomerBasket("C1", "B1", "token");
-        assertEquals("B1", assigned.getId());
 
-        Basket customerBasket = storeService.getCustomerBasket("C1", "token");
-        assertEquals("B1", customerBasket.getId());
+        Basket assigned = storeService.assignCustomerBasket(customerId, basketId, "token");
+        assertEquals(basketId, assigned.getId());
+
+        Basket customerBasket = storeService.getCustomerBasket(customerId, "token");
+        assertEquals(basketId, customerBasket.getId());
         assertNotNull(customerBasket.getCustomer());
-        assertEquals("C1", customerBasket.getCustomer().getId());
+        assertEquals(customerId, customerBasket.getCustomer().getId());
         assertNotNull(customerBasket.getStore());
         assertEquals("S1", customerBasket.getStore().getId());
     }
