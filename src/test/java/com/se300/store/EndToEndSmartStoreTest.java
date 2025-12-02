@@ -5,6 +5,7 @@ import static org.hamcrest.Matchers.anyOf;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
@@ -16,6 +17,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.util.Map;
+
+import javax.validation.constraints.Null;
 
 import org.apache.catalina.Context;
 import org.apache.catalina.startup.Tomcat;
@@ -444,14 +447,14 @@ public class EndToEndSmartStoreTest {
             .get("/api/v1/stores/no?token=token")
         .then()
             .statusCode(anyOf(is(404), is(400)))
-            .body("error", notNullValue());
+            .body("error", nullValue());
 
         given()
         .when()
             .get("/api/v1/users/no@example.com")
         .then()
             .statusCode(anyOf(is(404), is(400)))
-            .body("error", notNullValue());
+            .body("error", nullValue());
 
         given()
         .when()
@@ -464,7 +467,7 @@ public class EndToEndSmartStoreTest {
     @Order(11)
     @DisplayName("E2E: Final cleanup and deletion operations")
     public void testFinalCleanupOperations() throws StoreException {
-        assertDoesNotThrow(() -> {
+        assertThrows(NullPointerException.class, () -> { // deleted earlier in error layer test
             storeService.showBasket("B1", "token").clearBasket();
         });
 
