@@ -1,4 +1,8 @@
 -------------------------------------------------------------------------------
 Test set: com.se300.store.model.unit.ModelUnitTest
 -------------------------------------------------------------------------------
+<<<<<<< HEAD
 Tests run: 9, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.057 s -- in com.se300.store.model.unit.ModelUnitTest
+=======
+Tests run: 9, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.026 s -- in com.se300.store.model.unit.ModelUnitTest
+>>>>>>> a227ea8ede1ac9d86cbb39515d139bd373b7526e

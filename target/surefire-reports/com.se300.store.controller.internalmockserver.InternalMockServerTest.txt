@@ -1,4 +1,8 @@
 -------------------------------------------------------------------------------
 Test set: com.se300.store.controller.internalmockserver.InternalMockServerTest
 -------------------------------------------------------------------------------
+<<<<<<< HEAD
 Tests run: 7, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 9.497 s -- in com.se300.store.controller.internalmockserver.InternalMockServerTest
+=======
+Tests run: 7, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 2.144 s -- in com.se300.store.controller.internalmockserver.InternalMockServerTest
+>>>>>>> a227ea8ede1ac9d86cbb39515d139bd373b7526e

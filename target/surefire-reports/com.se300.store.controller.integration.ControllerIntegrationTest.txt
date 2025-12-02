@@ -1,4 +1,8 @@
 -------------------------------------------------------------------------------
 Test set: com.se300.store.controller.integration.ControllerIntegrationTest
 -------------------------------------------------------------------------------
+<<<<<<< HEAD
 Tests run: 15, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 3.435 s -- in com.se300.store.controller.integration.ControllerIntegrationTest
+=======
+Tests run: 15, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 3.538 s -- in com.se300.store.controller.integration.ControllerIntegrationTest
+>>>>>>> a227ea8ede1ac9d86cbb39515d139bd373b7526e

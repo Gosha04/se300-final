@@ -69,6 +69,7 @@ public class Basket {
         //Get the aisle where the customer was last seen
 <span class="fc" id="L70">        Aisle aisle = store.getAisle(location.getAisleId());</span>
 
+<<<<<<< HEAD
         //Check to see if exists 
         /**
          * UNNECESSARY - store.getAisle already checks for null, this is dead code
@@ -90,10 +91,30 @@ public class Basket {
 <span class="fc bfc" id="L90" title="All 2 branches covered.">        if(inventoryList.isEmpty()){</span>
 <span class="fc" id="L91">            System.out.println(&quot;\u001B[31m&quot; + &quot;Error : &quot; + customer + &quot;\u001B[0m&quot;);</span>
 <span class="fc" id="L92">            throw new StoreException(&quot;Add Product&quot;, &quot;Customer Is Not Near Product&quot;);</span>
+=======
+        //Check to see if exists
+<span class="pc bpc" id="L73" title="1 of 2 branches missed.">        if(aisle == null){</span>
+<span class="nc" id="L74">            throw new StoreException(&quot;Add Product&quot;, &quot;Aisle Does Not Exist&quot;);</span>
+        }
+
+        //Get all inventory items from the shelves in the aisle where customer was last seen
+<span class="fc" id="L78">        List&lt;Inventory&gt; inventoryList = aisle.getShelfMap().values()</span>
+<span class="fc" id="L79">                .stream()</span>
+<span class="fc" id="L80">                .flatMap(shelf -&gt; shelf.getInventoryMap().values().</span>
+<span class="fc" id="L81">                        stream())</span>
+<span class="fc" id="L82">                .filter(inventory -&gt; productId.equals(inventory.getProductId()))</span>
+<span class="fc" id="L83">                        .collect(Collectors.toList());</span>
+
+        //If inventory list is empty that means product is not available to be put in the basket
+<span class="fc bfc" id="L86" title="All 2 branches covered.">        if(inventoryList.isEmpty()){</span>
+<span class="fc" id="L87">            System.out.println(&quot;\u001B[31m&quot; + &quot;Error : &quot; + customer + &quot;\u001B[0m&quot;);</span>
+<span class="fc" id="L88">            throw new StoreException(&quot;Add Product&quot;, &quot;Customer Is Not Near Product&quot;);</span>
+>>>>>>> a227ea8ede1ac9d86cbb39515d139bd373b7526e
         }
 
         //If inventory list is larger than one that means that there are multiple product are available
         //where customer was last seen
+<<<<<<< HEAD
 <span class="fc bfc" id="L97" title="All 2 branches covered.">        if(inventoryList.size() &gt; 1){</span>
 <span class="fc" id="L98">            System.out.println(&quot;\u001B[31m&quot; + &quot;Error : &quot; + inventoryList + &quot;\u001B[0m&quot;);</span>
 <span class="fc" id="L99">            throw new StoreException(&quot;Add Product&quot;, &quot;There Are Several Products In the Aisle&quot;);</span>
@@ -110,6 +131,24 @@ public class Basket {
 <span class="fc" id="L110">        this.productMap.merge(productId, count, Integer::sum);</span>
 <span class="fc" id="L111">        inventory.setCount(inventory.getCount() - count);</span>
 <span class="fc" id="L112">    }</span>
+=======
+<span class="pc bpc" id="L93" title="1 of 2 branches missed.">        if(inventoryList.size() &gt; 1){</span>
+<span class="nc" id="L94">            System.out.println(&quot;\u001B[31m&quot; + &quot;Error : &quot; + inventoryList + &quot;\u001B[0m&quot;);</span>
+<span class="nc" id="L95">            throw new StoreException(&quot;Add Product&quot;, &quot;There Are Several Products In the Aisle&quot;);</span>
+        }
+
+        //If the count of the product on the shelf is smaller than the customer is trying to buy throw and exception
+<span class="fc" id="L99">        Inventory inventory = inventoryList.get(0);</span>
+<span class="pc bpc" id="L100" title="1 of 2 branches missed.">        if((inventory.getCount() - count) &lt; 0){</span>
+<span class="nc" id="L101">            System.out.println(&quot;\u001B[31m&quot; + &quot;Error : &quot; + inventory + &quot;\u001B[0m&quot;);</span>
+<span class="nc" id="L102">            throw new StoreException(&quot;Add Product&quot;, &quot;There Is Not Enough Inventory on the Shelf&quot;);</span>
+        }
+
+        //Put the product in the basket and decrement product on the shelf
+<span class="fc" id="L106">        this.productMap.merge(productId, count, Integer::sum);</span>
+<span class="fc" id="L107">        inventory.setCount(inventory.getCount() - count);</span>
+<span class="fc" id="L108">    }</span>
+>>>>>>> a227ea8ede1ac9d86cbb39515d139bd373b7526e
 
     /**
      * Remove Product from the Customer's Basket. It throws StoreModel Exception on
@@ -123,6 +162,7 @@ public class Basket {
 
         //If Customer is trying to remove more units of the products from the basket than he/she has put in
         //throw an exception
+<<<<<<< HEAD
 <span class="fc" id="L126">        Integer tempCount = this.productMap.get(productId);</span>
 <span class="fc bfc" id="L127" title="All 2 branches covered.">        if(tempCount == null){</span>
 <span class="fc" id="L128">            throw new StoreException(&quot;Remove Product&quot;, &quot;Product Does Not Exist&quot;);</span>
@@ -155,10 +195,42 @@ public class Basket {
 <span class="fc bfc" id="L155" title="All 2 branches covered.">        if(inventoryList.isEmpty()){</span>
 <span class="fc" id="L156">            System.out.println(&quot;\u001B[31m&quot; + &quot;Error: &quot; + customer + &quot;\u001B[0m&quot;);</span>
 <span class="fc" id="L157">            throw new StoreException(&quot;Remove Product&quot;, &quot;Customer Is Not Near Product&quot;);</span>
+=======
+<span class="fc" id="L122">        Integer tempCount = this.productMap.get(productId);</span>
+<span class="fc bfc" id="L123" title="All 2 branches covered.">        if(tempCount == null){</span>
+<span class="fc" id="L124">            throw new StoreException(&quot;Remove Product&quot;, &quot;Product Does Not Exist&quot;);</span>
+<span class="fc bfc" id="L125" title="All 2 branches covered.">        } else if (count &gt; tempCount){</span>
+<span class="fc" id="L126">            throw new StoreException(&quot;Remove Product&quot;, &quot;Trying To Remove More Quantity Than Exists&quot;);</span>
+        }
+
+        //Get location of the customer associated with this basket
+<span class="fc" id="L130">        StoreLocation location = this.customer.getStoreLocation();</span>
+        //Get the aisle where the customer was last seen
+<span class="fc" id="L132">        Aisle aisle = store.getAisle(location.getAisleId());</span>
+
+        //Check to see if exists
+<span class="pc bpc" id="L135" title="1 of 2 branches missed.">        if(aisle == null){</span>
+<span class="nc" id="L136">            throw new StoreException(&quot;Remove Product&quot;, &quot;Aisle Does Not Exist&quot;);</span>
+        }
+
+        //Get all inventory items from the shelves in the aisle where customer was last seen
+<span class="fc" id="L140">        List&lt;Inventory&gt; inventoryList = aisle.getShelfMap().values()</span>
+<span class="fc" id="L141">                .stream()</span>
+<span class="fc" id="L142">                .flatMap(shelf -&gt; shelf.getInventoryMap().values().</span>
+<span class="fc" id="L143">                        stream())</span>
+<span class="fc" id="L144">                .filter(inventory -&gt; productId.equals(inventory.getProductId()))</span>
+<span class="fc" id="L145">                .collect(Collectors.toList());</span>
+
+        //If inventory list is empty that means product is not available to be put on the shelf
+<span class="pc bpc" id="L148" title="1 of 2 branches missed.">        if(inventoryList.isEmpty()){</span>
+<span class="nc" id="L149">            System.out.println(&quot;\u001B[31m&quot; + &quot;Error: &quot; + customer + &quot;\u001B[0m&quot;);</span>
+<span class="nc" id="L150">            throw new StoreException(&quot;Remove Product&quot;, &quot;Customer Is Not Near Product&quot;);</span>
+>>>>>>> a227ea8ede1ac9d86cbb39515d139bd373b7526e
         }
 
         //If inventory list is larger than one that means that there are multiple product slots are available
         //on the shelves where customer was last seen
+<<<<<<< HEAD
 <span class="fc bfc" id="L162" title="All 2 branches covered.">        if(inventoryList.size() &gt; 1){</span>
 <span class="fc" id="L163">            System.out.println(&quot;\u001B[31m&quot; + &quot;Error : &quot; + inventoryList + &quot;\u001B[0m&quot;);</span>
 <span class="fc" id="L164">            throw new StoreException(&quot;Remove Product&quot;, &quot;There Are Several Products In the Aisle&quot;);</span>
@@ -181,6 +253,30 @@ public class Basket {
 <span class="fc" id="L181">            productMap.remove(productId);</span>
         }
 <span class="fc" id="L183">    }</span>
+=======
+<span class="pc bpc" id="L155" title="1 of 2 branches missed.">        if(inventoryList.size() &gt; 1){</span>
+<span class="nc" id="L156">            System.out.println(&quot;\u001B[31m&quot; + &quot;Error : &quot; + inventoryList + &quot;\u001B[0m&quot;);</span>
+<span class="nc" id="L157">            throw new StoreException(&quot;Remove Product&quot;, &quot;There Are Several Products In the Aisle&quot;);</span>
+        }
+
+        //If product capacity on the shelf is smaller than what the customer is trying to put back throw and exception
+<span class="fc" id="L161">        Inventory inventory = inventoryList.get(0);</span>
+<span class="pc bpc" id="L162" title="1 of 2 branches missed.">        if((inventory.getCount() + count) &gt; inventory.getCapacity()){</span>
+<span class="nc" id="L163">            System.out.println(&quot;\u001B[31m&quot; + &quot;Error : &quot; + inventory + &quot;\u001B[0m&quot;);</span>
+<span class="nc" id="L164">            throw new StoreException(&quot;Remove Product&quot;, &quot;There Is Not Enough Capacity on the Shelf&quot;);</span>
+        }
+
+        //Remove the product in the basket and increment product on the shelf
+<span class="fc" id="L168">        this.productMap.merge(productId, count, (a, b) -&gt; a - b);</span>
+<span class="fc" id="L169">        inventory.setCount(inventory.getCount() + count);</span>
+
+        //if product count in the basket is 0 remove it from the basket completely
+<span class="fc" id="L172">        tempCount = this.productMap.get(productId);</span>
+<span class="fc bfc" id="L173" title="All 2 branches covered.">        if(tempCount == 0){</span>
+<span class="fc" id="L174">            productMap.remove(productId);</span>
+        }
+<span class="fc" id="L176">    }</span>
+>>>>>>> a227ea8ede1ac9d86cbb39515d139bd373b7526e
 
     /**
      * Remove all Products from the Customer's Basket
@@ -190,6 +286,7 @@ public class Basket {
 
         //Removal of the products can't occur in the lambda function since we would get a
         //concurrent object modification exception
+<<<<<<< HEAD
 <span class="fc" id="L193">        Set&lt;String&gt; keys = this.productMap.keySet();</span>
 <span class="fc" id="L194">        List&lt;Integer&gt; values = new ArrayList&lt;&gt;(productMap.values());</span>
 
@@ -206,12 +303,34 @@ public class Basket {
 <span class="fc" id="L206">        this.customer.assignBasket(null);</span>
 <span class="fc" id="L207">        this.customer = null;</span>
 <span class="fc" id="L208">    }</span>
+=======
+<span class="fc" id="L186">        Set&lt;String&gt; keys = this.productMap.keySet();</span>
+<span class="fc" id="L187">        List&lt;Integer&gt; values = new ArrayList&lt;&gt;(productMap.values());</span>
+
+        //Remove all the products from the Product Map
+<span class="fc" id="L190">        int i = 0;</span>
+<span class="fc bfc" id="L191" title="All 2 branches covered.">        for (String key : keys) {</span>
+<span class="fc" id="L192">            removeProduct(key, values.get(i));</span>
+<span class="fc" id="L193">            i++;</span>
+<span class="fc" id="L194">        }</span>
+
+<span class="fc" id="L196">        this.productMap.clear();</span>
+
+        //Clear Basket and remove Customer association
+<span class="fc" id="L199">        this.customer.assignBasket(null);</span>
+<span class="fc" id="L200">        this.customer = null;</span>
+<span class="fc" id="L201">    }</span>
+>>>>>>> a227ea8ede1ac9d86cbb39515d139bd373b7526e
 
     /**
      * Helper method allowing us to test whether things are being removed from the basket
      */
     public Map&lt;String, Integer&gt; getProducts() {
+<<<<<<< HEAD
 <span class="fc" id="L214">        return Collections.unmodifiableMap(this.productMap);</span>
+=======
+<span class="fc" id="L207">        return Collections.unmodifiableMap(this.productMap);</span>
+>>>>>>> a227ea8ede1ac9d86cbb39515d139bd373b7526e
     }
 
     /**
@@ -219,22 +338,36 @@ public class Basket {
      * @param store
      */
     public void setStore(Store store){
+<<<<<<< HEAD
 <span class="fc" id="L222">        this.store = store;</span>
 <span class="fc" id="L223">    }</span>
+=======
+<span class="fc" id="L215">        this.store = store;</span>
+<span class="fc" id="L216">    }</span>
+>>>>>>> a227ea8ede1ac9d86cbb39515d139bd373b7526e
     /**
      * Setter method for the Customer to establish a connection between Basket and the Customer
      * @param customer
      */
     public void setCustomer(Customer customer){
+<<<<<<< HEAD
 <span class="fc" id="L229">        this.customer = customer;</span>
 <span class="fc" id="L230">    }</span>
+=======
+<span class="fc" id="L222">        this.customer = customer;</span>
+<span class="fc" id="L223">    }</span>
+>>>>>>> a227ea8ede1ac9d86cbb39515d139bd373b7526e
 
     /**
      * Getter method for Store for a given Basket
      * @return
      */
     public Store getStore(){
+<<<<<<< HEAD
 <span class="fc" id="L237">        return this.store;</span>
+=======
+<span class="fc" id="L230">        return this.store;</span>
+>>>>>>> a227ea8ede1ac9d86cbb39515d139bd373b7526e
     }
 
     /**
@@ -242,12 +375,20 @@ public class Basket {
      * @return
      */
     public Customer getCustomer(){
+<<<<<<< HEAD
 <span class="fc" id="L245">        return this.customer;</span>
+=======
+<span class="fc" id="L238">        return this.customer;</span>
+>>>>>>> a227ea8ede1ac9d86cbb39515d139bd373b7526e
     }
 
     @Override
     public String toString() {
+<<<<<<< HEAD
 <span class="fc" id="L250">        return &quot;Basket{&quot; +</span>
+=======
+<span class="fc" id="L243">        return &quot;Basket{&quot; +</span>
+>>>>>>> a227ea8ede1ac9d86cbb39515d139bd373b7526e
                 &quot;id='&quot; + id + '\'' +
                 &quot;, productMap=&quot; + productMap +
                 '}';

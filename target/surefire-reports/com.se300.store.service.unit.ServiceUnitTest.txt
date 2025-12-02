@@ -1,4 +1,8 @@
 -------------------------------------------------------------------------------
 Test set: com.se300.store.service.unit.ServiceUnitTest
 -------------------------------------------------------------------------------
+<<<<<<< HEAD
 Tests run: 10, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.371 s -- in com.se300.store.service.unit.ServiceUnitTest
+=======
+Tests run: 10, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.091 s -- in com.se300.store.service.unit.ServiceUnitTest
+>>>>>>> a227ea8ede1ac9d86cbb39515d139bd373b7526e

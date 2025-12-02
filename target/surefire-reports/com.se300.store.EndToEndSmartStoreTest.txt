@@ -1,4 +1,8 @@
 -------------------------------------------------------------------------------
 Test set: com.se300.store.EndToEndSmartStoreTest
 -------------------------------------------------------------------------------
+<<<<<<< HEAD
 Tests run: 12, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 16.17 s -- in com.se300.store.EndToEndSmartStoreTest
+=======
+Tests run: 12, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 2.448 s -- in com.se300.store.EndToEndSmartStoreTest
+>>>>>>> a227ea8ede1ac9d86cbb39515d139bd373b7526e

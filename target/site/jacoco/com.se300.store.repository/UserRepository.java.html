@@ -36,8 +36,13 @@ public class UserRepository {
      * Find user by email
      */
     public Optional&lt;User&gt; findByEmail(String email) {
+<<<<<<< HEAD
 <span class="fc bfc" id="L39" title="All 2 branches covered.">        if (email == null) {</span>
 <span class="fc" id="L40">            return Optional.empty();</span>
+=======
+<span class="pc bpc" id="L39" title="1 of 2 branches missed.">        if (email == null) {</span>
+<span class="nc" id="L40">            return Optional.empty();</span>
+>>>>>>> a227ea8ede1ac9d86cbb39515d139bd373b7526e
         }
 <span class="fc" id="L42">        Map&lt;String, User&gt; users = getUsersMap();</span>
 <span class="fc" id="L43">        return Optional.ofNullable(users.get(email));</span>

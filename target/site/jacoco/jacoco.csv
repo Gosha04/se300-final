@@ -1,4 +1,5 @@
 GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
+<<<<<<< HEAD
 final,com.se300.store.model,CommandException,0,30,0,0,0,13,0,7,0,7
 final,com.se300.store.model,Temperature,0,33,0,0,0,6,0,1,0,1
 final,com.se300.store.model,Customer,0,118,0,0,0,39,0,22,0,22
@@ -25,12 +26,47 @@ final,com.se300.store.model,StoreLocation,0,29,0,0,0,11,0,6,0,6
 final,com.se300.store.model,Product,0,90,0,0,0,31,0,16,0,16
 final,com.se300.store,SmartStoreApplication,28,182,3,3,12,50,5,6,2,6
 final,com.se300.store.service,StoreService,248,736,42,80,43,193,42,54,3,32
+=======
+final,com.se300.store.model,CommandException,8,22,0,0,4,9,2,5,2,5
+final,com.se300.store.model,Temperature,0,33,0,0,0,6,0,1,0,1
+final,com.se300.store.model,Customer,0,118,0,0,0,39,0,22,0,22
+final,com.se300.store.model,User,0,36,0,0,0,16,0,8,0,8
+final,com.se300.store.model,Aisle,31,88,1,3,12,20,8,8,7,7
+final,com.se300.store.model,AisleLocation,0,15,0,0,0,3,0,1,0,1
+final,com.se300.store.model,Inventory,26,78,1,3,12,19,8,9,7,8
+final,com.se300.store.model,CommandProcessor,3,815,0,60,2,106,0,33,0,3
+final,com.se300.store.model,CustomerAgeGroup,0,15,0,0,0,3,0,1,0,1
+final,com.se300.store.model,CustomerType,0,15,0,0,0,3,0,1,0,1
+final,com.se300.store.model,ApplianceType,0,21,0,0,0,4,0,1,0,1
+final,com.se300.store.model,Device,16,38,0,0,8,11,4,6,4,6
+final,com.se300.store.model,SensorType,0,15,0,0,0,3,0,1,0,1
+final,com.se300.store.model,Appliance,0,17,0,0,0,6,0,3,0,3
+final,com.se300.store.model,InventoryType,0,15,0,0,0,3,0,1,0,1
+final,com.se300.store.model,Sensor,0,12,0,0,0,4,0,2,0,2
+final,com.se300.store.model,InventoryLocation,7,14,0,0,3,5,2,2,2,2
+final,com.se300.store.model,Store,18,180,4,10,3,41,4,19,0,16
+final,com.se300.store.model,Shelf,38,82,3,3,14,18,10,7,7,7
+final,com.se300.store.model,Basket,68,291,7,19,12,70,7,23,0,17
+final,com.se300.store.model,ShelfLevel,0,21,0,0,0,4,0,1,0,1
+final,com.se300.store.model,StoreException,0,23,0,0,0,10,0,5,0,5
+final,com.se300.store.model,Product,0,90,0,0,0,31,0,16,0,16
+final,com.se300.store.model,StoreLocation,0,29,0,0,0,11,0,6,0,6
+final,com.se300.store,SmartStoreApplication,28,182,3,3,12,50,5,6,2,6
+final,com.se300.store.service,StoreService,254,730,43,79,44,192,43,53,3,32
+>>>>>>> a227ea8ede1ac9d86cbb39515d139bd373b7526e
 final,com.se300.store.service,AuthenticationService,0,80,2,6,0,23,2,9,0,7
 final,com.se300.store.servlet,JsonHelper,34,24,0,0,7,9,7,2,7,2
 final,com.se300.store.servlet,BaseServlet.ErrorResponse,9,12,0,0,3,5,3,1,3,1
 final,com.se300.store.servlet,BaseServlet,21,78,4,4,5,23,4,6,1,5
 final,com.se300.store.repository,StoreRepository,0,75,0,2,0,21,0,8,0,7
+<<<<<<< HEAD
 final,com.se300.store.repository,UserRepository,0,111,1,5,0,28,1,9,0,7
 final,com.se300.store.controller,StoreController,41,167,9,15,12,54,9,8,0,5
 final,com.se300.store.controller,UserController,26,176,8,20,8,52,8,11,0,5
 final,com.se300.store.data,DataManager,0,60,1,3,0,19,1,10,0,9
+=======
+final,com.se300.store.repository,UserRepository,2,109,2,4,1,27,2,8,0,7
+final,com.se300.store.controller,StoreController,41,167,9,15,12,54,9,8,0,5
+final,com.se300.store.controller,UserController,26,176,8,20,8,52,8,11,0,5
+final,com.se300.store.data,DataManager,14,46,1,3,4,15,4,7,3,6
+>>>>>>> a227ea8ede1ac9d86cbb39515d139bd373b7526e
