@@ -513,7 +513,6 @@ public class EndToEndSmartStoreTest {
     public void testStoreScriptEndToEnd() throws Exception {
         CommandProcessor commandProcessor = new CommandProcessor();
         assertDoesNotThrow(() -> commandProcessor.processCommandFile("src/test/resources/store.script")); 
-<<<<<<< HEAD
 
         ByteArrayOutputStream errContent = new ByteArrayOutputStream();
         System.setErr(new PrintStream(errContent)); 
@@ -522,7 +521,5 @@ public class EndToEndSmartStoreTest {
 
         String output = errContent.toString();
         assertTrue(output.contains("NoSuchFileException"));
-=======
->>>>>>> a227ea8ede1ac9d86cbb39515d139bd373b7526e
     }
 }

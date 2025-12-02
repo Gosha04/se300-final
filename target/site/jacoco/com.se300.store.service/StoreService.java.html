@@ -334,13 +334,8 @@ public class StoreService {
 
 <span class="fc" id="L335">        Basket basket = new Basket(basketId);</span>
         //Check if Basket already exists
-<<<<<<< HEAD
 <span class="fc bfc" id="L337" title="All 2 branches covered.">        if(basketMap.putIfAbsent(basketId, basket) != null)</span>
 <span class="fc" id="L338">            throw new StoreException(&quot;Provision Basket&quot;, &quot;Basket Already Exists&quot;);</span>
-=======
-<span class="pc bpc" id="L337" title="1 of 2 branches missed.">        if(basketMap.putIfAbsent(basketId, basket) != null)</span>
-<span class="nc" id="L338">            throw new StoreException(&quot;Provision Basket&quot;, &quot;Basket Already Exists&quot;);</span>
->>>>>>> a227ea8ede1ac9d86cbb39515d139bd373b7526e
 
 <span class="fc" id="L340">        return basket;</span>
     }

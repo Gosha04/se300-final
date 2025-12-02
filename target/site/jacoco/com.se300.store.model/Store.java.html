@@ -130,13 +130,8 @@ public class Store {
     public void addInventory (Inventory inventory) throws StoreException {
 
         //Check to see if Inventory already exists in the Store
-<<<<<<< HEAD
 <span class="fc bfc" id="L133" title="All 2 branches covered.">        if(this.inventoryMap.putIfAbsent(inventory.getId(), inventory) != null)</span>
 <span class="fc" id="L134">            throw new StoreException(&quot;Add Inventory&quot;, &quot;Inventory Already Exists&quot;);</span>
-=======
-<span class="pc bpc" id="L133" title="1 of 2 branches missed.">        if(this.inventoryMap.putIfAbsent(inventory.getId(), inventory) != null)</span>
-<span class="nc" id="L134">            throw new StoreException(&quot;Add Inventory&quot;, &quot;Inventory Already Exists&quot;);</span>
->>>>>>> a227ea8ede1ac9d86cbb39515d139bd373b7526e
 
 <span class="fc" id="L136">    }</span>
 
@@ -162,13 +157,8 @@ public class Store {
     public void addDevice(Device device) throws StoreException {
 
         //Check to see if Device already exists in the Store
-<<<<<<< HEAD
 <span class="fc bfc" id="L160" title="All 2 branches covered.">        if(this.deviceMap.putIfAbsent(device.getId(), device) != null)</span>
 <span class="fc" id="L161">            throw new StoreException(&quot;Add Device&quot;, &quot;Device Already Exists&quot;);</span>
-=======
-<span class="pc bpc" id="L160" title="1 of 2 branches missed.">        if(this.deviceMap.putIfAbsent(device.getId(), device) != null)</span>
-<span class="nc" id="L161">            throw new StoreException(&quot;Add Device&quot;, &quot;Device Already Exists&quot;);</span>
->>>>>>> a227ea8ede1ac9d86cbb39515d139bd373b7526e
 
 <span class="fc" id="L163">    }</span>
 
@@ -180,13 +170,8 @@ public class Store {
      */
     public void addBasket(Basket basket) throws StoreException {
         //Check to see if basket already exists in the Store
-<<<<<<< HEAD
 <span class="fc bfc" id="L173" title="All 2 branches covered.">        if(this.basketMap.putIfAbsent(basket.getId(), basket) != null)</span>
 <span class="fc" id="L174">            throw new StoreException(&quot;Add Device&quot;, &quot;Device Already Exists&quot;);</span>
-=======
-<span class="pc bpc" id="L173" title="1 of 2 branches missed.">        if(this.basketMap.putIfAbsent(basket.getId(), basket) != null)</span>
-<span class="nc" id="L174">            throw new StoreException(&quot;Add Device&quot;, &quot;Device Already Exists&quot;);</span>
->>>>>>> a227ea8ede1ac9d86cbb39515d139bd373b7526e
 
 <span class="fc" id="L176">    }</span>
 
