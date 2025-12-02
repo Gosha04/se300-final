@@ -495,6 +495,6 @@ public class EndToEndSmartStoreTest {
     @DisplayName("E2E: Complete store.script data processing with assertions")
     public void testStoreScriptEndToEnd() throws Exception {
         CommandProcessor commandProcessor = new CommandProcessor();
-        commandProcessor.processCommandFile("scr/test/resources/store.script"); 
+        assertDoesNotThrow(() -> commandProcessor.processCommandFile("src/test/resources/store.script")); 
     }
 }

@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>StoreController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">final</a> &gt; <a href="index.source.html" class="el_package">com.se300.store.controller</a> &gt; <span class="el_source">StoreController.java</span></div><h1>StoreController.java</h1><pre class="source lang-java linenums">package com.se300.store.controller;
+
+import com.se300.store.model.Store;
+import com.se300.store.model.StoreException;
+import com.se300.store.service.StoreService;
+import com.se300.store.servlet.BaseServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
+import java.io.IOException;
+import java.util.Collection;
+
+/**
+ * REST API controller for Store operations
+ * Implements full CRUD operations
+ *
+ * @author Sergey L. Sundukovskiy, Ph.D.
+ * @version 1.0
+ */
+public class StoreController extends BaseServlet {
+
+    //COMPLETE: Implement REST CRUD API for Store operations
+
+    private static final String TOKEN = &quot;admin&quot;;
+
+    private final StoreService storeService;
+
+<span class="fc" id="L28">    public StoreController(StoreService storeService) {</span>
+<span class="fc" id="L29">        this.storeService = storeService;</span>
+<span class="fc" id="L30">    }</span>
+
+    /**
+     * Handle GET requests
+     * - GET /api/v1/stores (no parameters) - Get all stores
+     * - GET /api/v1/stores/{storeId} - Get store by ID
+     */
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+<span class="fc" id="L39">        String storeId = extractResourceId(request);</span>
+        
+          // GET ALL STORES
+<span class="fc bfc" id="L42" title="All 2 branches covered.">        if (storeId == null) {</span>
+<span class="fc" id="L43">            Collection&lt;Store&gt; stores = storeService.getAllStores();</span>
+<span class="fc" id="L44">            sendJsonResponse(response, stores);</span>
+<span class="fc" id="L45">            return;</span>
+        }
+
+        // GET SINGLE STORE
+<span class="fc" id="L49">        Store store = null;</span>
+        try {
+<span class="fc" id="L51">            store = storeService.showStore(storeId, TOKEN);</span>
+<span class="fc" id="L52">        } catch (StoreException ignored) {}</span>
+
+<span class="fc bfc" id="L54" title="All 2 branches covered.">        if (store == null) {</span>
+<span class="fc" id="L55">            sendErrorResponse(response, HttpServletResponse.SC_NOT_FOUND,</span>
+                    &quot;Store Does Not Exist&quot;);
+        } else {
+<span class="fc" id="L58">            sendJsonResponse(response, store);</span>
+        }
+
+<span class="fc" id="L61">    }</span>
+
+    /**
+     * Handle POST requests - Create new store
+     * POST /api/v1/stores?storeId=xxx&amp;name=xxx&amp;address=xxx
+     */
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+
+<span class="fc" id="L70">        String storeId = request.getParameter(&quot;storeId&quot;);</span>
+<span class="fc" id="L71">        String name = request.getParameter(&quot;name&quot;);</span>
+<span class="fc" id="L72">        String address = request.getParameter(&quot;address&quot;);</span>
+
+<span class="pc bpc" id="L74" title="2 of 6 branches missed.">        if (storeId == null || name == null || address == null) {</span>
+<span class="fc" id="L75">            sendErrorResponse(response, 400, &quot;storeId, name, and address required&quot;);</span>
+<span class="fc" id="L76">            return;</span>
+        }
+
+<span class="fc" id="L79">        Store existing = null;</span>
+        try {
+<span class="fc" id="L81">            existing = storeService.showStore(storeId, TOKEN);</span>
+<span class="fc" id="L82">        } catch (StoreException ignored) {}</span>
+
+<span class="pc bpc" id="L84" title="1 of 2 branches missed.">        if (existing != null) {</span>
+<span class="nc" id="L85">            sendErrorResponse(response, 400, &quot;Store Already Exists&quot;);</span>
+<span class="nc" id="L86">            return;</span>
+        }
+
+<span class="fc" id="L89">        Store created = null;</span>
+        try {
+<span class="fc" id="L91">            created = storeService.provisionStore(storeId, name, address, TOKEN);</span>
+<span class="pc" id="L92">        } catch (StoreException ignored) {}</span>
+
+<span class="fc" id="L94">        sendJsonResponse(response, created, HttpServletResponse.SC_CREATED);</span>
+
+<span class="fc" id="L96">    }</span>
+
+    /**
+     * Handle PUT requests - Update existing store
+     * PUT /api/v1/stores/{storeId}?description=xxx&amp;address=xxx
+     */
+    @Override
+    protected void doPut(HttpServletRequest request, HttpServletResponse response) throws IOException {
+
+<span class="fc" id="L105">        String storeId = extractResourceId(request);</span>
+<span class="fc" id="L106">        String description = request.getParameter(&quot;description&quot;);</span>
+<span class="fc" id="L107">        String address = request.getParameter(&quot;address&quot;);</span>
+
+<span class="pc bpc" id="L109" title="1 of 2 branches missed.">        if (storeId == null) {</span>
+<span class="nc" id="L110">            sendErrorResponse(response, 400, &quot;storeId path parameter required&quot;);</span>
+<span class="nc" id="L111">            return;</span>
+        }
+
+<span class="pc bpc" id="L114" title="2 of 4 branches missed.">        if (description == null || address == null) {</span>
+<span class="nc" id="L115">            sendErrorResponse(response, 400, &quot;Need description or address&quot;);</span>
+<span class="nc" id="L116">            return;</span>
+        }
+
+<span class="fc" id="L119">        Store store = null;</span>
+        try {
+<span class="fc" id="L121">            store = storeService.showStore(storeId, TOKEN);</span>
+<span class="pc" id="L122">        } catch (StoreException ignored) {}</span>
+
+<span class="pc bpc" id="L124" title="1 of 2 branches missed.">        if (store == null) {</span>
+<span class="nc" id="L125">            sendErrorResponse(response, HttpServletResponse.SC_NOT_FOUND,</span>
+                    &quot;Store Does Not Exist&quot;);
+<span class="nc" id="L127">            return;</span>
+        }
+
+<span class="fc" id="L130">        Store updated = null;</span>
+        try {
+<span class="fc" id="L132">            updated = storeService.updateStore(storeId, description, address);</span>
+<span class="pc" id="L133">        } catch (StoreException ignored) {}</span>
+
+<span class="fc" id="L135">        sendJsonResponse(response, updated);</span>
+
+<span class="fc" id="L137">    }</span>
+
+    /**
+     * Handle DELETE requests - Delete store
+     * DELETE /api/v1/stores/{storeId}
+     */
+    @Override
+    protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
+
+<span class="fc" id="L146">        String storeId = extractResourceId(request);</span>
+
+<span class="pc bpc" id="L148" title="1 of 2 branches missed.">        if (storeId == null) {</span>
+<span class="nc" id="L149">            sendErrorResponse(response, 400, &quot;storeId path parameter required&quot;);</span>
+<span class="nc" id="L150">            return;</span>
+        }
+
+        // Check existence
+<span class="fc" id="L154">        Store store = null;</span>
+        try {
+<span class="fc" id="L156">            store = storeService.showStore(storeId, TOKEN);</span>
+<span class="pc" id="L157">        } catch (StoreException ignored) {}</span>
+
+<span class="pc bpc" id="L159" title="1 of 2 branches missed.">        if (store == null) {</span>
+<span class="nc" id="L160">            sendErrorResponse(response, HttpServletResponse.SC_NOT_FOUND,</span>
+                    &quot;Store Does Not Exist&quot;);
+<span class="nc" id="L162">            return;</span>
+        }
+
+        // Delete
+        try {
+<span class="fc" id="L167">            storeService.deleteStore(storeId);</span>
+<span class="pc" id="L168">        } catch (StoreException ignored) {}</span>
+
+<span class="fc" id="L170">        response.setStatus(HttpServletResponse.SC_NO_CONTENT);</span>
+
+<span class="fc" id="L172">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>
