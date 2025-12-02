@@ -1,11 +1,21 @@
 package com.se300.store;
 
+import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.anyOf;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
+import java.util.Map;
 
 import org.apache.catalina.Context;
 import org.apache.catalina.startup.Tomcat;
@@ -25,6 +35,7 @@ import com.se300.store.data.DataManager;
 import com.se300.store.model.Aisle;
 import com.se300.store.model.AisleLocation;
 import com.se300.store.model.Basket;
+import com.se300.store.model.CommandProcessor;
 import com.se300.store.model.Customer;
 import com.se300.store.model.CustomerType;
 import com.se300.store.model.Inventory;
@@ -259,47 +270,228 @@ public class EndToEndSmartStoreTest {
     @Timeout(value = 10, unit = java.util.concurrent.TimeUnit.SECONDS)
     @DisplayName("E2E: Device management and events")
     public void testCompleteDeviceWorkflow() throws StoreException {
+        storeService.provisionDevice("D1", "Cam", "camera",
+         "S2", "A1", "token");
+        storeService.provisionDevice("D2", "Mic", "microphone",
+         "S2", "A1", "token");
+
+        String testString = "Device{" +
+                "id='" + storeService.showDevice("D1", "token").getId() + '\'' +
+                ", name='" + storeService.showDevice("D1", "token").getName() + '\'' +
+                ", storeLocation=" + storeService.showDevice("D1", "token").getStoreLocation() +
+                ", type='" + storeService.showDevice("D1", "token").getType() + '\'' +
+                '}';
+        
+        assertDoesNotThrow(() ->
+            storeService.raiseEvent("D1", "TEST EVENT", "token")
+        );      
+        assertEquals(testString, storeService.showDevice("D1", "token").toString()); 
+        assertNotEquals(storeService.showDevice("D1", "token").getType(),
+         storeService.showDevice("D2", "token").getType());
+
+        storeService.provisionDevice("D3", "Bot", "robot",
+         "S2", "A1", "token");
+        storeService.provisionDevice("D4", "Speak", "speaker",
+         "S2", "A1", "token");
+
+        assertDoesNotThrow(() ->
+            storeService.raiseEvent("D3", "TEST EVENT", "token")
+        );     
+        assertDoesNotThrow(() ->
+            storeService.issueCommand("D4", "TEST COMMAND", "token")
+        );     
     }
 
     @Test
     @Order(6)
     @DisplayName("E2E: Error handling across all layers")
     public void testCompleteErrorHandling() {
+        assertThrows(StoreException.class, () ->
+                storeService.provisionStore("S2", "Error Test Store", "123 Test Rd", "token"));
+
+        assertThrows(StoreException.class,
+                () -> storeService.showStore("OISFnsdoigfnso", "token"),
+                "No store");
+
+        assertThrows(StoreException.class,
+                () -> storeService.provisionShelf("diongfgdf", "dfoidenf",
+                 "Sdgonfogd9", "dfoin", ShelfLevel.high,
+                 "sdf", Temperature.ambient, "token"),
+                "Invalid everything");
+
+        assertThrows(StoreException.class,
+                () -> storeService.addBasketProduct("B1", "нет", 1, "token"),
+                "Нечего");
+
+        assertDoesNotThrow(() ->
+                storeService.showBasket("B1", "token").setCustomer(storeService.showCustomer("C1", "token")));
+
+        assertDoesNotThrow(() ->
+                storeService.addBasketProduct("B1", "P1", 1, "token"));
+
+        assertThrows(StoreException.class,
+                () -> storeService.removeBasketProduct("B1", "P1", 2025, "token"),
+                "Ад");
+
+        assertThrows(StoreException.class,
+                () -> storeService.removeBasketProduct("B1", "no", 343, "token"),
+                "БЛИИИИИИН");
+
+        assertThrows(StoreException.class,
+                () -> storeService.showCustomer(" ", "token").setStoreLocation(new StoreLocation("hell", "no")),
+                "Hell is proven to be not real in this binary realm");
+
+        assertThrows(StoreException.class,
+                () -> storeService.removeBasketProduct("B1", "Pigeon", 1, "token"),
+                "Birds aren't real");
+
+        assertDoesNotThrow(() ->
+                storeService.showBasket("B1", "token").clearBasket());
+
+        assertThrows(StoreException.class,
+                () -> storeService.showDevice("computer", "token"),
+                "Computer doesn't exist");
     }
 
     @Test
     @Order(7)
     @DisplayName("E2E: Data consistency across all layers")
     public void testDataConsistencyAcrossLayers() {
+        Store storeFromService = assertDoesNotThrow(() -> storeService.showStore("S2", "token"));
+
+        Map<String, Store> storesFromRepo = storeRepository.findAll();
+        assertNotNull(storesFromRepo);
+        assertTrue(storesFromRepo.containsKey("S2"));
+        assertSame(storeFromService, storesFromRepo.get("S2"));
+
+        Map<String, User> usersFromRepo = userRepository.findAll();
+        assertNotNull(usersFromRepo);
+        assertTrue(usersFromRepo.containsKey("admin@store.com"));
+
+        User adminFromService = authenticationService.getUserByEmail("admin@store.com");
+        assertNotNull(adminFromService);
+        assertSame(adminFromService, usersFromRepo.get("admin@store.com"));
+
+        assertFalse(storesFromRepo.isEmpty());
+        assertFalse(usersFromRepo.isEmpty());
     }
 
     @Test
     @Order(8)
     @DisplayName("E2E: REST API Controller - Store CRUD operations")
     public void testRestApiStoreOperations() {
+        given()
+            .when()
+                .get("/api/v1/stores/S2?token=token")
+            .then()
+                .statusCode(200)
+                .body("id", equalTo("S2"))
+                .body("description", equalTo("Not Groc"));
+
+        assertDoesNotThrow(() ->
+                    storeService.provisionStore("S3", "Rest Store", "999 Rest St", "token"));
+
+        given()
+            .when()
+                .get("/api/v1/stores/S3?token=token")
+            .then()
+                .statusCode(200)
+                .body("id", equalTo("S3"))
+                .body("description", equalTo("Rest Store"));
+
+        given()
+            .when()
+                .get("/api/v1/stores/NOPE?token=token")
+            .then()
+                .statusCode(anyOf(is(404), is(400)));
     }
 
     @Test
     @Order(9)
     @DisplayName("E2E: REST API Controller - User CRUD operations")
     public void testRestApiUserOperations() {
+        given()
+        .when()
+            .get("/api/v1/users/admin@store.com")
+        .then()
+            .statusCode(200)
+            .body("email", equalTo("admin@store.com"))
+            .body("name", equalTo("Admin User"));
+
+        authenticationService.registerUser("restuser@gmail.com", "password", "Rest User");
+
+        given()
+        .when()
+            .get("/api/v1/users/restuser@gmail.com")
+        .then()
+            .statusCode(200)
+            .body("email", equalTo("restuser@gmail.com"))
+            .body("name", equalTo("Rest User"));
+
+        given()
+        .when()
+            .get("/api/v1/users/missing.user@gmail.com")
+        .then()
+            .statusCode(anyOf(is(404), is(400)));
     }
 
     @Test
     @Order(10)
     @DisplayName("E2E: REST API Controller - Error handling")
     public void testRestApiErrorHandling() {
+        given()
+        .when()
+            .get("/api/v1/stores/no?token=token")
+        .then()
+            .statusCode(anyOf(is(404), is(400)))
+            .body("error", notNullValue());
+
+        given()
+        .when()
+            .get("/api/v1/users/no@example.com")
+        .then()
+            .statusCode(anyOf(is(404), is(400)))
+            .body("error", notNullValue());
+
+        given()
+        .when()
+            .get("/api/v1/no")
+        .then()
+            .statusCode(anyOf(is(404), is(400)));
     }
 
     @Test
     @Order(11)
     @DisplayName("E2E: Final cleanup and deletion operations")
     public void testFinalCleanupOperations() throws StoreException {
+        assertDoesNotThrow(() -> {
+            storeService.showBasket("B1", "token").clearBasket();
+        });
+
+        assertDoesNotThrow(() -> { // don't remember what stores we have 
+            try {
+                storeService.deleteStore("S2");
+            } catch (StoreException ignored) {}
+            try {
+                storeService.deleteStore("S3");
+            } catch (StoreException ignored) {}
+        });
+
+        assertThrows(StoreException.class,
+                () -> storeService.showStore("S2", "token"));
+        assertThrows(StoreException.class,
+                () -> storeService.showStore("S3", "token"));
+
+        Map<String, Store> stores = storeRepository.findAll();
+        assertFalse(stores.containsKey("S2"));
+        assertFalse(stores.containsKey("S3"));
     }
 
     @Test
     @Order(12)
     @DisplayName("E2E: Complete store.script data processing with assertions")
     public void testStoreScriptEndToEnd() throws Exception {
+        CommandProcessor commandProcessor = new CommandProcessor();
+        commandProcessor.processCommandFile("scr/test/resources/store.script"); 
     }
 }

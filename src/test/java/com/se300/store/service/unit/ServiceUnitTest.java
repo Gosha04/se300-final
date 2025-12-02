@@ -1,13 +1,17 @@
 package com.se300.store.service.unit;
 
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -19,7 +23,20 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.se300.store.model.Aisle;
+import com.se300.store.model.AisleLocation;
+import com.se300.store.model.Basket;
+import com.se300.store.model.Customer;
+import com.se300.store.model.CustomerType;
+import com.se300.store.model.Inventory;
+import com.se300.store.model.InventoryType;
+import com.se300.store.model.Product;
+import com.se300.store.model.Shelf;
+import com.se300.store.model.ShelfLevel;
+import com.se300.store.model.Store;
 import com.se300.store.model.StoreException;
+import com.se300.store.model.StoreLocation;
+import com.se300.store.model.Temperature;
 import com.se300.store.model.User;
 import com.se300.store.repository.UserRepository;
 import com.se300.store.service.AuthenticationService;
@@ -124,26 +141,144 @@ public class ServiceUnitTest {
     @Test
     @DisplayName("Test AuthenticationService Basic Authentication - valid credentials with mock")
     public void testBasicAuthenticationValid() {
-        
+        String email = "test@gmail.com";
+        String password = "password";
+        User testUser = new User(email, "password", "Test");
+               
+        when(userRepository.findByEmail(email)).thenReturn(Optional.of(testUser));
+
+        User result = authenticationService.getUserByEmail(email);
+       
+        String rawCreds = email + ":" + password;
+        String base64Creds = Base64.getEncoder().encodeToString(rawCreds.getBytes());
+        String decode = new String(Base64.getDecoder().decode(base64Creds), StandardCharsets.UTF_8);
+        String subString = decode.substring(0, email.length());
+
+        assertEquals(decode, rawCreds);        
+        assertEquals(result, authenticationService.getUserByEmail(subString));
     }
 
     @Test
     @DisplayName("Test AuthenticationService Basic Authentication - invalid credentials")
     public void testBasicAuthenticationInvalid() {
+        String email = "test@gmail.com";
+               
+        String rawCreds = email + ":wrong";
+        String correctCreds = email + ":password";
+        String base64Creds = Base64.getEncoder().encodeToString(rawCreds.getBytes());
+        String decode = new String(Base64.getDecoder().decode(base64Creds), StandardCharsets.UTF_8);
+
+        assertNotEquals(decode, correctCreds);        
     }
 
     @Test
     @DisplayName("Test AuthenticationService Basic Authentication - invalid header format")
     public void testBasicAuthenticationInvalidHeader() {
+        String email = "test@gmail.com";
+        String password = "password";
+               
+        String rawCreds = password + ":" + email;
+        String correctCreds = email + ":" + password;
+        String base64Wrong = Base64.getEncoder().encodeToString(rawCreds.getBytes());
+        String base64Creds = Base64.getEncoder().encodeToString(correctCreds.getBytes());
+
+        assertNotEquals(base64Creds, base64Wrong);      
     }
 
     @Test
     @DisplayName("Test AuthenticationService delete non-existent user")
     public void testDeleteNonExistentUser() {
+       assertFalse(authenticationService.deleteUser("user"));
     }
 
     @Test
     @DisplayName("Test StoreService operations (no mocking needed - uses static maps)")
     public void testStoreServiceOperations() throws StoreException {
+        StoreService storeService = new StoreService();
+
+        Store store = storeService.provisionStore("S2", "Test Store", "123 Main St", "token");
+        assertNotNull(store);
+        assertEquals("S2", store.getId());
+
+        Aisle aisle = storeService.provisionAisle("S2", "A2", "Misc",
+         "Desc", AisleLocation.floor, "token");
+
+        assertNotNull(aisle);
+        assertEquals("A2", aisle.getNumber());
+
+        Shelf shelf = storeService.provisionShelf("S2", "A2", "SH1", "name", ShelfLevel.low, "Desc",
+        Temperature.ambient, "token");
+
+        assertNotNull(shelf);
+        assertEquals("SH1", shelf.getId());
+
+        Product product = storeService.provisionProduct(
+                "S2",
+                "Bananas",
+                "Fresh bananas",
+                "1lb",
+                "Produce",
+                1.99,
+                Temperature.ambient,
+                "token"
+        );
+        assertNotNull(product);
+        assertEquals("Bananas", product.getName());
+
+        Inventory inventory = storeService.provisionInventory(
+                "I1",
+                "S2",
+                "A2",
+                "SH1",
+                10,          
+                10,          
+                product.getId(),
+                InventoryType.standard,
+                "token"
+        );
+        assertNotNull(inventory);
+        assertEquals(10, inventory.getCount());
+
+        Customer customer = storeService.provisionCustomer(
+                "C1",
+                "Braeden",
+                "Test",
+                CustomerType.registered,
+                "test@example.com",
+                "ACC1",
+                "token"
+        );
+        assertNotNull(customer);
+        assertEquals("C1", customer.getId());
+
+        Basket basket = storeService.provisionBasket("B1", "token");
+        storeService.showCustomer("C1", "token").setStoreLocation(new StoreLocation("S2", "A2"));
+        StoreLocation location = customer.getStoreLocation();
+        storeService.assignCustomerBasket("C1", "B1", "token");
+        assertNotNull(basket);
+        assertEquals("B1", basket.getId());
+        assertEquals("S2", location.getStoreId());
+        assertEquals("A2", location.getAisleId());
+
+        storeService.addBasketProduct("B1", product.getId(), 1, "token");
+
+        Map<String, Integer> productsInBasket = basket.getProducts();
+        assertTrue(productsInBasket.containsKey(product.getId()));
+        assertEquals(1, productsInBasket.get(product.getId()));
+
+        Inventory updatedInventory = storeService.showInventory("I1", "token");
+        assertEquals(9, updatedInventory.getCount());
+
+        storeService.removeBasketProduct("B1", product.getId(), 1, "token");
+
+        productsInBasket = basket.getProducts();
+        assertFalse(productsInBasket.containsKey(product.getId()));
+
+        updatedInventory = storeService.showInventory("I1", "token");
+        assertEquals(10, updatedInventory.getCount());
+
+        assertEquals(store, storeService.showStore("S2", "token"));
+        assertEquals(customer, storeService.showCustomer("C1", "token"));
     }
+
 }

@@ -1,0 +1,20 @@
+-------------------------------------------------------------------------------
+Test set: com.se300.store.service.integration.ServiceIntegrationTest
+-------------------------------------------------------------------------------
+Tests run: 7, Failures: 0, Errors: 2, Skipped: 0, Time elapsed: 0.042 s <<< FAILURE! -- in com.se300.store.service.integration.ServiceIntegrationTest
+com.se300.store.service.integration.ServiceIntegrationTest.testStoreWithAislesAndShelves -- Time elapsed: 0.011 s <<< ERROR!
+com.se300.store.model.StoreException
+	at com.se300.store.service.StoreService.provisionStore(StoreService.java:68)
+	at com.se300.store.service.integration.ServiceIntegrationTest.testStoreWithAislesAndShelves(ServiceIntegrationTest.java:65)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+com.se300.store.service.integration.ServiceIntegrationTest.testCustomerAndBasketWorkflow -- Time elapsed: 0.001 s <<< ERROR!
+com.se300.store.model.StoreException
+	at com.se300.store.service.StoreService.provisionCustomer(StoreService.java:265)
+	at com.se300.store.service.integration.ServiceIntegrationTest.testCustomerAndBasketWorkflow(ServiceIntegrationTest.java:104)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+

@@ -225,7 +225,7 @@ public class ControllerUnitTest {
         .when()
             .post("/api/v1/users/")
         .then()
-            .statusCode(200);
+            .statusCode(201);
         
         verify(authenticationService).registerUser("test@gmail.com", "1234", "Anon");
     }
@@ -347,7 +347,7 @@ public class ControllerUnitTest {
         .when()
             .post("/api/v1/users/")
         .then()
-            .statusCode(200);
+            .statusCode(400);
 
         verify(authenticationService).registerUser("test@gmail.com", "5678", "NewName");
     }

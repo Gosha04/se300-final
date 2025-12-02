@@ -1,13 +1,25 @@
 package com.se300.store.controller.externalmockserver;
 
+import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.anyOf;
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.lessThan;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
+
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
-import org.junit.jupiter.api.*;
-
-import static io.restassured.RestAssured.given;
-import static org.hamcrest.Matchers.*;
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * External Mock Server Tests
@@ -18,6 +30,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * Purpose: Demonstrate integration testing with external third-party APIs
  * and validate that our application can consume external store services.
  */
+@Tag("external")
 @DisplayName("External Mock Server Tests - Apidog Integration")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class ExternalMockServerTest {
