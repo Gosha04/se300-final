@@ -203,11 +203,21 @@ public class ServiceUnitTest {
         Aisle aisle = storeService.provisionAisle("S2", "A2", "Misc",
          "Desc", AisleLocation.floor, "token");
 
+        assertThrows(StoreException.class, () -> storeService.showAisle("S3", null, "token"));
+        assertThrows(StoreException.class, () -> storeService.showAisle("S2", "A122312", "token"));
+
         assertNotNull(aisle);
         assertEquals("A2", aisle.getNumber());
 
         Shelf shelf = storeService.provisionShelf("S2", "A2", "SH1", "name", ShelfLevel.low, "Desc",
         Temperature.ambient, "token");
+
+        assertThrows(StoreException.class, () -> storeService.provisionShelf("S2", "A123324", "SH1", "name", ShelfLevel.low, "Desc",
+        Temperature.ambient, "token"));
+        assertThrows(StoreException.class, () -> storeService.provisionShelf("S2", "2", "SH1", "name", ShelfLevel.low, "Desc",
+        Temperature.ambient, "token"));
+        assertThrows(StoreException.class, () -> storeService.showShelf("S2234", "A122312", "SH2", "token"));
+        assertThrows(StoreException.class, () -> storeService.showShelf("S2", "A122312", "SH2", "token"));
 
         assertNotNull(shelf);
         assertEquals("SH1", shelf.getId());
@@ -222,6 +232,14 @@ public class ServiceUnitTest {
                 Temperature.ambient,
                 "token"
         );
+        assertThrows(StoreException.class, () -> storeService.provisionProduct("S2",
+                "Bananas",
+                "Fresh bananas",
+                "1lb",
+                "Produce",
+                1.99,
+                Temperature.ambient,
+                "token"));
         assertNotNull(product);
         assertEquals("Bananas", product.getName());
 
@@ -236,6 +254,15 @@ public class ServiceUnitTest {
                 InventoryType.standard,
                 "token"
         );
+
+        assertThrows(StoreException.class, () -> storeService.provisionInventory("I2",
+         "S324w", null, null, 0, 0, null, null, null));
+        assertThrows(StoreException.class, () -> storeService.provisionInventory("I2",
+         "S2", "A343", null, 0, 0, null, null, null));
+        assertThrows(StoreException.class, () -> storeService.provisionInventory("I2",
+         "S2", "A2", "SH33q1", 0, 0, null, null, null));
+        assertThrows(StoreException.class, () -> storeService.provisionInventory("I2",
+         "S2", "A2", "SH1", 12, 13, "P3242", null, null));
         assertNotNull(inventory);
         assertEquals(10, inventory.getCount());
 

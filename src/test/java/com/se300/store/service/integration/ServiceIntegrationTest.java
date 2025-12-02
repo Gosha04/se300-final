@@ -20,6 +20,7 @@ import org.junit.jupiter.api.TestMethodOrder;
 
 import com.se300.store.data.DataManager;
 import com.se300.store.model.Aisle;
+import com.se300.store.model.AisleLocation;
 import com.se300.store.model.Basket;
 import com.se300.store.model.Customer;
 import com.se300.store.model.CustomerType;
@@ -145,7 +146,12 @@ public class ServiceIntegrationTest {
         assertNotNull(customerBasket.getCustomer());
         assertEquals(customerId, customerBasket.getCustomer().getId());
         assertNotNull(customerBasket.getStore());
-        assertEquals("S1", customerBasket.getStore().getId());
+        assertEquals("S1", customerBasket.getStore().getId());  
+
+        storeService.provisionStore("S3", "test", "add", "token");
+        storeService.provisionAisle("S3", "A33", "aisle", "dad", AisleLocation.floor, "token");
+       // storeService.assignCustomerBasket("C_INTEGRATION_1", "B_INTEGRATION_1", "token");
+        assertDoesNotThrow(() ->  storeService.updateCustomer("C_INTEGRATION_1", "S3", "A33", "token"));
     }
 
     @Test

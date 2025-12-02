@@ -80,6 +80,15 @@ public class ControllerIntegrationTest {
             .body("id", equalTo("1"))
             .body("description", equalTo("testName"))
             .body("address", equalTo("testAddress"));
+
+        given()
+            .param("storeId", "1")
+            .param("name", "testName")
+            .param("address", "testAddress")
+        .when()
+            .post("/api/v1/stores")
+        .then()
+            .statusCode(400);
     }
     
     @Test
@@ -121,6 +130,28 @@ public class ControllerIntegrationTest {
             .body("id", equalTo("1"))
             .body("description", equalTo("updateName"))
             .body("address", equalTo("updateAddress"));
+
+        given()
+            .param("description", "updateName")
+            .param("address", "updateAddress")
+        .when()
+            .put("/api/v1/stores")
+        .then()
+            .statusCode(400);
+
+        given()
+        .when()
+            .put("/api/v1/stores/1")
+        .then()
+            .statusCode(400);
+
+        given()
+            .param("description", "updateName")
+            .param("address", "updateAddress")
+        .when()
+            .put("/api/v1/stores/12")
+        .then()
+            .statusCode(404);
     }
 
     @Test
@@ -132,12 +163,67 @@ public class ControllerIntegrationTest {
             .delete("/api/v1/stores/1")
         .then()
             .statusCode(204);
+
+        given()
+        .when()
+            .delete("/api/v1/stores")
+        .then()
+            .statusCode(400);
+
+        given()
+        .when()
+            .delete("/api/v1/stores/12")
+        .then()
+            .statusCode(404);
     }
 
     @Test
     @Order(6)
     @DisplayName("Integration: Complete store CRUD workflow via REST API")
     public void testStoreCompleteWorkflow() {
+        given()
+            .param("storeId", "1")
+            .param("name", "testName")
+            .param("address", "testAddress")
+        .when()
+            .post("/api/v1/stores")
+        .then()
+            .statusCode(201)
+            .body("id", equalTo("1"))
+            .body("description", equalTo("testName"))
+            .body("address", equalTo("testAddress"));
+
+        given()
+        .when()
+            .get("/api/v1/stores/1")
+        .then()
+            .statusCode(200);
+
+        given()
+        .when()
+            .get("/api/v1/stores")
+        .then()
+            .statusCode(200);
+
+        given()
+            .param("description", "updateName")
+            .param("address", "updateAddress")
+        .when()
+            .put("/api/v1/stores/1")
+        .then()
+            .statusCode(200)
+            .body("id", equalTo("1"))
+            .body("description", equalTo("updateName"))
+            .body("address", equalTo("updateAddress"));
+
+
+        given()
+        .when()
+            .delete("/api/v1/stores/1")
+        .then()
+            .statusCode(204);
+
+
     }
 
     // ==================== USER CONTROLLER TESTS ====================
@@ -210,7 +296,6 @@ public class ControllerIntegrationTest {
     @Order(10)
     @DisplayName("Integration: Update user via REST API")
     public void testUpdateUser() {
-        // Arrange: create a user
         given()
             .param("email", "testMail")
             .param("password", "password")
@@ -220,7 +305,29 @@ public class ControllerIntegrationTest {
         .then()
             .statusCode(201);
 
-        // Act + Assert: update
+        given()
+            .param("password", "test")
+            .param("name", "test")
+        .when()
+            .put("/api/v1/users")
+        .then()
+            .statusCode(400);
+
+        given()
+            .param("password", "test")
+        .when()
+            .put("/api/v1/users/testMail")
+        .then()
+            .statusCode(400);
+
+        given()
+            .param("password", "test")
+            .param("name", "test")
+        .when()
+            .put("/api/v1/users/noExist")
+        .then()
+            .statusCode(404);
+
         given()
             .param("password", "test")
             .param("name", "test")
@@ -245,6 +352,12 @@ public class ControllerIntegrationTest {
             .post("/api/v1/users")
         .then()
             .statusCode(201);
+
+        given()
+        .when()
+            .delete("/api/v1/users")
+        .then()
+            .statusCode(400);
 
         given()
         .when()

@@ -1,14 +1,37 @@
 package com.se300.store.controller.internalmockserver;
 
-import org.junit.jupiter.api.*;
+import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.equalTo;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.mockConstruction;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.mockserver.model.HttpRequest.request;
+import static org.mockserver.model.HttpResponse.response;
+import static org.mockserver.verify.VerificationTimes.exactly;
+
+import org.apache.catalina.Context;
+import org.apache.catalina.Server;
+import org.apache.catalina.startup.Tomcat;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.mockito.MockedConstruction;
 import org.mockserver.client.MockServerClient;
 import org.mockserver.integration.ClientAndServer;
 import org.mockserver.model.Header;
-import static org.mockserver.verify.VerificationTimes.exactly;
-import static io.restassured.RestAssured.given;
-import static org.hamcrest.Matchers.*;
-import static org.mockserver.model.HttpRequest.request;
-import static org.mockserver.model.HttpResponse.response;
+
+import com.se300.store.SmartStoreApplication;
 
 /**
  * A test class for verifying internal Smart Store API calls using a mock server.
@@ -252,5 +275,51 @@ public class InternalMockServerTest {
                         .withPath("/internal/ping"),
                 exactly(1)
         );
+    }
+    @Test
+    @Order(8)
+    @DisplayName("Test for coverage") 
+    public void testServerCoverage() {
+        try (MockedConstruction<Tomcat> mocked = mockConstruction(Tomcat.class,
+                (mockTomcat, context) -> {
+                    when(mockTomcat.getConnector()).thenReturn(null);
+
+                    Context mockContext = mock(Context.class);
+                    when(mockTomcat.addContext(anyString(), anyString()))
+                            .thenReturn(mockContext);
+
+                    Server mockServer = mock(Server.class);
+                    when(mockTomcat.getServer()).thenReturn(mockServer);
+                })) {
+
+            SmartStoreApplication app = new SmartStoreApplication();
+
+            assertDoesNotThrow(app::start);
+
+            Tomcat mockTomcat = mocked.constructed().get(0);
+            Server mockServer = mockTomcat.getServer();
+
+            verify(mockServer).await();
+        }
+
+        try (MockedConstruction<Tomcat> mocked = mockConstruction(Tomcat.class,
+                (mockTomcat, context) -> {
+                    when(mockTomcat.getConnector()).thenReturn(null);
+                    Context mockContext = mock(Context.class);
+                    when(mockTomcat.addContext(anyString(), anyString()))
+                            .thenReturn(mockContext);
+                    Server mockServer = mock(Server.class);
+                    when(mockTomcat.getServer()).thenReturn(mockServer);
+                })) {
+
+            SmartStoreApplication app = new SmartStoreApplication();
+
+            assertDoesNotThrow(app::startNonBlocking);
+
+            Tomcat mockTomcat = mocked.constructed().get(0);
+            Server mockServer = mockTomcat.getServer();
+
+            verify(mockServer, never()).await();
+        }
     }
 }
