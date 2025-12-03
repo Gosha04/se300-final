@@ -1,14 +1,15 @@
 package com.se300.store.controller;
 
+import java.io.IOException;
+import java.util.Collection;
+
 import com.se300.store.model.Store;
 import com.se300.store.model.StoreException;
 import com.se300.store.service.StoreService;
 import com.se300.store.servlet.BaseServlet;
+
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-
-import java.io.IOException;
-import java.util.Collection;
 
 /**
  * REST API controller for Store operations
@@ -19,7 +20,7 @@ import java.util.Collection;
  */
 public class StoreController extends BaseServlet {
 
-    //COMPLETE: Implement REST CRUD API for Store operations
+    // REST CRUD API for Store operations
 
     private static final String TOKEN = "admin";
 
@@ -37,11 +38,15 @@ public class StoreController extends BaseServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String storeId = extractResourceId(request);
-        
-          // GET ALL STORES
+
+        // GET ALL STORES
         if (storeId == null) {
             Collection<Store> stores = storeService.getAllStores();
-            sendJsonResponse(response, stores);
+            try {
+                sendJsonResponse(response, stores);
+            } catch (IOException e) {
+                throw new RuntimeException("Failed to send stores list response", e);
+            }
             return;
         }
 
@@ -52,12 +57,19 @@ public class StoreController extends BaseServlet {
         } catch (StoreException ignored) {}
 
         if (store == null) {
-            sendErrorResponse(response, HttpServletResponse.SC_NOT_FOUND,
-                    "Store Does Not Exist");
+            try {
+                sendErrorResponse(response, HttpServletResponse.SC_NOT_FOUND,
+                        "Store Does Not Exist");
+            } catch (IOException e) {
+                throw new RuntimeException("Failed to send 'store not found' response", e);
+            }
         } else {
-            sendJsonResponse(response, store);
+            try {
+                sendJsonResponse(response, store);
+            } catch (IOException e) {
+                throw new RuntimeException("Failed to send store detail response", e);
+            }
         }
-
     }
 
     /**
@@ -67,12 +79,17 @@ public class StoreController extends BaseServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-        String storeId = request.getParameter("storeId");
-        String name = request.getParameter("name");
-        String address = request.getParameter("address");
+        String storeId  = request.getParameter("storeId");
+        String name     = request.getParameter("name");
+        String address  = request.getParameter("address");
 
         if (storeId == null || name == null || address == null) {
-            sendErrorResponse(response, 400, "storeId, name, and address required");
+            try {
+                sendErrorResponse(response, HttpServletResponse.SC_BAD_REQUEST,
+                        "storeId, name, and address required");
+            } catch (IOException e) {
+                throw new RuntimeException("Failed to send 'store parameters required' response", e);
+            }
             return;
         }
 
@@ -82,17 +99,27 @@ public class StoreController extends BaseServlet {
         } catch (StoreException ignored) {}
 
         if (existing != null) {
-            sendErrorResponse(response, 400, "Store Already Exists");
+            try {
+                sendErrorResponse(response, HttpServletResponse.SC_BAD_REQUEST,
+                        "Store Already Exists");
+            } catch (IOException e) {
+                throw new RuntimeException("Failed to send 'store already exists' response", e);
+            }
             return;
         }
 
         Store created = null;
         try {
             created = storeService.provisionStore(storeId, name, address, TOKEN);
-        } catch (StoreException ignored) {}
+        } catch (StoreException ignored) {
+            // If provisioning fails, you might want to send a 500 or 400 here instead of blindly returning null.
+        }
 
-        sendJsonResponse(response, created, HttpServletResponse.SC_CREATED);
-
+        try {
+            sendJsonResponse(response, created, HttpServletResponse.SC_CREATED);
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to send 'store created' response", e);
+        }
     }
 
     /**
@@ -102,17 +129,27 @@ public class StoreController extends BaseServlet {
     @Override
     protected void doPut(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-        String storeId = extractResourceId(request);
+        String storeId     = extractResourceId(request);
         String description = request.getParameter("description");
-        String address = request.getParameter("address");
+        String address     = request.getParameter("address");
 
         if (storeId == null) {
-            sendErrorResponse(response, 400, "storeId path parameter required");
+            try {
+                sendErrorResponse(response, HttpServletResponse.SC_BAD_REQUEST,
+                        "storeId path parameter required");
+            } catch (IOException e) {
+                throw new RuntimeException("Failed to send 'storeId path parameter required' response", e);
+            }
             return;
         }
 
         if (description == null || address == null) {
-            sendErrorResponse(response, 400, "Need description or address");
+            try {
+                sendErrorResponse(response, HttpServletResponse.SC_BAD_REQUEST,
+                        "Need description or address");
+            } catch (IOException e) {
+                throw new RuntimeException("Failed to send 'need description or address' response", e);
+            }
             return;
         }
 
@@ -122,8 +159,12 @@ public class StoreController extends BaseServlet {
         } catch (StoreException ignored) {}
 
         if (store == null) {
-            sendErrorResponse(response, HttpServletResponse.SC_NOT_FOUND,
-                    "Store Does Not Exist");
+            try {
+                sendErrorResponse(response, HttpServletResponse.SC_NOT_FOUND,
+                        "Store Does Not Exist");
+            } catch (IOException e) {
+                throw new RuntimeException("Failed to send 'store does not exist' response", e);
+            }
             return;
         }
 
@@ -132,8 +173,11 @@ public class StoreController extends BaseServlet {
             updated = storeService.updateStore(storeId, description, address);
         } catch (StoreException ignored) {}
 
-        sendJsonResponse(response, updated);
-
+        try {
+            sendJsonResponse(response, updated);
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to send 'store updated' response", e);
+        }
     }
 
     /**
@@ -146,7 +190,12 @@ public class StoreController extends BaseServlet {
         String storeId = extractResourceId(request);
 
         if (storeId == null) {
-            sendErrorResponse(response, 400, "storeId path parameter required");
+            try {
+                sendErrorResponse(response, HttpServletResponse.SC_BAD_REQUEST,
+                        "storeId path parameter required");
+            } catch (IOException e) {
+                throw new RuntimeException("Failed to send 'storeId path parameter required' response", e);
+            }
             return;
         }
 
@@ -157,8 +206,12 @@ public class StoreController extends BaseServlet {
         } catch (StoreException ignored) {}
 
         if (store == null) {
-            sendErrorResponse(response, HttpServletResponse.SC_NOT_FOUND,
-                    "Store Does Not Exist");
+            try {
+                sendErrorResponse(response, HttpServletResponse.SC_NOT_FOUND,
+                        "Store Does Not Exist");
+            } catch (IOException e) {
+                throw new RuntimeException("Failed to send 'store does not exist' delete response", e);
+            }
             return;
         }
 
@@ -167,7 +220,7 @@ public class StoreController extends BaseServlet {
             storeService.deleteStore(storeId);
         } catch (StoreException ignored) {}
 
+        // 204 No Content, no body so no JSON wrapping needed
         response.setStatus(HttpServletResponse.SC_NO_CONTENT);
-
     }
 }

@@ -19,8 +19,7 @@ import jakarta.servlet.http.HttpServletResponse;
  */
 public class UserController extends BaseServlet {
 
-    //COMPLETE: Implement REST CRUD API for User operations
-
+    // REST CRUD API for User operations
     private final AuthenticationService authenticationService;
 
     public UserController(AuthenticationService authenticationService) {
@@ -35,19 +34,31 @@ public class UserController extends BaseServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String userId = extractResourceId(request);
+
         if (userId == null) {
             Collection<User> users = authenticationService.getAllUsers();
-            sendJsonResponse(response, users, HttpServletResponse.SC_OK);
+            try {
+                sendJsonResponse(response, users, HttpServletResponse.SC_OK);
+            } catch (IOException e) {
+                throw new RuntimeException("Failed to send users list response", e);
+            }
             return;
         }
 
-        Object user = authenticationService.getUserByEmail(userId);
+        User user = authenticationService.getUserByEmail(userId);
 
         if (user == null) {
-            sendErrorResponse(response, HttpServletResponse.SC_NOT_FOUND,
-                    "User Does Not Exist");
+            try {
+                sendErrorResponse(response, HttpServletResponse.SC_NOT_FOUND, "User Does Not Exist");
+            } catch (IOException e) {
+                throw new RuntimeException("Failed to send 'user not found' response", e);
+            }
         } else {
-            sendJsonResponse(response, user);
+            try {
+                sendJsonResponse(response, user);
+            } catch (IOException e) {
+                throw new RuntimeException("Failed to send user detail response", e);
+            }
         }
     }
 
@@ -57,29 +68,50 @@ public class UserController extends BaseServlet {
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String pathInfo = request.getPathInfo(); 
+        String pathInfo = request.getPathInfo();
 
         if (pathInfo == null || "/".equals(pathInfo)) {
             String email    = request.getParameter("email");
             String password = request.getParameter("password");
             String name     = request.getParameter("name");
 
+            // Missing required params
             if (email == null || password == null || name == null) {
-                sendErrorResponse(response, HttpServletResponse.SC_BAD_REQUEST, "New User Parameters Incorrect");
+                try {
+                    sendErrorResponse(response, HttpServletResponse.SC_BAD_REQUEST,
+                            "New User Parameters Incorrect");
+                } catch (IOException e) {
+                    throw new RuntimeException("Failed to send 'bad request - new user params' response", e);
+                }
                 return;
             }
 
+            // New user
             if (authenticationService.getUserByEmail(email) == null) {
                 User created = authenticationService.registerUser(email, password, name);
-                sendJsonResponse(response, created, HttpServletResponse.SC_CREATED);
+                try {
+                    sendJsonResponse(response, created, HttpServletResponse.SC_CREATED);
+                } catch (IOException e) {
+                    throw new RuntimeException("Failed to send 'user created' response", e);
+                }
                 return;
             } else {
-                sendErrorResponse(response, HttpServletResponse.SC_BAD_REQUEST, "Duplicate User");
+                // Duplicate user
+                try {
+                    sendErrorResponse(response, HttpServletResponse.SC_BAD_REQUEST, "Duplicate User");
+                } catch (IOException e) {
+                    throw new RuntimeException("Failed to send 'duplicate user' response", e);
+                }
+                return;
             }
-
         }
 
-    sendErrorResponse(response, HttpServletResponse.SC_NOT_FOUND, "Endpoint not found");
+        // Wrong endpoint/path
+        try {
+            sendErrorResponse(response, HttpServletResponse.SC_NOT_FOUND, "Endpoint not found");
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to send 'endpoint not found' response", e);
+        }
     }
 
     /**
@@ -88,39 +120,51 @@ public class UserController extends BaseServlet {
      */
     @Override
     protected void doPut(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String userId = extractResourceId(request);
+        String userId   = extractResourceId(request);
         String password = request.getParameter("password");
         String name     = request.getParameter("name");
-        
-       if (userId == null) {
-            sendErrorResponse(response, 400, "email path parameter required");
+
+        // Missing path parameter
+        if (userId == null) {
+            try {
+                sendErrorResponse(response, HttpServletResponse.SC_BAD_REQUEST,
+                        "email path parameter required");
+            } catch (IOException e) {
+                throw new RuntimeException("Failed to send 'email path parameter required' response", e);
+            }
             return;
         }
 
-        if (userId == null || name == null) {
-            sendErrorResponse(response, 400, "Need password or name");
+        // Missing body parameters
+        if (password == null || name == null) {
+            try {
+                sendErrorResponse(response, HttpServletResponse.SC_BAD_REQUEST,
+                        "Need password or name");
+            } catch (IOException e) {
+                throw new RuntimeException("Failed to send 'missing password or name' response", e);
+            }
             return;
         }
 
         // Check existence
-        User user = null;
-        try {
-            user = authenticationService.getUserByEmail(userId);
-        } catch (Exception ignored) {}
-
+        User user = authenticationService.getUserByEmail(userId);
         if (user == null) {
-            sendErrorResponse(response, HttpServletResponse.SC_NOT_FOUND,
-                    "User Does Not Exist");
+            try {
+                sendErrorResponse(response, HttpServletResponse.SC_NOT_FOUND,
+                        "User Does Not Exist");
+            } catch (IOException e) {
+                throw new RuntimeException("Failed to send 'user does not exist' response", e);
+            }
             return;
         }
 
-        // Update store
-        User updated = null;
+        // Update user
+        User updated = authenticationService.updateUser(userId, password, name);
         try {
-            updated = authenticationService.updateUser(userId, password, name);
-        } catch (Exception ignored) {}
-
-        sendJsonResponse(response, updated);
+            sendJsonResponse(response, updated);
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to send 'user updated' response", e);
+        }
     }
 
     /**
@@ -129,21 +173,33 @@ public class UserController extends BaseServlet {
      */
     @Override
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String email = extractResourceId(request);
-
+        String email    = extractResourceId(request);
         String pathInfo = request.getPathInfo();
 
+        // DELETE /api/v1/users/{email}
         if (pathInfo != null) {
             User user = authenticationService.getUserByEmail(email);
             if (user == null) {
-                sendErrorResponse(response, 404, "User not found");
+                try {
+                    sendErrorResponse(response, HttpServletResponse.SC_NOT_FOUND,
+                            "User not found");
+                } catch (IOException e) {
+                    throw new RuntimeException("Failed to send 'user not found' delete response", e);
+                }
                 return;
             }
 
             authenticationService.deleteUser(email);
-            response.setStatus(204);
+            response.setStatus(HttpServletResponse.SC_NO_CONTENT);
             return;
         }
-        sendErrorResponse(response, 400, "Delete User Parameters Incorrect");
+
+        // Missing path parameter
+        try {
+            sendErrorResponse(response, HttpServletResponse.SC_BAD_REQUEST,
+                    "Delete User Parameters Incorrect");
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to send 'delete user parameters incorrect' response", e);
+        }
     }
 }

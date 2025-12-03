@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>StoreController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">final</a> &gt; <a href="index.source.html" class="el_package">com.se300.store.controller</a> &gt; <span class="el_source">StoreController.java</span></div><h1>StoreController.java</h1><pre class="source lang-java linenums">package com.se300.store.controller;
+
+import java.io.IOException;
+import java.util.Collection;
+
+import com.se300.store.model.Store;
+import com.se300.store.model.StoreException;
+import com.se300.store.service.StoreService;
+import com.se300.store.servlet.BaseServlet;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
+/**
+ * REST API controller for Store operations
+ * Implements full CRUD operations
+ *
+ * @author Sergey L. Sundukovskiy, Ph.D.
+ * @version 1.0
+ */
+public class StoreController extends BaseServlet {
+
+    // REST CRUD API for Store operations
+
+    private static final String TOKEN = &quot;admin&quot;;
+
+    private final StoreService storeService;
+
+<span class="fc" id="L29">    public StoreController(StoreService storeService) {</span>
+<span class="fc" id="L30">        this.storeService = storeService;</span>
+<span class="fc" id="L31">    }</span>
+
+    /**
+     * Handle GET requests
+     * - GET /api/v1/stores (no parameters) - Get all stores
+     * - GET /api/v1/stores/{storeId} - Get store by ID
+     */
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+<span class="fc" id="L40">        String storeId = extractResourceId(request);</span>
+
+        // GET ALL STORES
+<span class="fc bfc" id="L43" title="All 2 branches covered.">        if (storeId == null) {</span>
+<span class="fc" id="L44">            Collection&lt;Store&gt; stores = storeService.getAllStores();</span>
+            try {
+<span class="fc" id="L46">                sendJsonResponse(response, stores);</span>
+<span class="nc" id="L47">            } catch (IOException e) {</span>
+<span class="nc" id="L48">                throw new RuntimeException(&quot;Failed to send stores list response&quot;, e);</span>
+<span class="fc" id="L49">            }</span>
+<span class="fc" id="L50">            return;</span>
+        }
+
+        // GET SINGLE STORE
+<span class="fc" id="L54">        Store store = null;</span>
+        try {
+<span class="fc" id="L56">            store = storeService.showStore(storeId, TOKEN);</span>
+<span class="fc" id="L57">        } catch (StoreException ignored) {}</span>
+
+<span class="fc bfc" id="L59" title="All 2 branches covered.">        if (store == null) {</span>
+            try {
+<span class="fc" id="L61">                sendErrorResponse(response, HttpServletResponse.SC_NOT_FOUND,</span>
+                        &quot;Store Does Not Exist&quot;);
+<span class="nc" id="L63">            } catch (IOException e) {</span>
+<span class="nc" id="L64">                throw new RuntimeException(&quot;Failed to send 'store not found' response&quot;, e);</span>
+<span class="fc" id="L65">            }</span>
+        } else {
+            try {
+<span class="fc" id="L68">                sendJsonResponse(response, store);</span>
+<span class="nc" id="L69">            } catch (IOException e) {</span>
+<span class="nc" id="L70">                throw new RuntimeException(&quot;Failed to send store detail response&quot;, e);</span>
+<span class="fc" id="L71">            }</span>
+        }
+<span class="fc" id="L73">    }</span>
+
+    /**
+     * Handle POST requests - Create new store
+     * POST /api/v1/stores?storeId=xxx&amp;name=xxx&amp;address=xxx
+     */
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+
+<span class="fc" id="L82">        String storeId  = request.getParameter(&quot;storeId&quot;);</span>
+<span class="fc" id="L83">        String name     = request.getParameter(&quot;name&quot;);</span>
+<span class="fc" id="L84">        String address  = request.getParameter(&quot;address&quot;);</span>
+
+<span class="pc bpc" id="L86" title="2 of 6 branches missed.">        if (storeId == null || name == null || address == null) {</span>
+            try {
+<span class="fc" id="L88">                sendErrorResponse(response, HttpServletResponse.SC_BAD_REQUEST,</span>
+                        &quot;storeId, name, and address required&quot;);
+<span class="nc" id="L90">            } catch (IOException e) {</span>
+<span class="nc" id="L91">                throw new RuntimeException(&quot;Failed to send 'store parameters required' response&quot;, e);</span>
+<span class="fc" id="L92">            }</span>
+<span class="fc" id="L93">            return;</span>
+        }
+
+<span class="fc" id="L96">        Store existing = null;</span>
+        try {
+<span class="fc" id="L98">            existing = storeService.showStore(storeId, TOKEN);</span>
+<span class="fc" id="L99">        } catch (StoreException ignored) {}</span>
+
+<span class="fc bfc" id="L101" title="All 2 branches covered.">        if (existing != null) {</span>
+            try {
+<span class="fc" id="L103">                sendErrorResponse(response, HttpServletResponse.SC_BAD_REQUEST,</span>
+                        &quot;Store Already Exists&quot;);
+<span class="nc" id="L105">            } catch (IOException e) {</span>
+<span class="nc" id="L106">                throw new RuntimeException(&quot;Failed to send 'store already exists' response&quot;, e);</span>
+<span class="fc" id="L107">            }</span>
+<span class="fc" id="L108">            return;</span>
+        }
+
+<span class="fc" id="L111">        Store created = null;</span>
+        try {
+<span class="fc" id="L113">            created = storeService.provisionStore(storeId, name, address, TOKEN);</span>
+<span class="nc" id="L114">        } catch (StoreException ignored) {</span>
+            // If provisioning fails, you might want to send a 500 or 400 here instead of blindly returning null.
+<span class="fc" id="L116">        }</span>
+
+        try {
+<span class="fc" id="L119">            sendJsonResponse(response, created, HttpServletResponse.SC_CREATED);</span>
+<span class="nc" id="L120">        } catch (IOException e) {</span>
+<span class="nc" id="L121">            throw new RuntimeException(&quot;Failed to send 'store created' response&quot;, e);</span>
+<span class="fc" id="L122">        }</span>
+<span class="fc" id="L123">    }</span>
+
+    /**
+     * Handle PUT requests - Update existing store
+     * PUT /api/v1/stores/{storeId}?description=xxx&amp;address=xxx
+     */
+    @Override
+    protected void doPut(HttpServletRequest request, HttpServletResponse response) throws IOException {
+
+<span class="fc" id="L132">        String storeId     = extractResourceId(request);</span>
+<span class="fc" id="L133">        String description = request.getParameter(&quot;description&quot;);</span>
+<span class="fc" id="L134">        String address     = request.getParameter(&quot;address&quot;);</span>
+
+<span class="fc bfc" id="L136" title="All 2 branches covered.">        if (storeId == null) {</span>
+            try {
+<span class="fc" id="L138">                sendErrorResponse(response, HttpServletResponse.SC_BAD_REQUEST,</span>
+                        &quot;storeId path parameter required&quot;);
+<span class="nc" id="L140">            } catch (IOException e) {</span>
+<span class="nc" id="L141">                throw new RuntimeException(&quot;Failed to send 'storeId path parameter required' response&quot;, e);</span>
+<span class="fc" id="L142">            }</span>
+<span class="fc" id="L143">            return;</span>
+        }
+
+<span class="pc bpc" id="L146" title="1 of 4 branches missed.">        if (description == null || address == null) {</span>
+            try {
+<span class="fc" id="L148">                sendErrorResponse(response, HttpServletResponse.SC_BAD_REQUEST,</span>
+                        &quot;Need description or address&quot;);
+<span class="nc" id="L150">            } catch (IOException e) {</span>
+<span class="nc" id="L151">                throw new RuntimeException(&quot;Failed to send 'need description or address' response&quot;, e);</span>
+<span class="fc" id="L152">            }</span>
+<span class="fc" id="L153">            return;</span>
+        }
+
+<span class="fc" id="L156">        Store store = null;</span>
+        try {
+<span class="fc" id="L158">            store = storeService.showStore(storeId, TOKEN);</span>
+<span class="fc" id="L159">        } catch (StoreException ignored) {}</span>
+
+<span class="fc bfc" id="L161" title="All 2 branches covered.">        if (store == null) {</span>
+            try {
+<span class="fc" id="L163">                sendErrorResponse(response, HttpServletResponse.SC_NOT_FOUND,</span>
+                        &quot;Store Does Not Exist&quot;);
+<span class="nc" id="L165">            } catch (IOException e) {</span>
+<span class="nc" id="L166">                throw new RuntimeException(&quot;Failed to send 'store does not exist' response&quot;, e);</span>
+<span class="fc" id="L167">            }</span>
+<span class="fc" id="L168">            return;</span>
+        }
+
+<span class="fc" id="L171">        Store updated = null;</span>
+        try {
+<span class="fc" id="L173">            updated = storeService.updateStore(storeId, description, address);</span>
+<span class="pc" id="L174">        } catch (StoreException ignored) {}</span>
+
+        try {
+<span class="fc" id="L177">            sendJsonResponse(response, updated);</span>
+<span class="nc" id="L178">        } catch (IOException e) {</span>
+<span class="nc" id="L179">            throw new RuntimeException(&quot;Failed to send 'store updated' response&quot;, e);</span>
+<span class="fc" id="L180">        }</span>
+<span class="fc" id="L181">    }</span>
+
+    /**
+     * Handle DELETE requests - Delete store
+     * DELETE /api/v1/stores/{storeId}
+     */
+    @Override
+    protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
+
+<span class="fc" id="L190">        String storeId = extractResourceId(request);</span>
+
+<span class="fc bfc" id="L192" title="All 2 branches covered.">        if (storeId == null) {</span>
+            try {
+<span class="fc" id="L194">                sendErrorResponse(response, HttpServletResponse.SC_BAD_REQUEST,</span>
+                        &quot;storeId path parameter required&quot;);
+<span class="nc" id="L196">            } catch (IOException e) {</span>
+<span class="nc" id="L197">                throw new RuntimeException(&quot;Failed to send 'storeId path parameter required' response&quot;, e);</span>
+<span class="fc" id="L198">            }</span>
+<span class="fc" id="L199">            return;</span>
+        }
+
+        // Check existence
+<span class="fc" id="L203">        Store store = null;</span>
+        try {
+<span class="fc" id="L205">            store = storeService.showStore(storeId, TOKEN);</span>
+<span class="fc" id="L206">        } catch (StoreException ignored) {}</span>
+
+<span class="fc bfc" id="L208" title="All 2 branches covered.">        if (store == null) {</span>
+            try {
+<span class="fc" id="L210">                sendErrorResponse(response, HttpServletResponse.SC_NOT_FOUND,</span>
+                        &quot;Store Does Not Exist&quot;);
+<span class="nc" id="L212">            } catch (IOException e) {</span>
+<span class="nc" id="L213">                throw new RuntimeException(&quot;Failed to send 'store does not exist' delete response&quot;, e);</span>
+<span class="fc" id="L214">            }</span>
+<span class="fc" id="L215">            return;</span>
+        }
+
+        // Delete
+        try {
+<span class="fc" id="L220">            storeService.deleteStore(storeId);</span>
+<span class="pc" id="L221">        } catch (StoreException ignored) {}</span>
+
+        // 204 No Content, no body so no JSON wrapping needed
+<span class="fc" id="L224">        response.setStatus(HttpServletResponse.SC_NO_CONTENT);</span>
+<span class="fc" id="L225">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>
