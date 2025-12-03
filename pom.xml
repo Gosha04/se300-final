@@ -44,6 +44,10 @@
         <sonar.coverage.exclusions>
             **/SmartStoreApplication.java
         </sonar.coverage.exclusions>
+
+        <sonar.organization>gosha04</sonar.organization>
+        <sonar.token>${env.SONAR_TOKEN}</sonar.token>
+        <sonar.host.url>https://sonarcloud.io</sonar.host.url>
     </properties>
 
     <build>

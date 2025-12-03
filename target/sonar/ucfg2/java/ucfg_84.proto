@@ -1,0 +1,78 @@
+
+Pcom.se300.store.data.DataManager#getInstance()Lcom/se300/store/data/DataManager;r
+h/Users/gosha04/Documents/CPSC_Courses/SE/se300-final/src/main/java/com/se300/store/data/DataManager.java ()"5*€
+2   (0VT
+ #  (.&
+%4 com.se300.store.data.DataManager" com.se300.store.data.DataManager…
+‚
+   (0
+%5"*com.se300.store.data.DataManager#<init>()V*D
+
+__unknown_file ((
+&
+%4 com.se300.store.data.DataManager‹
+ˆ
+   (00"
+ com.se300.store.data.DataManager"
+
+instance"__id*D
+
+__unknown_file ((
+&
+%4 com.se300.store.data.DataManager*
+1*«
+3 (‹
+ˆ
+ (&
+%2 com.se300.store.data.DataManager"__id*N
+
+__unknown_file (2*0"
+ com.se300.store.data.DataManager"
+
+instance…
+‚
+ ($
+%3boolean"	__compare*
+ (
+==*4
+ ((
+&
+%2 com.se300.store.data.DataManager*
+  ($
+""*
+2
+1*«
+5 (‹
+ˆ
+ (&
+%0 com.se300.store.data.DataManager"__id*N
+
+__unknown_file (2*0"
+ com.se300.store.data.DataManager"
+
+instance…
+‚
+ (
+%1boolean"	__compare*
+ (
+==*4
+ ((
+&
+%0 com.se300.store.data.DataManager*
+ (
+""*
+3
+1*Ñ
+1$ $(‹
+ˆ
+$ $(&
+%6 com.se300.store.data.DataManager"__id*N
+
+__unknown_file (2*0"
+ com.se300.store.data.DataManager"
+
+instance"4
+$ $((
+&
+%6 com.se300.store.data.DataManagerB$""
+ com.se300.store.data.DataManagerH

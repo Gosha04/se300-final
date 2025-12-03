@@ -10,10 +10,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 
@@ -46,6 +46,9 @@ public class ExternalMockServerTest {
     public static void setUpExternalMockServer() {
         // Configure RestAssured for external API testing
         RestAssured.baseURI = EXTERNAL_API_BASE_URL;
+        RestAssured.basePath = "";     // optional, good hygiene
+        RestAssured.port = -1;         // 🔧 use default port from URL, not 8081
+        RestAssured.useRelaxedHTTPSValidation();
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
     }
 

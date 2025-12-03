@@ -92,6 +92,7 @@ public class ControllerUnitTest {
         }
         // Reset mocks after each test
         reset(storeService, authenticationService);
+        RestAssured.reset();
     }
 
     // ==================== STORE CONTROLLER MOCK TESTS ====================

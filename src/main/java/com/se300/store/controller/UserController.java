@@ -37,28 +37,16 @@ public class UserController extends BaseServlet {
 
         if (userId == null) {
             Collection<User> users = authenticationService.getAllUsers();
-            try {
-                sendJsonResponse(response, users, HttpServletResponse.SC_OK);
-            } catch (IOException e) {
-                throw new RuntimeException("Failed to send users list response", e);
-            }
+            sendJsonResponse(response, users, HttpServletResponse.SC_OK);
             return;
         }
 
         User user = authenticationService.getUserByEmail(userId);
 
         if (user == null) {
-            try {
-                sendErrorResponse(response, HttpServletResponse.SC_NOT_FOUND, "User Does Not Exist");
-            } catch (IOException e) {
-                throw new RuntimeException("Failed to send 'user not found' response", e);
-            }
+            sendErrorResponse(response, HttpServletResponse.SC_NOT_FOUND, "User Does Not Exist");
         } else {
-            try {
-                sendJsonResponse(response, user);
-            } catch (IOException e) {
-                throw new RuntimeException("Failed to send user detail response", e);
-            }
+            sendJsonResponse(response, user);
         }
     }
 
@@ -77,41 +65,24 @@ public class UserController extends BaseServlet {
 
             // Missing required params
             if (email == null || password == null || name == null) {
-                try {
-                    sendErrorResponse(response, HttpServletResponse.SC_BAD_REQUEST,
-                            "New User Parameters Incorrect");
-                } catch (IOException e) {
-                    throw new RuntimeException("Failed to send 'bad request - new user params' response", e);
-                }
+                sendErrorResponse(response, HttpServletResponse.SC_BAD_REQUEST, "New User Parameters Incorrect");
                 return;
             }
 
             // New user
             if (authenticationService.getUserByEmail(email) == null) {
                 User created = authenticationService.registerUser(email, password, name);
-                try {
-                    sendJsonResponse(response, created, HttpServletResponse.SC_CREATED);
-                } catch (IOException e) {
-                    throw new RuntimeException("Failed to send 'user created' response", e);
-                }
+                sendJsonResponse(response, created, HttpServletResponse.SC_CREATED);
                 return;
             } else {
                 // Duplicate user
-                try {
-                    sendErrorResponse(response, HttpServletResponse.SC_BAD_REQUEST, "Duplicate User");
-                } catch (IOException e) {
-                    throw new RuntimeException("Failed to send 'duplicate user' response", e);
-                }
+                sendErrorResponse(response, HttpServletResponse.SC_BAD_REQUEST, "Duplicate User");
                 return;
             }
         }
 
         // Wrong endpoint/path
-        try {
-            sendErrorResponse(response, HttpServletResponse.SC_NOT_FOUND, "Endpoint not found");
-        } catch (IOException e) {
-            throw new RuntimeException("Failed to send 'endpoint not found' response", e);
-        }
+        sendErrorResponse(response, HttpServletResponse.SC_NOT_FOUND, "Endpoint not found");
     }
 
     /**
@@ -126,45 +97,26 @@ public class UserController extends BaseServlet {
 
         // Missing path parameter
         if (userId == null) {
-            try {
-                sendErrorResponse(response, HttpServletResponse.SC_BAD_REQUEST,
-                        "email path parameter required");
-            } catch (IOException e) {
-                throw new RuntimeException("Failed to send 'email path parameter required' response", e);
-            }
+            sendErrorResponse(response, HttpServletResponse.SC_BAD_REQUEST, "email path parameter required");
             return;
         }
 
         // Missing body parameters
         if (password == null || name == null) {
-            try {
-                sendErrorResponse(response, HttpServletResponse.SC_BAD_REQUEST,
-                        "Need password or name");
-            } catch (IOException e) {
-                throw new RuntimeException("Failed to send 'missing password or name' response", e);
-            }
+            sendErrorResponse(response, HttpServletResponse.SC_BAD_REQUEST, "Need password or name");
             return;
         }
 
         // Check existence
         User user = authenticationService.getUserByEmail(userId);
         if (user == null) {
-            try {
-                sendErrorResponse(response, HttpServletResponse.SC_NOT_FOUND,
-                        "User Does Not Exist");
-            } catch (IOException e) {
-                throw new RuntimeException("Failed to send 'user does not exist' response", e);
-            }
+            sendErrorResponse(response, HttpServletResponse.SC_NOT_FOUND, "User Does Not Exist");
             return;
         }
 
         // Update user
         User updated = authenticationService.updateUser(userId, password, name);
-        try {
-            sendJsonResponse(response, updated);
-        } catch (IOException e) {
-            throw new RuntimeException("Failed to send 'user updated' response", e);
-        }
+        sendJsonResponse(response, updated);
     }
 
     /**
@@ -180,12 +132,7 @@ public class UserController extends BaseServlet {
         if (pathInfo != null) {
             User user = authenticationService.getUserByEmail(email);
             if (user == null) {
-                try {
-                    sendErrorResponse(response, HttpServletResponse.SC_NOT_FOUND,
-                            "User not found");
-                } catch (IOException e) {
-                    throw new RuntimeException("Failed to send 'user not found' delete response", e);
-                }
+                sendErrorResponse(response, HttpServletResponse.SC_NOT_FOUND, "User not found");
                 return;
             }
 
@@ -195,11 +142,6 @@ public class UserController extends BaseServlet {
         }
 
         // Missing path parameter
-        try {
-            sendErrorResponse(response, HttpServletResponse.SC_BAD_REQUEST,
-                    "Delete User Parameters Incorrect");
-        } catch (IOException e) {
-            throw new RuntimeException("Failed to send 'delete user parameters incorrect' response", e);
-        }
+        sendErrorResponse(response, HttpServletResponse.SC_BAD_REQUEST, "Delete User Parameters Incorrect");
     }
 }

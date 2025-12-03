@@ -1,0 +1,34 @@
+
+-__sonar_lambda_3$com.se300.store.model.Basketp
+d/Users/gosha04/Documents/CPSC_Courses/SE/se300-final/src/main/java/com/se300/store/model/Basket.java• –( "1*Æ
+1
+•" •('º·
+
+•" •(9
+%17java.util.Map"<com.se300.store.model.Shelf#getInventoryMap()Ljava/util/Map;*B
+
+__unknown_file (&
+$
+shelfcom.se300.store.model.Shelf2getInventoryMap()˜•
+
+•" •(B
+%18java.util.Collection",java.util.Map#values()Ljava/util/Collection;*2
+
+__unknown_file (
+
+%17java.util.Map2values()¬©
+
+•" –( 
+%19java.util.stream.Stream"6java.util.Collection#stream()Ljava/util/stream/Stream;*9
+
+__unknown_file (
+
+%18java.util.Collection2stream()".
+
+•" –(  
+
+%19java.util.stream.Stream:2
+
+• •($
+shelfcom.se300.store.model.ShelfB
+java.util.function.Function
