@@ -183,11 +183,11 @@ public class EndToEndSmartStoreTest {
     @Order(2)
     @DisplayName("E2E: Complete store provisioning and management workflow")
     public void testCompleteStoreWorkflow() throws StoreException {
-        Store created = storeService.provisionStore("S1", "Main Store", "123 Road", "token");
+        Store created = storeService.provisionStore("S1", "Main Store", "123 Road", "admin");
         assertNotNull(created);
         assertEquals("S1", created.getId());
 
-        Store shown = storeService.showStore("S1", "token");
+        Store shown = storeService.showStore("S1", "admin");
         assertEquals("Main Store", shown.getDescription());
 
         Store updated = storeService.updateStore("S1", "Updated Desc", "999 New St");
@@ -195,40 +195,40 @@ public class EndToEndSmartStoreTest {
         assertEquals("999 New St", updated.getAddress());
 
         storeService.deleteStore("S1");
-        assertThrows(StoreException.class, () -> storeService.showStore("S1", "token"));
+        assertThrows(StoreException.class, () -> storeService.showStore("S1", "admin"));
     }
 
     @Test
     @Order(3)
     @DisplayName("E2E: Complete store operations - aisles, shelves, products, inventory")
     public void testCompleteStoreOperations() throws StoreException {
-        storeService.provisionStore("S2","Not Groc","Is joke","token");
+        storeService.provisionStore("S2","Not Groc","Is joke","admin");
 
         Aisle a = storeService.provisionAisle("S2","A1","Fresh","Produce",
-        null,"token");
+        null,"admin");
        
         Shelf sh = storeService.provisionShelf("S2","A1","SH1","Top", 
-        ShelfLevel.high,"Cool",Temperature.ambient,"token");
+        ShelfLevel.high,"Cool",Temperature.ambient,"admin");
 
         Product prod = storeService.provisionProduct("P1", "Product", "Description", "Small",
-         "Misc", 10.00, Temperature.ambient, "token");
+         "Misc", 10.00, Temperature.ambient, "admin");
 
         Inventory inv = storeService.provisionInventory("I1", "S2", "A1",
-         "SH1", 100, 100, "P1", InventoryType.standard, "token");
+         "SH1", 100, 100, "P1", InventoryType.standard, "admin");
         
         assertThrows(StoreException.class, () -> storeService.provisionInventory("I1", "S2", "A1",
-         "SH1", 100, 100, "P1", InventoryType.standard, "token"));
+         "SH1", 100, 100, "P1", InventoryType.standard, "admin"));
         assertThrows(StoreException.class, () -> storeService.provisionInventory("I1",
-         "S2", "A1","SH1", -1, 0, "P1", InventoryType.standard, "token"));
-        assertEquals(a, storeService.showAisle("S2", "A1", "token"));
-        assertEquals(inv, storeService.showInventory("I1", "token"));
-        assertEquals(sh, storeService.showShelf("S2","A1","SH1","token"));
-        assertEquals(prod, storeService.showProduct("P1", "token"));
+         "S2", "A1","SH1", -1, 0, "P1", InventoryType.standard, "admin"));
+        assertEquals(a, storeService.showAisle("S2", "A1", "admin"));
+        assertEquals(inv, storeService.showInventory("I1", "admin"));
+        assertEquals(sh, storeService.showShelf("S2","A1","SH1","admin"));
+        assertEquals(prod, storeService.showProduct("P1", "admin"));
 
         // Had to update updateInventory method to allow for decremination
-        storeService.updateInventory("I1", -10, "token");
+        storeService.updateInventory("I1", -10, "admin");
 
-        assertEquals(storeService.showInventory("I1", "token").getCount(), 90);
+        assertEquals(storeService.showInventory("I1", "admin").getCount(), 90);
     }
 
     @Test
@@ -236,51 +236,51 @@ public class EndToEndSmartStoreTest {
     @DisplayName("E2E: Complete customer shopping workflow")
     public void testCompleteCustomerShoppingWorkflow() throws StoreException {
         Customer cust = storeService.provisionCustomer("C1", "John", "Smith",
-         CustomerType.registered, "anon@gmail.com", "Los Angeles", "Token");
+         CustomerType.registered, "anon@gmail.com", "Los Angeles", "admin");
 
         StoreLocation custLoc = new StoreLocation("S2", "A1");
         StoreLocation testLoc = new StoreLocation("S2", null);
 
         storeService.provisionAisle("S2", "A2", "Random", "Random",
-         AisleLocation.floor, "token");
+         AisleLocation.floor, "admin");
 
         cust.setStoreLocation(custLoc);
 
-        Basket bask = storeService.provisionBasket("B1", "token");
-        storeService.assignCustomerBasket("C1", "B1", "token");
-        storeService.addBasketProduct("B1", "P1", 2, "token");
+        Basket bask = storeService.provisionBasket("B1", "admin");
+        storeService.assignCustomerBasket("C1", "B1", "admin");
+        storeService.addBasketProduct("B1", "P1", 2, "admin");
         assertEquals(bask.getProducts().size(), 1); // Only one product type
 
         assertNotNull(cust);
-        assertEquals(custLoc, storeService.showCustomer("C1", "token").getStoreLocation());
-        assertEquals(bask, storeService.showBasket("B1", "token"));
+        assertEquals(custLoc, storeService.showCustomer("C1", "admin").getStoreLocation());
+        assertEquals(bask, storeService.showBasket("B1", "admin"));
         assertEquals(bask.getCustomer(), cust);
-        assertEquals(storeService.getCustomerBasket("C1", "token"), bask);
-        assertThrows(StoreException.class, () -> storeService.addBasketProduct("B1", null, 0, "token"));
-        // assertThrows(StoreException.class, () -> storeService.addBasketProduct("B1", "P1", 0, "token"));
-        storeService.updateCustomer("C1", "S2", "A2", "token");
+        assertEquals(storeService.getCustomerBasket("C1", "admin"), bask);
+        assertThrows(StoreException.class, () -> storeService.addBasketProduct("B1", null, 0, "admin"));
+        // assertThrows(StoreException.class, () -> storeService.addBasketProduct("B1", "P1", 0, "admin"));
+        storeService.updateCustomer("C1", "S2", "A2", "admin");
 
         assertEquals(cust.getStoreLocation().toString(), new StoreLocation("S2", "A2").toString());
 
         cust.setStoreLocation(custLoc);
-        storeService.removeBasketProduct("B1", "P1", 1, "token");
+        storeService.removeBasketProduct("B1", "P1", 1, "admin");
 
         assertEquals(1, bask.getProducts().size());
         
-        storeService.clearBasket("B1", "token");
+        storeService.clearBasket("B1", "admin");
         assertEquals(bask.getProducts().size(), 0);
 
-        // storeService.showCustomer("C1", "token").setStoreLocation(null);
-        // assertThrows(StoreException.class, () -> storeService.removeBasketProduct("B1", "P1", 1, "token"));
+        // storeService.showCustomer("C1", "admin").setStoreLocation(null);
+        // assertThrows(StoreException.class, () -> storeService.removeBasketProduct("B1", "P1", 1, "admin"));
         
-        // storeService.showCustomer("C1", "token").setStoreLocation(custLoc);
-        // // storeService.assignCustomerBasket("C1", "B1", "token");
-        // assertThrows(StoreException.class, () -> storeService.showBasket("B1", "token").addProduct("P1", 10));
-        // storeService.updateInventory("I1", 20, "token");
-        // assertThrows(StoreException.class, () -> storeService.removeBasketProduct("B1", "P1", 10, "token"));
-        // storeService.updateInventory("I1", -10, "token");
-        // storeService.removeBasketProduct("B1", "P1", 10, "token");
-        // storeService.clearBasket("B1", "token");
+        // storeService.showCustomer("C1", "admin").setStoreLocation(custLoc);
+        // // storeService.assignCustomerBasket("C1", "B1", "admin");
+        // assertThrows(StoreException.class, () -> storeService.showBasket("B1", "admin").addProduct("P1", 10));
+        // storeService.updateInventory("I1", 20, "admin");
+        // assertThrows(StoreException.class, () -> storeService.removeBasketProduct("B1", "P1", 10, "admin"));
+        // storeService.updateInventory("I1", -10, "admin");
+        // storeService.removeBasketProduct("B1", "P1", 10, "admin");
+        // storeService.clearBasket("B1", "admin");
     }
 
     @Test
@@ -289,34 +289,34 @@ public class EndToEndSmartStoreTest {
     @DisplayName("E2E: Device management and events")
     public void testCompleteDeviceWorkflow() throws StoreException {
         storeService.provisionDevice("D1", "Cam", "camera",
-         "S2", "A1", "token");
+         "S2", "A1", "admin");
         storeService.provisionDevice("D2", "Mic", "microphone",
-         "S2", "A1", "token");
+         "S2", "A1", "admin");
 
         String testString = "Device{" +
-                "id='" + storeService.showDevice("D1", "token").getId() + '\'' +
-                ", name='" + storeService.showDevice("D1", "token").getName() + '\'' +
-                ", storeLocation=" + storeService.showDevice("D1", "token").getStoreLocation() +
-                ", type='" + storeService.showDevice("D1", "token").getType() + '\'' +
+                "id='" + storeService.showDevice("D1", "admin").getId() + '\'' +
+                ", name='" + storeService.showDevice("D1", "admin").getName() + '\'' +
+                ", storeLocation=" + storeService.showDevice("D1", "admin").getStoreLocation() +
+                ", type='" + storeService.showDevice("D1", "admin").getType() + '\'' +
                 '}';
         
         assertDoesNotThrow(() ->
-            storeService.raiseEvent("D1", "TEST EVENT", "token")
+            storeService.raiseEvent("D1", "TEST EVENT", "admin")
         );      
-        assertEquals(testString, storeService.showDevice("D1", "token").toString()); 
-        assertNotEquals(storeService.showDevice("D1", "token").getType(),
-         storeService.showDevice("D2", "token").getType());
+        assertEquals(testString, storeService.showDevice("D1", "admin").toString()); 
+        assertNotEquals(storeService.showDevice("D1", "admin").getType(),
+         storeService.showDevice("D2", "admin").getType());
 
         storeService.provisionDevice("D3", "Bot", "robot",
-         "S2", "A1", "token");
+         "S2", "A1", "admin");
         storeService.provisionDevice("D4", "Speak", "speaker",
-         "S2", "A1", "token");
+         "S2", "A1", "admin");
 
         assertDoesNotThrow(() ->
-            storeService.raiseEvent("D3", "TEST EVENT", "token")
+            storeService.raiseEvent("D3", "TEST EVENT", "admin")
         );     
         assertDoesNotThrow(() ->
-            storeService.issueCommand("D4", "TEST COMMAND", "token")
+            storeService.issueCommand("D4", "TEST COMMAND", "admin")
         );     
     }
 
@@ -325,51 +325,51 @@ public class EndToEndSmartStoreTest {
     @DisplayName("E2E: Error handling across all layers")
     public void testCompleteErrorHandling() {
         assertThrows(StoreException.class, () ->
-                storeService.provisionStore("S2", "Error Test Store", "123 Test Rd", "token"));
+                storeService.provisionStore("S2", "Error Test Store", "123 Test Rd", "admin"));
 
         assertThrows(StoreException.class,
-                () -> storeService.showStore("OISFnsdoigfnso", "token"),
+                () -> storeService.showStore("OISFnsdoigfnso", "admin"),
                 "No store");
 
         assertThrows(StoreException.class,
                 () -> storeService.provisionShelf("diongfgdf", "dfoidenf",
                  "Sdgonfogd9", "dfoin", ShelfLevel.high,
-                 "sdf", Temperature.ambient, "token"),
+                 "sdf", Temperature.ambient, "admin"),
                 "Invalid everything");
 
         assertThrows(StoreException.class,
-                () -> storeService.addBasketProduct("B1", "нет", 1, "token"),
+                () -> storeService.addBasketProduct("B1", "нет", 1, "admin"),
                 "Нечего");
         
-        assertThrows(StoreException.class, () -> storeService.provisionBasket("B1", "token"));
+        assertThrows(StoreException.class, () -> storeService.provisionBasket("B1", "admin"));
 
         assertDoesNotThrow(() ->
-                storeService.showBasket("B1", "token").setCustomer(storeService.showCustomer("C1", "token")));
+                storeService.showBasket("B1", "admin").setCustomer(storeService.showCustomer("C1", "admin")));
 
         assertDoesNotThrow(() ->
-                storeService.addBasketProduct("B1", "P1", 1, "token"));
+                storeService.addBasketProduct("B1", "P1", 1, "admin"));
 
         assertThrows(StoreException.class,
-                () -> storeService.removeBasketProduct("B1", "P1", 2025, "token"),
+                () -> storeService.removeBasketProduct("B1", "P1", 2025, "admin"),
                 "Ад");
 
         assertThrows(StoreException.class,
-                () -> storeService.removeBasketProduct("B1", "no", 343, "token"),
+                () -> storeService.removeBasketProduct("B1", "no", 343, "admin"),
                 "БЛИИИИИИН");
 
         assertThrows(StoreException.class,
-                () -> storeService.showCustomer(" ", "token").setStoreLocation(new StoreLocation("hell", "no")),
+                () -> storeService.showCustomer(" ", "admin").setStoreLocation(new StoreLocation("hell", "no")),
                 "Hell is proven to be not real in this binary realm");
 
         assertThrows(StoreException.class,
-                () -> storeService.removeBasketProduct("B1", "Pigeon", 1, "token"),
+                () -> storeService.removeBasketProduct("B1", "Pigeon", 1, "admin"),
                 "Birds aren't real");
 
         assertDoesNotThrow(() ->
-                storeService.showBasket("B1", "token").clearBasket());
+                storeService.showBasket("B1", "admin").clearBasket());
 
         assertThrows(StoreException.class,
-                () -> storeService.showDevice("computer", "token"),
+                () -> storeService.showDevice("computer", "admin"),
                 "Computer doesn't exist");
     }
 
@@ -377,7 +377,7 @@ public class EndToEndSmartStoreTest {
     @Order(7)
     @DisplayName("E2E: Data consistency across all layers")
     public void testDataConsistencyAcrossLayers() {
-        Store storeFromService = assertDoesNotThrow(() -> storeService.showStore("S2", "token"));
+        Store storeFromService = assertDoesNotThrow(() -> storeService.showStore("S2", "admin"));
 
         Map<String, Store> storesFromRepo = storeRepository.findAll();
         assertNotNull(storesFromRepo);
@@ -409,7 +409,7 @@ public class EndToEndSmartStoreTest {
                 .body("description", equalTo("Not Groc"));
 
         assertDoesNotThrow(() ->
-                    storeService.provisionStore("S3", "Rest Store", "999 Rest St", "token"));
+                    storeService.provisionStore("S3", "Rest Store", "999 Rest St", "admin"));
 
         given()
             .when()
@@ -485,7 +485,7 @@ public class EndToEndSmartStoreTest {
     @DisplayName("E2E: Final cleanup and deletion operations")
     public void testFinalCleanupOperations() throws StoreException {
         assertThrows(NullPointerException.class, () -> { // deleted earlier in error layer test
-            storeService.showBasket("B1", "token").clearBasket();
+            storeService.showBasket("B1", "admin").clearBasket();
         });
 
         assertDoesNotThrow(() -> { // don't remember what stores we have 
@@ -498,9 +498,9 @@ public class EndToEndSmartStoreTest {
         });
 
         assertThrows(StoreException.class,
-                () -> storeService.showStore("S2", "token"));
+                () -> storeService.showStore("S2", "admin"));
         assertThrows(StoreException.class,
-                () -> storeService.showStore("S3", "token"));
+                () -> storeService.showStore("S3", "admin"));
 
         Map<String, Store> stores = storeRepository.findAll();
         assertFalse(stores.containsKey("S2"));

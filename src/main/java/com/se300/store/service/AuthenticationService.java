@@ -14,7 +14,7 @@ import com.se300.store.repository.UserRepository;
  * @since 2025-11-09
  **/
 public class AuthenticationService {
-
+    
     private final UserRepository userRepository;
 
     public AuthenticationService(UserRepository userRepository) {

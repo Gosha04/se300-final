@@ -70,11 +70,11 @@ public class ServiceIntegrationTest {
     @Order(1)
     @DisplayName("Integration: Complete Store workflow - provision, show, update, delete")
     public void testCompleteStoreWorkflow() throws StoreException {
-        Store created = storeService.provisionStore("S1", "Main Store", "123 Road", "token");
+        Store created = storeService.provisionStore("S1", "Main Store", "123 Road", "admin");
         assertNotNull(created);
         assertEquals("S1", created.getId());
 
-        Store shown = storeService.showStore("S1", "token");
+        Store shown = storeService.showStore("S1", "admin");
         assertEquals("Main Store", shown.getDescription());
 
         Store updated = storeService.updateStore("S1", "Updated Desc", "999 New St");
@@ -84,14 +84,14 @@ public class ServiceIntegrationTest {
 
         storeService.deleteStore("S1");
         assertThrows(StoreException.class, () -> storeService.deleteStore("S1"));
-        assertThrows(StoreException.class, () -> storeService.showStore("S1", "token"));
+        assertThrows(StoreException.class, () -> storeService.showStore("S1", "admin"));
     }
 
     @Test
     @Order(2)
     @DisplayName("Integration: Store with Aisles and Shelves")
     public void testStoreWithAislesAndShelves() throws StoreException {
-        storeService.provisionStore("S1", "Main Store", "123 Road", "token");
+        storeService.provisionStore("S1", "Main Store", "123 Road", "admin");
         Aisle a = storeService.provisionAisle("S1","A1","Fresh","Produce",null,"t");
         assertEquals("A1",a.getNumber());
         Shelf sh = storeService.provisionShelf("S1","A1","SH1","Top",ShelfLevel.high,"Cool",Temperature.ambient,"t");
@@ -127,33 +127,33 @@ public class ServiceIntegrationTest {
 
         Customer customer = storeService.provisionCustomer(
                 customerId, "John", "Doe", CustomerType.registered,
-                "john+integration@mail.com", "addr", "token");
+                "john+integration@mail.com", "addr", "admin");
         assertNotNull(customer);
 
         // S1 / A1 are still assumed to exist from earlier tests in this class
-        Customer updated = storeService.updateCustomer(customerId, "S1", "A1", "token");
+        Customer updated = storeService.updateCustomer(customerId, "S1", "A1", "admin");
         assertNotNull(updated.getStoreLocation());
         assertEquals("S1", updated.getStoreLocation().getStoreId());
         assertEquals("A1", updated.getStoreLocation().getAisleId());
         assertNotNull(updated.getLastSeen());
 
-        Basket basket = storeService.provisionBasket(basketId, "token");
+        Basket basket = storeService.provisionBasket(basketId, "admin");
         assertNotNull(basket);
 
-        Basket assigned = storeService.assignCustomerBasket(customerId, basketId, "token");
+        Basket assigned = storeService.assignCustomerBasket(customerId, basketId, "admin");
         assertEquals(basketId, assigned.getId());
 
-        Basket customerBasket = storeService.getCustomerBasket(customerId, "token");
+        Basket customerBasket = storeService.getCustomerBasket(customerId, "admin");
         assertEquals(basketId, customerBasket.getId());
         assertNotNull(customerBasket.getCustomer());
         assertEquals(customerId, customerBasket.getCustomer().getId());
         assertNotNull(customerBasket.getStore());
         assertEquals("S1", customerBasket.getStore().getId());  
 
-        storeService.provisionStore("S3", "test", "add", "token");
-        storeService.provisionAisle("S3", "A33", "aisle", "dad", AisleLocation.floor, "token");
-       // storeService.assignCustomerBasket("C_INTEGRATION_1", "B_INTEGRATION_1", "token");
-        assertDoesNotThrow(() ->  storeService.updateCustomer("C_INTEGRATION_1", "S3", "A33", "token"));
+        storeService.provisionStore("S3", "test", "add", "admin");
+        storeService.provisionAisle("S3", "A33", "aisle", "dad", AisleLocation.floor, "admin");
+       // storeService.assignCustomerBasket("C_INTEGRATION_1", "B_INTEGRATION_1", "admin");
+        assertDoesNotThrow(() ->  storeService.updateCustomer("C_INTEGRATION_1", "S3", "A33", "admin"));
     }
 
     @Test
@@ -196,32 +196,32 @@ public class ServiceIntegrationTest {
     public void testDeviceProvisioningAndEvents() throws StoreException {
         String deviceType = SensorType.values()[0].name();
 
-        Device device = storeService.provisionDevice("D1", "TempSensor", deviceType, "S1", "A1", "token");
+        Device device = storeService.provisionDevice("D1", "TempSensor", deviceType, "S1", "A1", "admin");
         assertNotNull(device);
         assertEquals("D1", device.getId());
-        assertThrows(StoreException.class, () -> storeService.provisionDevice("D1", "fake", deviceType, "Sr3", "sdfs", "token"));
-        assertThrows(StoreException.class, () -> storeService.provisionDevice("D1", "fake", deviceType, "S1", "sdfs", "token"));
-        assertThrows(StoreException.class, () -> storeService.provisionDevice("D1", "fake", deviceType, "S1", "A1", "token"));
+        assertThrows(StoreException.class, () -> storeService.provisionDevice("D1", "fake", deviceType, "Sr3", "sdfs", "admin"));
+        assertThrows(StoreException.class, () -> storeService.provisionDevice("D1", "fake", deviceType, "S1", "sdfs", "admin"));
+        assertThrows(StoreException.class, () -> storeService.provisionDevice("D1", "fake", deviceType, "S1", "A1", "admin"));
 
-        assertDoesNotThrow(() -> storeService.raiseEvent("D1", "READ", "token"));
-        assertThrows(StoreException.class, () -> storeService.raiseEvent("D3432", "READ", "token"));
+        assertDoesNotThrow(() -> storeService.raiseEvent("D1", "READ", "admin"));
+        assertThrows(StoreException.class, () -> storeService.raiseEvent("D3432", "READ", "admin"));
 
-        assertThrows(StoreException.class, () -> storeService.issueCommand("BAD", "ON", "token"));
+        assertThrows(StoreException.class, () -> storeService.issueCommand("BAD", "ON", "admin"));
     }
 
     @Test
     @Order(7)
     @DisplayName("Integration: Error handling across services")
     public void testErrorHandling() {
-        assertThrows(StoreException.class, () -> storeService.showStore("NO_SUCH_STORE", "token"));
-        assertThrows(StoreException.class, () -> storeService.showProduct("NO_SUCH_PRODUCT", "token"));
-        assertThrows(StoreException.class, () -> storeService.showCustomer("NO_SUCH_CUSTOMER", "token"));
+        assertThrows(StoreException.class, () -> storeService.showStore("NO_SUCH_STORE", "admin"));
+        assertThrows(StoreException.class, () -> storeService.showProduct("NO_SUCH_PRODUCT", "admin"));
+        assertThrows(StoreException.class, () -> storeService.showCustomer("NO_SUCH_CUSTOMER", "admin"));
 
         assertThrows(StoreException.class,
-                () -> storeService.provisionAisle("BAD_STORE", "AX", "Name", "Desc", null, "token"));
+                () -> storeService.provisionAisle("BAD_STORE", "AX", "Name", "Desc", null, "admin"));
 
         assertThrows(StoreException.class,
-                () -> storeService.assignCustomerBasket("BAD_CUSTOMER", "B9", "token"));
+                () -> storeService.assignCustomerBasket("BAD_CUSTOMER", "B9", "admin"));
 
         assertNull(authenticationService.updateUser("missing@test.com", "pw", "Name"));
         assertFalse(authenticationService.deleteUser("missing@test.com"));

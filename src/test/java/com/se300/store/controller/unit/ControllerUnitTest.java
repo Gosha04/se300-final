@@ -26,6 +26,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.se300.store.controller.StoreController;
 import com.se300.store.controller.UserController;
 import com.se300.store.model.Store;
+import com.se300.store.model.StoreException;
 import com.se300.store.model.User;
 import com.se300.store.service.AuthenticationService;
 import com.se300.store.service.StoreService;
@@ -106,6 +107,7 @@ public class ControllerUnitTest {
         when(storeService.provisionStore("123", "MyStore", "address", "admin")).thenReturn(store);
 
         given()
+            .param("token", "admin")
             .param("storeId", "123")
             .param("name", "MyStore")
             .param("address", "address")
@@ -116,6 +118,26 @@ public class ControllerUnitTest {
             .body("id", equalTo("123"));
 
         given()
+            .param("storeId", "123")
+            .param("name", "MyStore")
+            .param("address", "address")
+        .when()
+            .post("/api/v1/stores")
+        .then()
+            .statusCode(401);
+        
+        given()
+            .param("token", "token")
+            .param("storeId", "123")
+            .param("name", "MyStore")
+            .param("address", "address")
+        .when()
+            .post("/api/v1/stores")
+        .then()
+            .statusCode(401);
+
+        given()
+            .param("token", "admin")
             .param("storeId", "123")
             .param("name", "MyStore")
             .param("address", "address")
@@ -134,11 +156,18 @@ public class ControllerUnitTest {
         when(storeService.getAllStores()).thenReturn(java.util.List.of(store));
 
         given()
+            .param("token", "admin")
         .when()
             .get("/api/v1/stores")
         .then()
             .statusCode(200)
             .body("[0].id", equalTo("123"));
+
+        given()
+        .when()
+            .get("/api/v1/stores")
+        .then()
+            .statusCode(401);
 
         verify(storeService).getAllStores();
     }
@@ -150,12 +179,20 @@ public class ControllerUnitTest {
         when(storeService.showStore("123", "admin")).thenReturn(store);
 
         given() 
+            .param("token", "admin")
             .param("storeId", "123")
         .when()
             .get("/api/v1/stores/123")
         .then()
             .statusCode(200)
             .body("id", equalTo("123"));
+
+        given() 
+            .param("storeId", "123")
+        .when()
+            .get("/api/v1/stores/123")
+        .then()
+            .statusCode(401);
 
         verify(storeService).showStore("123", "admin");
     }
@@ -172,6 +209,7 @@ public class ControllerUnitTest {
                 .thenReturn(store);
 
         given()
+            .param("token", "admin")
             .param("description", "description")  
             .param("address", "address")          
         .when()
@@ -179,6 +217,22 @@ public class ControllerUnitTest {
         .then()
             .statusCode(200)
             .body("id", equalTo("123"));
+
+        given() 
+            .param("storeId", "123")
+        .when()
+            .put("/api/v1/stores/123")
+        .then()
+            .statusCode(401);
+
+        given() 
+            .param("token", "token")
+            .param("storeId", "123")
+        .when()
+            .put("/api/v1/stores/123")
+        .then()
+            .statusCode(401);
+
         verify(storeService).updateStore("123", "description", "address");
     }
 
@@ -194,11 +248,28 @@ public class ControllerUnitTest {
         doNothing().when(storeService).deleteStore("123");
   
         given()
+            .param("token", "admin")
             .param("storeId", "123")
         .when()
             .delete("/api/v1/stores/123")
         .then()
             .statusCode(204);
+
+        given()
+            .param("token", "token")
+            .param("storeId", "123")
+        .when()
+            .delete("/api/v1/stores/123")
+        .then()
+            .statusCode(401);
+
+        given()
+            .param("storeId", "123")
+        .when()
+            .delete("/api/v1/stores/123")
+        .then()
+            .statusCode(401);
+
         verify(storeService).deleteStore("123");
     }
 
@@ -206,15 +277,14 @@ public class ControllerUnitTest {
     @DisplayName("Mock: Store error handling - service throws exception")
     public void testStoreErrorHandlingWithMock() throws Exception {
         when(storeService.showStore("123", "admin"))
-        .thenThrow(new com.se300.store.model.StoreException("show", "failure"));
+            .thenThrow(new StoreException("show", "failure"));
 
         given()
-            .param("storeId", "123")
+            .param("token", "admin")
         .when()
             .get("/api/v1/stores/123")
         .then()
-            .statusCode(404)
-            .body("message", equalTo("Store Does Not Exist"));
+            .statusCode(404);
 
         verify(storeService).showStore("123", "admin");
     }

@@ -22,7 +22,7 @@ public class StoreController extends BaseServlet {
 
     // REST CRUD API for Store operations
 
-    private static final String TOKEN = "admin";
+    // private static final String TOKEN = "admin";
 
     private final StoreService storeService;
 
@@ -38,6 +38,12 @@ public class StoreController extends BaseServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String storeId = extractResourceId(request);
+        String token   = request.getParameter("token");
+
+        if (token == null || token.isBlank()) {
+            sendErrorResponse(response, HttpServletResponse.SC_UNAUTHORIZED, "No token");
+            return;
+        }
 
         // GET ALL STORES
         if (storeId == null) {
@@ -49,7 +55,7 @@ public class StoreController extends BaseServlet {
         // GET SINGLE STORE
         Store store = null;
         try {
-            store = storeService.showStore(storeId, TOKEN);
+            store = storeService.showStore(storeId, token);
         } catch (StoreException ignored) {}  // Not hit by coverage, errors are thrown on model level
 
         if (store == null) {
@@ -66,7 +72,7 @@ public class StoreController extends BaseServlet {
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-
+        String token    = request.getParameter("token");
         String storeId  = request.getParameter("storeId");
         String name     = request.getParameter("name");
         String address  = request.getParameter("address");
@@ -76,9 +82,19 @@ public class StoreController extends BaseServlet {
             return;
         }
 
+        if (token == null || token.isBlank()) {
+            sendErrorResponse(response, HttpServletResponse.SC_UNAUTHORIZED, "Missing token");
+            return;
+        }
+
+        if (!"admin".equals(token)) {
+            sendErrorResponse(response, HttpServletResponse.SC_UNAUTHORIZED, "Only admin allowed to create store");
+            return;
+        }
+
         Store existing = null;
         try {
-            existing = storeService.showStore(storeId, TOKEN);
+            existing = storeService.showStore(storeId, token);
         } catch (StoreException ignored) {}  // Not hit by coverage, errors are thrown on model level
 
         if (existing != null) {
@@ -88,7 +104,7 @@ public class StoreController extends BaseServlet {
 
         Store created = null;
         try {
-            created = storeService.provisionStore(storeId, name, address, TOKEN);
+            created = storeService.provisionStore(storeId, name, address, token);
         } catch (StoreException ignored) {}  // Not hit by coverage, errors are thrown on model level
 
         sendJsonResponse(response, created, HttpServletResponse.SC_CREATED);
@@ -100,10 +116,20 @@ public class StoreController extends BaseServlet {
      */
     @Override
     protected void doPut(HttpServletRequest request, HttpServletResponse response) throws IOException {
-
+        String token       = request.getParameter("token");
         String storeId     = extractResourceId(request);
         String description = request.getParameter("description");
         String address     = request.getParameter("address");
+
+        if (token == null || token.isBlank()) {
+            sendErrorResponse(response, HttpServletResponse.SC_UNAUTHORIZED, "Missing token");
+            return;
+        }
+
+        if (!"admin".equals(token)) {
+            sendErrorResponse(response, HttpServletResponse.SC_UNAUTHORIZED, "Only admin allowed to update store");
+            return;
+        }
 
         if (storeId == null) {
             sendErrorResponse(response, HttpServletResponse.SC_BAD_REQUEST, "storeId path parameter required");
@@ -115,9 +141,10 @@ public class StoreController extends BaseServlet {
             return;
         }
 
+
         Store store = null;
         try {
-            store = storeService.showStore(storeId, TOKEN);
+            store = storeService.showStore(storeId, token);
         } catch (StoreException ignored) {}  // Not hit by coverage, errors are thrown on model level
 
         if (store == null) {
@@ -139,7 +166,7 @@ public class StoreController extends BaseServlet {
      */
     @Override
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
-
+        String token    = request.getParameter("token");
         String storeId = extractResourceId(request);
 
         if (storeId == null) {
@@ -147,10 +174,20 @@ public class StoreController extends BaseServlet {
             return;
         }
 
+        if (token == null || token.isBlank()) {
+            sendErrorResponse(response, HttpServletResponse.SC_UNAUTHORIZED, "Missing token");
+            return;
+        }
+
+        if (!"admin".equals(token)) {
+            sendErrorResponse(response, HttpServletResponse.SC_UNAUTHORIZED, "Only admin can delete store");
+            return;
+        }
+
         // Check existence
         Store store = null;
         try {
-            store = storeService.showStore(storeId, TOKEN);
+            store = storeService.showStore(storeId, token);
         } catch (StoreException ignored) {}  // Not hit by coverage, errors are thrown on model level
 
         if (store == null) {

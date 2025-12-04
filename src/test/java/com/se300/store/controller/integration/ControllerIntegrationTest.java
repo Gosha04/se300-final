@@ -70,6 +70,7 @@ public class ControllerIntegrationTest {
     @DisplayName("Integration: Create store via REST API") 
     public void testCreateStore() {
         given()
+            .param("token", "admin")
             .param("storeId", "1")
             .param("name", "testName")
             .param("address", "testAddress")
@@ -82,6 +83,7 @@ public class ControllerIntegrationTest {
             .body("address", equalTo("testAddress"));
 
         given()
+            .param("token", "admin")
             .param("storeId", "1")
             .param("name", "testName")
             .param("address", "testAddress")
@@ -96,6 +98,7 @@ public class ControllerIntegrationTest {
     @DisplayName("Integration: Get all stores via REST API")
     public void testGetAllStores() {
         given()
+            .param("token", "admin")
         .when()
             .get("/api/v1/stores")
         .then()
@@ -107,6 +110,7 @@ public class ControllerIntegrationTest {
     @DisplayName("Integration: Get store by ID via REST API")
     public void testGetStoreById() {
         given()
+            .param("token", "admin")
         .when()
             .get("/api/v1/stores/1")
         .then()
@@ -121,6 +125,7 @@ public class ControllerIntegrationTest {
     @DisplayName("Integration: Update store via REST API")
     public void testUpdateStore() {
         given()
+            .param("token", "admin")
             .param("description", "updateName")
             .param("address", "updateAddress")
         .when()
@@ -132,6 +137,7 @@ public class ControllerIntegrationTest {
             .body("address", equalTo("updateAddress"));
 
         given()
+            .param("token", "admin")
             .param("description", "updateName")
             .param("address", "updateAddress")
         .when()
@@ -140,12 +146,14 @@ public class ControllerIntegrationTest {
             .statusCode(400);
 
         given()
+            .param("token", "admin")
         .when()
             .put("/api/v1/stores/1")
         .then()
             .statusCode(400);
 
         given()
+            .param("token", "admin")
             .param("description", "updateName")
             .param("address", "updateAddress")
         .when()
@@ -159,18 +167,21 @@ public class ControllerIntegrationTest {
     @DisplayName("Integration: Delete store via REST API")
     public void testDeleteStore() {
         given()
+            .param("token", "admin")
         .when()
             .delete("/api/v1/stores/1")
         .then()
             .statusCode(204);
 
         given()
+            .param("token", "admin")
         .when()
             .delete("/api/v1/stores")
         .then()
             .statusCode(400);
 
         given()
+            .param("token", "admin")
         .when()
             .delete("/api/v1/stores/12")
         .then()
@@ -182,6 +193,7 @@ public class ControllerIntegrationTest {
     @DisplayName("Integration: Complete store CRUD workflow via REST API")
     public void testStoreCompleteWorkflow() {
         given()
+            .param("token", "admin")
             .param("storeId", "1")
             .param("name", "testName")
             .param("address", "testAddress")
@@ -194,18 +206,21 @@ public class ControllerIntegrationTest {
             .body("address", equalTo("testAddress"));
 
         given()
+            .param("token", "admin")
         .when()
             .get("/api/v1/stores/1")
         .then()
             .statusCode(200);
 
         given()
+            .param("token", "admin")
         .when()
             .get("/api/v1/stores")
         .then()
             .statusCode(200);
 
         given()
+            .param("token", "admin")
             .param("description", "updateName")
             .param("address", "updateAddress")
         .when()
@@ -218,6 +233,7 @@ public class ControllerIntegrationTest {
 
 
         given()
+            .param("token", "admin")
         .when()
             .delete("/api/v1/stores/1")
         .then()
@@ -249,7 +265,6 @@ public class ControllerIntegrationTest {
     @Order(8)
     @DisplayName("Integration: Get all users via REST API")
     public void testGetAllUsers() {
-        // Arrange: create a user
         given()
             .param("email", "testMail")
             .param("password", "password")
@@ -259,7 +274,6 @@ public class ControllerIntegrationTest {
         .then()
             .statusCode(201);
 
-        // Act + Assert
         given()
         .when()
             .get("/api/v1/users")
@@ -271,7 +285,6 @@ public class ControllerIntegrationTest {
     @Order(9)
     @DisplayName("Integration: Get user by email via REST API")
     public void testGetUserByEmail() {
-        // Arrange: create a user
         given()
             .param("email", "testMail")
             .param("password", "password")
@@ -281,7 +294,6 @@ public class ControllerIntegrationTest {
         .then()
             .statusCode(201);
 
-        // Act + Assert
         given()
         .when()
             .get("/api/v1/users/testMail")
