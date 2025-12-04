@@ -80,8 +80,10 @@ public class ServiceIntegrationTest {
         Store updated = storeService.updateStore("S1", "Updated Desc", "999 New St");
         assertEquals("Updated Desc", updated.getDescription());
         assertEquals("999 New St", updated.getAddress());
+        assertThrows(StoreException.class, () -> storeService.updateStore("S33434", "no", "no"));
 
         storeService.deleteStore("S1");
+        assertThrows(StoreException.class, () -> storeService.deleteStore("S1"));
         assertThrows(StoreException.class, () -> storeService.showStore("S1", "token"));
     }
 
@@ -197,8 +199,12 @@ public class ServiceIntegrationTest {
         Device device = storeService.provisionDevice("D1", "TempSensor", deviceType, "S1", "A1", "token");
         assertNotNull(device);
         assertEquals("D1", device.getId());
+        assertThrows(StoreException.class, () -> storeService.provisionDevice("D1", "fake", deviceType, "Sr3", "sdfs", "token"));
+        assertThrows(StoreException.class, () -> storeService.provisionDevice("D1", "fake", deviceType, "S1", "sdfs", "token"));
+        assertThrows(StoreException.class, () -> storeService.provisionDevice("D1", "fake", deviceType, "S1", "A1", "token"));
 
         assertDoesNotThrow(() -> storeService.raiseEvent("D1", "READ", "token"));
+        assertThrows(StoreException.class, () -> storeService.raiseEvent("D3432", "READ", "token"));
 
         assertThrows(StoreException.class, () -> storeService.issueCommand("BAD", "ON", "token"));
     }

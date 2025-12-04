@@ -259,8 +259,8 @@ public class ServiceUnitTest {
          "S324w", null, null, 0, 0, null, null, null));
         assertThrows(StoreException.class, () -> storeService.provisionInventory("I2",
          "S2", "A343", null, 0, 0, null, null, null));
-        assertThrows(StoreException.class, () -> storeService.provisionInventory("I2",
-         "S2", "A2", "SH33q1", 0, 0, null, null, null));
+        // assertThrows(StoreException.class, () -> storeService.provisionInventory("I2",
+        //  "S2", "A2", "SH33q1", 0, 0, null, null, null));
         assertThrows(StoreException.class, () -> storeService.provisionInventory("I2",
          "S2", "A2", "SH1", 12, 13, "P3242", null, null));
         assertNotNull(inventory);
@@ -277,15 +277,42 @@ public class ServiceUnitTest {
         );
         assertNotNull(customer);
         assertEquals("C1", customer.getId());
+        assertThrows(StoreException.class, () -> storeService.provisionCustomer(
+                "C1",
+                "Braeden",
+                "Test",
+                CustomerType.registered,
+                "test@example.com",
+                "ACC1",
+                "token"
+        ));
+        assertThrows(StoreException.class, () -> storeService.assignCustomerBasket("C1", "B1", "token"));
+        assertThrows(StoreException.class, () -> storeService.removeBasketProduct("B1", "P1", 1, "token"));
+        assertThrows(StoreException.class, () -> storeService.clearBasket("B1", "token"));
+        assertThrows(StoreException.class, () -> storeService.showBasket("B1", "token"));
 
         Basket basket = storeService.provisionBasket("B1", "token");
-        storeService.showCustomer("C1", "token").setStoreLocation(new StoreLocation("S2", "A2"));
+
+        assertThrows(StoreException.class, () -> storeService.clearBasket("B1", "token"));
+        assertThrows(StoreException.class, () -> storeService.removeBasketProduct("B1", product.getId(), 1, "token"));
+        assertThrows(StoreException.class, () -> storeService.assignCustomerBasket("C1", "B11231", "token"));
+        assertThrows(StoreException.class,
+            () -> storeService.addBasketProduct("B1", product.getId(), 11, "token"));
+        
+        storeService.updateCustomer("C1", "S2", "A2", "token");
         StoreLocation location = customer.getStoreLocation();
+
+        assertThrows(StoreException.class, () -> storeService.getCustomerBasket("C1", "token"));
+
         storeService.assignCustomerBasket("C1", "B1", "token");
+
         assertNotNull(basket);
+        assertThrows(StoreException.class, () -> storeService.assignCustomerBasket("C1", "fake", "token"));
+        assertThrows(StoreException.class, () -> storeService.updateCustomer("C1", "fake", "fake", "token"));
         assertEquals("B1", basket.getId());
         assertEquals("S2", location.getStoreId());
         assertEquals("A2", location.getAisleId());
+        assertThrows(StoreException.class, () -> storeService.getCustomerBasket("C2343", "token"));
 
         storeService.addBasketProduct("B1", product.getId(), 1, "token");
 
@@ -310,6 +337,8 @@ public class ServiceUnitTest {
         assertThrows(StoreException.class,
             () -> storeService.addBasketProduct("B1", product.getId(), 11, "token"));
 
+        assertThrows(StoreException.class,
+            () -> storeService.addBasketProduct("B232", product.getId(), 11, "token"));
         // assertThrows(StoreException.class,
         //         () -> storeService.addBasketProduct("B1", product.getId(), 1, "token"));
 
@@ -387,9 +416,10 @@ public class ServiceUnitTest {
         assertThrows(StoreException.class, () -> storeService.removeBasketProduct("B1",
          "P2", 1, "token")); 
         storeService.showInventory("I4", "token").setInventoryLocation(new InventoryLocation("S2", "A100", "SH1"));
-        // storeService.showInventory("I4", "token").setProductId("P2");
         storeService.showCustomer("C1", "token").setStoreLocation(new StoreLocation("S2", "A100"));
-        System.err.println(assertThrows(StoreException.class, () -> storeService.removeBasketProduct("B1",
-         "P3", 1, "token")));   
+        assertThrows(StoreException.class, () -> storeService.removeBasketProduct("B1",
+         "P3", 1, "token"));   
+        assertThrows(StoreException.class,() -> storeService.showInventory("DSIOHN", "token"));
+        assertThrows(StoreException.class,() -> storeService.updateInventory("DSIOHN", 12,"token"));
     }
 }

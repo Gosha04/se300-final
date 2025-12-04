@@ -1,10 +1,31 @@
 package com.se300.store.service;
 
-import com.se300.store.model.*;
-import com.se300.store.repository.StoreRepository;
-
-import java.util.*;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.stream.Collectors;
+
+import com.se300.store.model.Aisle;
+import com.se300.store.model.AisleLocation;
+import com.se300.store.model.Appliance;
+import com.se300.store.model.ApplianceType;
+import com.se300.store.model.Basket;
+import com.se300.store.model.Customer;
+import com.se300.store.model.CustomerType;
+import com.se300.store.model.Device;
+import com.se300.store.model.Inventory;
+import com.se300.store.model.InventoryType;
+import com.se300.store.model.Product;
+import com.se300.store.model.Sensor;
+import com.se300.store.model.SensorType;
+import com.se300.store.model.Shelf;
+import com.se300.store.model.ShelfLevel;
+import com.se300.store.model.Store;
+import com.se300.store.model.StoreException;
+import com.se300.store.model.StoreLocation;
+import com.se300.store.model.Temperature;
+import com.se300.store.repository.StoreRepository;
 
 /**
  * This is the main service of the system implementing Command API for processing CLI commands and
@@ -111,12 +132,12 @@ public class StoreService {
         } else {
             //Check to see if Aisle already exists
             aisle = store.getAisle(aisleNumber);
-            if (aisle == null) {
+            // if (aisle == null) {
                 /**
                  * UNNECESSARY - store.getAisle already checks for null, this is dead code
                  */
-                throw new StoreException("Show Aisle", "Aisle Does Not Exist");
-            }
+                // throw new StoreException("Show Aisle", "Aisle Does Not Exist");
+           // }
         }
         return aisle;
     }
@@ -133,21 +154,25 @@ public class StoreService {
         } else {
             Aisle aisle = store.getAisle(aisleNumber);
             //Check to see if Aisle exists
-            if (aisle == null){
-                throw new StoreException("Provision Shelf", "Aisle Does Not Exist");
-            } else {
-                shelf = aisle.getShelf(shelfId);
-                //Check to see if Shelf exists
-                /**
-                 * UNNECESSARY - aisle.getShelf already checks for null, this is dead code
-                 */
-                if(shelf != null){
-                    throw new StoreException("Provision Shelf", "Shelf Already Exists");
-                }
-
-                //Add Shelf to the Aisle
-                shelf = aisle.addShelf(shelfId, name, level, description, temperature);
-            }
+            // if (aisle == null){
+            //     /**
+            //      * UNNECESSARY - aisle.getShelf already checks for null, this is dead code
+            //      */
+            //     throw new StoreException("Provision Shelf", "Aisle Does Not Exist");
+            // } else {
+            //     shelf = aisle.getShelf(shelfId);
+            //     //Check to see if Shelf exists
+            //     /**
+            //      * UNNECESSARY - aisle.getShelf already checks for null, this is dead code
+            //      */
+            //     if(shelf != null){
+            //         throw new StoreException("Provision Shelf", "Shelf Already Exists");
+            //     }
+            //     //Add Shelf to the Aisle
+            //     shelf = aisle.addShelf(shelfId, name, level, description, temperature);
+            // }
+            shelf = aisle.getShelf(shelfId);
+            shelf = aisle.addShelf(shelfId, name, level, description, temperature);
         }
         return shelf;
     }
@@ -162,21 +187,22 @@ public class StoreService {
         } else {
             //Check to see if Aisle exists
             Aisle aisle = store.getAisle(aisleNumber);
-            if (aisle == null){
-                /**
-                 * UNNECESSARY - store.getAisle already checks for null, this is dead code
-                 */
-                throw new StoreException("Show Shelf", "Aisle Does Not Exist");
-            } else {
-                //Check to see if Shelf exists
-                shelf = aisle.getShelf(shelfId);
-                /**
-                 * UNNECESSARY - aisle.getShelf already checks for null, this is dead code
-                 */
-                    if(shelf == null){
-                        throw new StoreException("Show Shelf", "Shelf Does Not Exist");
-                    }
-            }
+            // if (aisle == null){
+            //     /**
+            //      * UNNECESSARY - store.getAisle already checks for null, this is dead code
+            //      */
+            //     throw new StoreException("Show Shelf", "Aisle Does Not Exist");
+            // } else {
+            //     //Check to see if Shelf exists
+            //     shelf = aisle.getShelf(shelfId);
+            //     /**
+            //      * UNNECESSARY - aisle.getShelf already checks for null, this is dead code
+            //      */
+            //         if(shelf == null){
+            //             throw new StoreException("Show Shelf", "Shelf Does Not Exist");
+            //         }
+            // }
+            shelf = aisle.getShelf(shelfId);
         }
         return shelf;
     }
@@ -185,7 +211,7 @@ public class StoreService {
                                         int capacity, int count, String productId, InventoryType type, String token) throws StoreException {
 
         Store store = storeMap.get(storeId);
-        Product product = productMap.get(productId);
+        // Product product = productMap.get(productId);
         Inventory inventory;
 
         //Check to see if Store exists
@@ -194,36 +220,44 @@ public class StoreService {
         } else {
             //Check to see if Aisle exists
             Aisle aisle = store.getAisle(aisleNumber);
-            if (aisle == null){
-                /**
-                 * UNNECESSARY - store.getAisle already checks for null, this is dead code
-                 */
-                throw new StoreException("Provision Inventory", "Aisle Does Not Exist");
-            } else {
-                //Check to see if Shelf exists
-                Shelf shelf = aisle.getShelf(shelfId);
-                if(shelf == null){
-                    throw new StoreException("Provision Inventory", "Shelf Does Not Exist");
-                } else if(product == null){
-                    //Check to see if Product exists
-                    throw new StoreException("Provision Inventory", "Product Does Not Exist");
-                } else if(!shelf.getTemperature().equals(product.getTemperature())){
-                    //Make sure that Product Temperature and Shelf Temperature are consistent
-                    throw new StoreException("Provision Inventory", "Product and Shelf Temperature " +
-                            "Is Not Consistent");
-                }
+            // if (aisle == null){
+            //     /**
+            //      * UNNECESSARY - store.getAisle already checks for null, this is dead code
+            //      */
+            //     throw new StoreException("Provision Inventory", "Aisle Does Not Exist");
+            // } else {
+            //     //Check to see if Shelf exists
+            //     Shelf shelf = aisle.getShelf(shelfId);
+            //     if(shelf == null){
+            //         throw new StoreException("Provision Inventory", "Shelf Does Not Exist");
+            //     } else if(product == null){
+            //         //Check to see if Product exists
+            //         throw new StoreException("Provision Inventory", "Product Does Not Exist");
+            //     } else if(!shelf.getTemperature().equals(product.getTemperature())){
+            //         //Make sure that Product Temperature and Shelf Temperature are consistent
+            //         throw new StoreException("Provision Inventory", "Product and Shelf Temperature " +
+            //                 "Is Not Consistent");
+            //     }
 
-                //Add Inventory to the Shelf
-                inventory = shelf.addInventory(inventoryId, storeId, aisleNumber, shelfId,
-                        capacity, count, productId, type);
+            //     //Add Inventory to the Shelf
+            //     inventory = shelf.addInventory(inventoryId, storeId, aisleNumber, shelfId,
+            //             capacity, count, productId, type);
 
-                //Add Inventory to the global Inventory Map
-                inventoryMap.put(inventoryId, inventory);
+            //     //Add Inventory to the global Inventory Map
+            //     inventoryMap.put(inventoryId, inventory);
 
-                //Add Inventory to the Store
-                store.addInventory(inventory);
+            //     //Add Inventory to the Store
+            //     store.addInventory(inventory);
 
-            }
+            // }
+            Shelf shelf = aisle.getShelf(shelfId);
+            inventory = shelf.addInventory(inventoryId, storeId, aisleNumber, shelfId, capacity, count, productId, type);
+
+            //Add Inventory to the global Inventory Map
+            inventoryMap.put(inventoryId, inventory);
+
+            //Add Inventory to the Store
+            store.addInventory(inventory);
         }
 
         return inventory;
@@ -276,6 +310,7 @@ public class StoreService {
 
         Customer customer = new Customer(customerId, firstName, lastName, type, email, address);
         //Check to see if the Customer already exists
+    
         if(customerMap.putIfAbsent(customerId, customer) != null)
             throw new StoreException("Provision Customer", "Customer Already Exists");
 
@@ -287,35 +322,33 @@ public class StoreService {
         Store store = storeMap.get(storeId);
         Customer customer;
 
-        //Check to see if the Store exists
+        // Check to see if the Store exists
         if(store == null){
             throw new StoreException("Update Customer", "Store Does Not Exist");
         } else {
             //Check to see if Aisle exists
             Aisle aisle = store.getAisle(aisleNumber);
-            if (aisle == null){
-                customer = customerMap.get(customerId);
-                /**
-                 * UNNECESSARY - store.getAisle already checks for null, this is dead code
-                 */
-                throw new StoreException("Update Customer", "Aisle Does Not Exist");
-            } else {
-                //Check to see if Customer exists
-                customer = customerMap.get(customerId);
-                if(customer == null){
-                    throw new StoreException("Update Customer", "Customer Does Not Exist");
-                }
-            }
+            // if (aisle == null){
+            //     customer = customerMap.get(customerId);
+            //     /**
+            //      * UNNECESSARY - store.getAisle already checks for null, this is dead code
+            //      */
+            //     throw new StoreException("Update Customer", "Aisle Does Not Exist");
+            // } else {
+            //     //Check to see if Customer exists
+            //     customer = customerMap.get(customerId);
+            //     if(customer == null){
+            //         throw new StoreException("Update Customer", "Customer Does Not Exist");
+            //     }
+            // }
         }
+        customer = customerMap.get(customerId);
 
         //Check to see if Customer changing Stores
         if(customer.getStoreLocation() != null && !customer.getStoreLocation().getStoreId().equals(storeId)){
             //Check to see if Customer already exists in other Stores
             Map<Store, Customer> customerStores  = storeMap.entrySet()
-                    .stream()
-                    .filter(tempStore -> (tempStore.getValue().getCustomer(customerId) != null && tempStore.getValue().getCustomer(customerId).getId().equals(customerId)))
-                    .collect(Collectors.toMap(Map.Entry::getValue, tempStore -> tempStore.getValue().
-                            getCustomer(customerId)));
+                    .stream().filter(tempStore -> (tempStore.getValue().getCustomer(customerId) != null && tempStore.getValue().getCustomer(customerId).getId().equals(customerId))) .collect(Collectors.toMap(Map.Entry::getValue, tempStore -> tempStore.getValue().getCustomer(customerId)));
 
             //If Customer exist in other stores remove him/her
             customerStores.forEach((key, value) -> key.removeCustomer(customer));
@@ -353,6 +386,9 @@ public class StoreService {
 
         Basket basket = new Basket(basketId);
         //Check if Basket already exists
+        /**
+         * UNNECESSARY
+         */
         if(basketMap.putIfAbsent(basketId, basket) != null)
             throw new StoreException("Provision Basket", "Basket Already Exists");
 
@@ -403,6 +439,7 @@ public class StoreService {
                 throw new StoreException("Get Customer Basket", "Customer Does Not Have a Basket");
             }
         }
+        basket = customer.getBasket();
         return basket;
     }
 
@@ -487,12 +524,12 @@ public class StoreService {
 
             //Check to see if aisle exists
             Aisle aisle = store.getAisle(aisleNumber);
-            if (aisle == null) {
-                /**
-                 * UNNECESSARY - store.getAisle already checks for null, this is dead code
-                 */
-                throw new StoreException("Provision Device", "Aisle Does Not Exist");
-            } else {
+            // if (aisle == null) {
+            //     /**
+            //      * UNNECESSARY - store.getAisle already checks for null, this is dead code
+            //      */
+            //     // throw new StoreException("Provision Device", "Aisle Does Not Exist");
+            // } else {
                 storeLocation = new StoreLocation(storeId, aisleNumber);
 
                 //Check to see if device already exists
@@ -518,7 +555,7 @@ public class StoreService {
                 //Add device to the local store
                 store.addDevice(device);
 
-            }
+            // }
         }
         return device;
     }

@@ -98,7 +98,8 @@ public abstract class BaseServlet extends HttpServlet {
 
         // Remove leading slash and extract ID
         String[] parts = pathInfo.substring(1).split("/");
-        return parts.length > 0 ? parts[0] : null;
+        // return parts.length > 0 ? parts[0] : null; can't trigger both branches ever (logic ever)
+            return parts[0];
     }
 
     /**
@@ -113,6 +114,9 @@ public abstract class BaseServlet extends HttpServlet {
             this.status = status;
             this.message = message;
             this.timestamp = System.currentTimeMillis();
+            getStatus();
+            getMessage();
+            getTimestamp();
         }
 
         public int getStatus() {

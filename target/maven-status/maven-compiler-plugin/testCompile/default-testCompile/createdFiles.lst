@@ -8,4 +8,5 @@ com/se300/store/controller/unit/ControllerUnitTest.class
 com/se300/store/controller/integration/ControllerIntegrationTest.class
 com/se300/store/service/unit/ServiceUnitTest.class
 com/se300/store/controller/internalmockserver/InternalMockServerTest.class
+com/se300/store/controller/internalmockserver/InternalMockServerTest$TestServlet.class
 com/se300/store/controller/externalmockserver/ExternalMockServerTest.class

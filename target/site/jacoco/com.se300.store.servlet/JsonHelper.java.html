@@ -12,7 +12,7 @@ import java.time.format.DateTimeFormatter;
  * @author Sergey L. Sundukovskiy, Ph.D.
  * @version 1.0
  */
-<span class="nc" id="L15">public class JsonHelper {</span>
+<span class="fc" id="L15">public class JsonHelper {</span>
 
     // Singleton Gson instance configured with custom type adapters
     // This ensures consistent JSON formatting across the entire application
@@ -21,16 +21,16 @@ import java.time.format.DateTimeFormatter;
 <span class="fc" id="L21">            .serializeNulls()     // Include null fields in JSON output</span>
             // Custom serializer for LocalDate (converts to ISO-8601 format: yyyy-MM-dd)
 <span class="fc" id="L23">            .registerTypeAdapter(LocalDate.class, (JsonSerializer&lt;LocalDate&gt;)</span>
-<span class="nc" id="L24">                    (src, typeOfSrc, context) -&gt; new JsonPrimitive(src.format(DateTimeFormatter.ISO_LOCAL_DATE)))</span>
+<span class="fc" id="L24">                    (src, typeOfSrc, context) -&gt; new JsonPrimitive(src.format(DateTimeFormatter.ISO_LOCAL_DATE)))</span>
             // Custom deserializer for LocalDate (parses from ISO-8601 format)
 <span class="fc" id="L26">            .registerTypeAdapter(LocalDate.class, (JsonDeserializer&lt;LocalDate&gt;)</span>
-<span class="nc" id="L27">                    (json, typeOfT, context) -&gt; LocalDate.parse(json.getAsString(), DateTimeFormatter.ISO_LOCAL_DATE))</span>
+<span class="fc" id="L27">                    (json, typeOfT, context) -&gt; LocalDate.parse(json.getAsString(), DateTimeFormatter.ISO_LOCAL_DATE))</span>
             // Custom serializer for LocalDateTime (converts to ISO-8601 format with time)
 <span class="fc" id="L29">            .registerTypeAdapter(LocalDateTime.class, (JsonSerializer&lt;LocalDateTime&gt;)</span>
-<span class="nc" id="L30">                    (src, typeOfSrc, context) -&gt; new JsonPrimitive(src.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)))</span>
+<span class="fc" id="L30">                    (src, typeOfSrc, context) -&gt; new JsonPrimitive(src.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)))</span>
             // Custom deserializer for LocalDateTime (parses from ISO-8601 format with time)
 <span class="fc" id="L32">            .registerTypeAdapter(LocalDateTime.class, (JsonDeserializer&lt;LocalDateTime&gt;)</span>
-<span class="nc" id="L33">                    (json, typeOfT, context) -&gt; LocalDateTime.parse(json.getAsString(), DateTimeFormatter.ISO_LOCAL_DATE_TIME))</span>
+<span class="fc" id="L33">                    (json, typeOfT, context) -&gt; LocalDateTime.parse(json.getAsString(), DateTimeFormatter.ISO_LOCAL_DATE_TIME))</span>
 <span class="fc" id="L34">            .create();</span>
 
     /**
@@ -52,7 +52,7 @@ import java.time.format.DateTimeFormatter;
      * @return The deserialized object
      */
     public static &lt;T&gt; T fromJson(String json, Class&lt;T&gt; classOfT) {
-<span class="nc" id="L55">        return GSON.fromJson(json, classOfT);</span>
+<span class="fc" id="L55">        return GSON.fromJson(json, classOfT);</span>
     }
 
     /**
@@ -62,7 +62,7 @@ import java.time.format.DateTimeFormatter;
      * @return The Gson instance
      */
     public static Gson getGson() {
-<span class="nc" id="L65">        return GSON;</span>
+<span class="fc" id="L65">        return GSON;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

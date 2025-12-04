@@ -1,15 +1,0 @@
-
-Fcom.se300.store.model.InventoryLocation#getShelfId()Ljava/lang/String;y
-o/Users/gosha04/Documents/CPSC_Courses/SE/se300-final/src/main/java/com/se300/store/model/InventoryLocation.java ("1*¶
-1 (€
-~
- (
-%0java.lang.String"__id*T
-
-__unknown_file (8*6)
-'com.se300.store.model.InventoryLocation"	
-shelfId"$
- (
-
-%0java.lang.StringB+)
-'com.se300.store.model.InventoryLocationH

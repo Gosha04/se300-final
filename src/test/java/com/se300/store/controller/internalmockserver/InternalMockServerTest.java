@@ -2,9 +2,9 @@ package com.se300.store.controller.internalmockserver;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
+import static org.junit.Assert.assertNull;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockConstruction;
@@ -14,6 +14,10 @@ import static org.mockito.Mockito.when;
 import static org.mockserver.model.HttpRequest.request;
 import static org.mockserver.model.HttpResponse.response;
 import static org.mockserver.verify.VerificationTimes.exactly;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.StringReader;
 
 import org.apache.catalina.Context;
 import org.apache.catalina.Server;
@@ -32,6 +36,9 @@ import org.mockserver.integration.ClientAndServer;
 import org.mockserver.model.Header;
 
 import com.se300.store.SmartStoreApplication;
+import com.se300.store.servlet.BaseServlet;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * A test class for verifying internal Smart Store API calls using a mock server.
@@ -41,6 +48,15 @@ import com.se300.store.SmartStoreApplication;
 @DisplayName("Internal Mock Server Tests")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class InternalMockServerTest {
+    private static class TestServlet extends BaseServlet {
+        public String readBody(HttpServletRequest request) throws IOException {
+            return super.readRequestBody(request);
+        }
+
+        public String extractId(HttpServletRequest request) {
+            return super.extractResourceId(request);
+        }
+    } // For Testing 
 
     //COMPLETE: Implement Internal Mock Server to test internal Smart Store API calls
 
@@ -321,5 +337,37 @@ public class InternalMockServerTest {
 
             verify(mockServer, never()).await();
         }
+    }
+    @Test
+    @DisplayName("BaseServlet Test") 
+    public void baseServletTest() throws IOException {
+        HttpServletRequest request = mock(HttpServletRequest.class);
+
+        String body = "{ \"name\": \"Josh\", \"id\": 123 }";
+
+        BufferedReader reader = new BufferedReader(new StringReader(body));
+        when(request.getReader()).thenReturn(reader);
+
+        TestServlet servlet = new TestServlet();
+
+        String result = servlet.readBody(request);
+
+        assertEquals(body, result);
+
+        when(request.getPathInfo()).thenReturn("/C1/orders/123");
+        String id = servlet.extractId(request);
+        assertEquals("C1", id);
+
+        when(request.getPathInfo()).thenReturn("/");
+        id = servlet.extractId(request);
+        assertNull(id);
+
+        when(request.getPathInfo()).thenReturn(null);
+        id = servlet.extractId(request);
+        assertNull(id);
+
+        when(request.getPathInfo()).thenReturn("/C1/");
+        id = servlet.extractId(request);
+        assertEquals("C1", id);
     }
 }

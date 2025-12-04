@@ -50,7 +50,7 @@ public class StoreController extends BaseServlet {
         Store store = null;
         try {
             store = storeService.showStore(storeId, TOKEN);
-        } catch (StoreException ignored) {}
+        } catch (StoreException ignored) {}  // Not hit by coverage, errors are thrown on model level
 
         if (store == null) {
             sendErrorResponse(response, HttpServletResponse.SC_NOT_FOUND, "Store Does Not Exist");
@@ -79,7 +79,7 @@ public class StoreController extends BaseServlet {
         Store existing = null;
         try {
             existing = storeService.showStore(storeId, TOKEN);
-        } catch (StoreException ignored) {}
+        } catch (StoreException ignored) {}  // Not hit by coverage, errors are thrown on model level
 
         if (existing != null) {
             sendErrorResponse(response, HttpServletResponse.SC_BAD_REQUEST, "Store Already Exists");
@@ -89,7 +89,7 @@ public class StoreController extends BaseServlet {
         Store created = null;
         try {
             created = storeService.provisionStore(storeId, name, address, TOKEN);
-        } catch (StoreException ignored) {}
+        } catch (StoreException ignored) {}  // Not hit by coverage, errors are thrown on model level
 
         sendJsonResponse(response, created, HttpServletResponse.SC_CREATED);
     }
@@ -118,7 +118,7 @@ public class StoreController extends BaseServlet {
         Store store = null;
         try {
             store = storeService.showStore(storeId, TOKEN);
-        } catch (StoreException ignored) {}
+        } catch (StoreException ignored) {}  // Not hit by coverage, errors are thrown on model level
 
         if (store == null) {
             sendErrorResponse(response, HttpServletResponse.SC_NOT_FOUND, "Store Does Not Exist");
@@ -128,7 +128,7 @@ public class StoreController extends BaseServlet {
         Store updated = null;
         try {
             updated = storeService.updateStore(storeId, description, address);
-        } catch (StoreException ignored) {}
+        } catch (StoreException ignored) {} // Not hit by coverage, errors are thrown on model level
 
         sendJsonResponse(response, updated);
     }
@@ -151,7 +151,7 @@ public class StoreController extends BaseServlet {
         Store store = null;
         try {
             store = storeService.showStore(storeId, TOKEN);
-        } catch (StoreException ignored) {}
+        } catch (StoreException ignored) {}  // Not hit by coverage, errors are thrown on model level
 
         if (store == null) {
             sendErrorResponse(response, HttpServletResponse.SC_NOT_FOUND, "Store Does Not Exist");
@@ -161,7 +161,7 @@ public class StoreController extends BaseServlet {
         // Delete
         try {
             storeService.deleteStore(storeId);
-        } catch (StoreException ignored) {}
+        } catch (StoreException ignored) {}  // Not hit by coverage, errors are thrown on model level
 
         // 204 No Content, no body so no JSON wrapping needed
         response.setStatus(HttpServletResponse.SC_NO_CONTENT);

@@ -1,27 +1,0 @@
-
-Qcom.se300.store.service.AuthenticationService#getAllUsers()Ljava/util/Collection;
-u/Users/gosha04/Documents/CPSC_Courses/SE/se300-final/src/main/java/com/se300/store/service/AuthenticationService.java+ +('"1*»
-1, ,(§
-¤
-, ,(/
-%0)com.se300.store.repository.UserRepository"__id*a
-
-__unknown_file (E*C/
--com.se300.store.service.AuthenticationService"
-userRepositoryÀ½
-, ,('
-%1java.util.Map"Bcom.se300.store.repository.UserRepository#findAll()Ljava/util/Map;*M
-
-__unknown_file (1
-/
-%0)com.se300.store.repository.UserRepository2	findAll()”‘
-, ,(0
-%2java.util.Collection",java.util.Map#values()Ljava/util/Collection;*1
-
-__unknown_file (
-
-%1java.util.Map2values()"(
-, ,(1
-
-%2java.util.CollectionB1/
--com.se300.store.service.AuthenticationServiceH

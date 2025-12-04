@@ -1,67 +1,0 @@
-
-]com.se300.store.repository.UserRepository#findByEmail(Ljava/lang/String;)Ljava/util/Optional;{
-q/Users/gosha04/Documents/CPSC_Courses/SE/se300-final/src/main/java/com/se300/store/repository/UserRepository.java& &(%"3*Ã
-2( ((‹
-ˆ
-( ((#
-%1java.util.Optional".java.util.Optional#empty()Ljava/util/Optional;*2
-
-__unknown_file ("
-java.util.Optional"&
-( (($
-
-%1java.util.Optional*Ž
-3' '(w
-u
-' '(
-%0boolean"	__compare*
-' '(
-==*'
-' '(
-
-emailjava.lang.String*
-' '(
-""*
-2
-1*Ü
-1*" *(-µ
-²
-*" *(/
-%2java.util.Map"Fcom.se300.store.repository.UserRepository#getUsersMap()Ljava/util/Map;*I
-
-__unknown_file (-+
-)com.se300.store.repository.UserRepository]
-[
-* *(0
-usersjava.util.Map"__id*1
-
-__unknown_file (
-
-%2java.util.Map¨
-¥
-+# +(3 
-%3com.se300.store.model.User"__mapGet*4
-
-__unknown_file (
-
-usersjava.util.Map*7
-
-__unknown_file (
-
-emailjava.lang.Stringâ
-ß
-+ +(4
-%4java.util.Optional"Ejava.util.Optional#ofNullable(Ljava/lang/Object;)Ljava/util/Optional;*2
-
-__unknown_file ("
-java.util.Optional*>
-
-__unknown_file ("
- 
-%3com.se300.store.model.User"&
-+ +(5
-
-%4java.util.Optional:%
-&& &(2
-emailjava.lang.StringB-+
-)com.se300.store.repository.UserRepositoryH

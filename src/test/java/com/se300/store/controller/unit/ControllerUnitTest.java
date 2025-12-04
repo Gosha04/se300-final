@@ -115,6 +115,15 @@ public class ControllerUnitTest {
             .statusCode(201)
             .body("id", equalTo("123"));
 
+        given()
+            .param("storeId", "123")
+            .param("name", "MyStore")
+            .param("address", "address")
+        .when()
+            .post("/api/v1")
+        .then()
+            .statusCode(404);
+
         verify(storeService).provisionStore("123", "MyStore", "address", "admin");
     }
 
@@ -227,6 +236,15 @@ public class ControllerUnitTest {
             .post("/api/v1/users/")
         .then()
             .statusCode(201);
+
+        given()
+            .param("email", "test@gmail.com")
+            .param("password", "1234")
+            .param("name", "Anon")
+        .when()
+            .post("/api/v1/users/garbage")
+        .then()
+            .statusCode(404);
         
         verify(authenticationService).registerUser("test@gmail.com", "1234", "Anon");
     }

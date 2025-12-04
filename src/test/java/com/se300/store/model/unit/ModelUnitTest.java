@@ -1,4 +1,5 @@
 package com.se300.store.model.unit;
+import static io.restassured.RestAssured.when;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
@@ -9,17 +10,21 @@ import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.io.BufferedReader;
+import java.io.StringReader;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 import com.se300.store.model.Aisle;
 import com.se300.store.model.AisleLocation;
-import com.se300.store.model.Shelf;
 import com.se300.store.model.Basket;
-import com.se300.store.model.Customer;
 import com.se300.store.model.CommandException;
+import com.se300.store.model.Customer;
 import com.se300.store.model.CustomerAgeGroup;
 import com.se300.store.model.CustomerType;
 import com.se300.store.model.Inventory;
@@ -27,12 +32,16 @@ import com.se300.store.model.InventoryLocation;
 import com.se300.store.model.InventoryType;
 import com.se300.store.model.Product;
 import com.se300.store.model.Sensor;
+import com.se300.store.model.Shelf;
 import com.se300.store.model.ShelfLevel;
 import com.se300.store.model.Store;
 import com.se300.store.model.StoreException;
 import com.se300.store.model.StoreLocation;
 import com.se300.store.model.Temperature;
 import com.se300.store.model.User;
+import com.se300.store.servlet.JsonHelper;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * The ModelUnitTest class contains unit tests for various models used in the Smart Store application.
@@ -476,5 +485,26 @@ public class ModelUnitTest {
             () -> assertEquals("Sodas", shelf.getDescription()),
             () -> assertEquals(Temperature.frozen, shelf.getTemperature())
         );
+    }
+    
+    @Test
+    @DisplayName("Servlet Testing")
+    public void servletTest() {
+        LocalDate date = LocalDate.of(2024, 12, 3);
+        String jsonDate = JsonHelper.toJson(date);
+        assertEquals("\"2024-12-03\"", jsonDate);
+
+        LocalDate parsedDate = JsonHelper.fromJson("\"2024-12-03\"", LocalDate.class);
+        assertEquals(LocalDate.of(2024, 12, 3), parsedDate);
+
+        LocalDateTime dateTime = LocalDateTime.of(2024, 12, 3, 14, 30, 0);
+        String jsonDateTime = JsonHelper.toJson(dateTime);
+        assertEquals("\"2024-12-03T14:30:00\"", jsonDateTime);
+
+        LocalDateTime parsedDateTime = JsonHelper.fromJson("\"2024-12-03T14:30:00\"", LocalDateTime.class);
+        assertEquals(LocalDateTime.of(2024, 12, 3, 14, 30, 0), parsedDateTime);
+
+        JsonHelper jh = new JsonHelper();
+        assertNotNull(jh.getGson());
     }
 }
