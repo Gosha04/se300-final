@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CommandProcessor.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">final</a> &gt; <a href="index.source.html" class="el_package">com.se300.store.model</a> &gt; <span class="el_source">CommandProcessor.java</span></div><h1>CommandProcessor.java</h1><pre class="source lang-java linenums">package com.se300.store.model;
 
-import com.se300.store.service.StoreService;
-
 import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
@@ -11,6 +9,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import com.se300.store.service.StoreService;
 
 /**
  * CommandProcessor class implementation for processing DSL commands
@@ -187,12 +187,12 @@ import java.util.regex.Pattern;
 <span class="fc bfc" id="L187" title="All 4 branches covered.">            if(!temp.trim().startsWith(&quot;#&quot;) &amp;&amp; !temp.trim().isEmpty()) {</span>
                 try {
 <span class="fc" id="L189">                    processCommand(temp);</span>
-<span class="fc" id="L190">                } catch (CommandException e) {</span>
+<span class="fc" id="L190">                } catch (CommandException e) { // none of these will ever catch</span>
 <span class="fc" id="L191">                    e.setLineNumber(i + 1);</span>
 <span class="fc" id="L192">                    System.out.println(&quot;\u001B[31m&quot; + &quot;Failed due to: &quot; + e.getReason() + &quot; for Command: &quot; + e.getCommand()</span>
 <span class="fc" id="L193">                            + &quot; On Line Number: &quot; + e.getLineNumber() + &quot;\u001B[0m&quot;);</span>
-<span class="fc" id="L194">                } catch (StoreException e) {</span>
-<span class="fc" id="L195">                    System.out.println(&quot;\u001B[31m&quot; + &quot;Failed due to: &quot; + e.getReason() + &quot; for Command: &quot; + e.getAction() + &quot;\u001B[0m&quot;);</span>
+<span class="nc" id="L194">                } catch (StoreException e) {</span>
+<span class="nc" id="L195">                    System.out.println(&quot;\u001B[31m&quot; + &quot;Failed due to: &quot; + e.getReason() + &quot; for Command: &quot; + e.getAction() + &quot;\u001B[0m&quot;);</span>
 <span class="fc" id="L196">                }</span>
             }
         }

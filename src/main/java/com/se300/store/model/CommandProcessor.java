@@ -1,7 +1,5 @@
 package com.se300.store.model;
 
-import com.se300.store.service.StoreService;
-
 import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
@@ -11,6 +9,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import com.se300.store.service.StoreService;
 
 /**
  * CommandProcessor class implementation for processing DSL commands
@@ -187,7 +187,7 @@ public class CommandProcessor implements CommandAPI  {
             if(!temp.trim().startsWith("#") && !temp.trim().isEmpty()) {
                 try {
                     processCommand(temp);
-                } catch (CommandException e) {
+                } catch (CommandException e) { // none of these will ever catch
                     e.setLineNumber(i + 1);
                     System.out.println("\u001B[31m" + "Failed due to: " + e.getReason() + " for Command: " + e.getCommand()
                             + " On Line Number: " + e.getLineNumber() + "\u001B[0m");

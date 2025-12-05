@@ -1,0 +1,24 @@
+
+Icom.se300.store.service.StoreService#getAllStores()Ljava/util/Collection;x
+l/Users/gosha04/Documents/CPSC_Courses/SE/se300-final/src/main/java/com/se300/store/service/StoreService.javaÖ Ö()"1*£
+1
+× ×(M
+K
+
+× ×(
+%0java.util.Map"__id*"
+
+__unknown_file (
+""–“
+
+× ×( 
+%1java.util.Collection",java.util.Map#values()Ljava/util/Collection;*1
+
+__unknown_file (
+
+%0java.util.Map2values()"*
+
+× ×(!
+
+%1java.util.CollectionB(&
+$com.se300.store.service.StoreServiceH

@@ -6,7 +6,7 @@ final,com.se300.store.model,User,0,36,0,0,0,16,0,8,0,8
 final,com.se300.store.model,Aisle,0,119,0,4,0,32,0,16,0,14
 final,com.se300.store.model,AisleLocation,0,15,0,0,0,3,0,1,0,1
 final,com.se300.store.model,Inventory,0,104,1,3,0,31,1,16,0,15
-final,com.se300.store.model,CommandProcessor,0,818,0,60,0,108,0,33,0,3
+final,com.se300.store.model,CommandProcessor,8,810,0,60,2,106,0,33,0,3
 final,com.se300.store.model,CustomerAgeGroup,0,15,0,0,0,3,0,1,0,1
 final,com.se300.store.model,CustomerType,0,15,0,0,0,3,0,1,0,1
 final,com.se300.store.model,ApplianceType,0,21,0,0,0,4,0,1,0,1

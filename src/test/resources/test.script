@@ -1,0 +1,7 @@
+# define  store  <identifier> name <name> address <address>
+define  store  store_456 name Chapman address "One University Drive, Orange, CA 92866"
+
+
+# show  store  <identifier>
+show  store  store_456
+

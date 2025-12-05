@@ -238,8 +238,6 @@ public class ControllerIntegrationTest {
             .delete("/api/v1/stores/1")
         .then()
             .statusCode(204);
-
-
     }
 
     // ==================== USER CONTROLLER TESTS ====================

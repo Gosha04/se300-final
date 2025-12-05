@@ -1,0 +1,78 @@
+
+Dcom.se300.store.model.InventoryLocation#toString()Ljava/lang/String;y
+o/Users/gosha04/Documents/CPSC_Courses/SE/se300-final/src/main/java/com/se300/store/model/InventoryLocation.java ("1*á
+1 (#s
+q
+ (!
+%0java.lang.String"__concat*"
+ (#
+InventoryLocation{*
+ (!
+storeLocation='‹
+ˆ
+$ (4
+%1java.lang.String"@com.se300.store.model.StoreLocation#toString()Ljava/lang/String;*"
+
+__unknown_file (
+""z
+x
+ (4
+%2java.lang.String"__concat*$
+ (!
+
+%0java.lang.String*$
+$ (4
+
+%1java.lang.Stringh
+f
+ (;
+%3java.lang.String"__concat*$
+ (4
+
+%2java.lang.String*
+7 (;
+\'q
+o
+ (
+%4java.lang.String"__concat*$
+ (;
+
+%3java.lang.String*
+ (
+, shelfId='€
+~
+  ('
+%5java.lang.String"__id*T
+
+__unknown_file (8*6)
+'com.se300.store.model.InventoryLocation"	
+shelfIdz
+x
+ ('
+%6java.lang.String"__concat*$
+ (
+
+%4java.lang.String*$
+  ('
+
+%5java.lang.Stringh
+f
+ (.
+%7java.lang.String"__concat*$
+ ('
+
+%6java.lang.String*
+* (.
+\'g
+e
+ (
+%8java.lang.String"__concat*$
+ (.
+
+%7java.lang.String*
+ (
+}"$
+ (
+
+%8java.lang.StringB+)
+'com.se300.store.model.InventoryLocationH

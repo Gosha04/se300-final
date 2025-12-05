@@ -1,0 +1,26 @@
+
+Ocom.se300.store.servlet.JsonHelper#toJson(Ljava/lang/Object;)Ljava/lang/String;t
+j/Users/gosha04/Documents/CPSC_Courses/SE/se300-final/src/main/java/com/se300/store/servlet/JsonHelper.java* *("1*‚
+1+ +(R
+P
++ +(
+%0com.google.gson.Gson"__id*"
+
+__unknown_file (
+""øõ
++ +("
+%1java.lang.String"Acom.google.gson.Gson#toJson(Ljava/lang/Object;)Ljava/lang/String;*8
+
+__unknown_file (
+
+%0com.google.gson.Gson*8
+
+__unknown_file (
+
+objectjava.lang.Object2toJson(Ljava/lang/Object;)"$
++ +(#
+
+%1java.lang.String:&
+*  *(-
+objectjava.lang.ObjectB&"$
+"com.se300.store.servlet.JsonHelperH

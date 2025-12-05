@@ -1,0 +1,463 @@
+
+1.0Gosha04_se300_finalJavaFrontend"1764893214116*java2.B¿
+E
+@src/main/java/com/se300/store/service/AuthenticationService.java2
+	
+type3
+	
+MAIN4
+
+
+module-key5
+
+Gosha04_se300_final6
+
+package8
+0
++Gosha04_se300_final:com.se300.store.service9
+3
+-com.se300.store.service.AuthenticationService11
+
+class12
+
+access13
+
+public14
+
+simple-name15
+
+AuthenticationService16
+B
+<com.se300.store.service.AuthenticationService.userRepository18
+
+field19
+
+private20
+
+userRepository21
+/
+)com.se300.store.repository.UserRepository23
+
+unknown24
+
+is type25
+
+
+uses26
+h
+bcom.se300.store.service.AuthenticationService#<init>(Lcom/se300/store/repository/UserRepository;)V28
+
+method29
+
+	has param30
+
+calls31
+
+
+references32
+•
+Žcom.se300.store.service.AuthenticationService#registerUser(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lcom/se300/store/model/User;34
+
+registerUser35
+ 
+com.se300.store.model.User37
+
+returns38
+S
+Mcom.se300.store.repository.UserRepository#save(Lcom/se300/store/model/User;)V40
+S
+Mcom.se300.store.service.AuthenticationService#userExists(Ljava/lang/String;)Z42
+
+
+userExists43
+R
+Lcom.se300.store.repository.UserRepository#existsByEmail(Ljava/lang/String;)Z45
+W
+Qcom.se300.store.service.AuthenticationService#getAllUsers()Ljava/util/Collection;47
+
+getAllUsers48
+H
+Bcom.se300.store.repository.UserRepository#findAll()Ljava/util/Map;50
+r
+lcom.se300.store.service.AuthenticationService#getUserByEmail(Ljava/lang/String;)Lcom/se300/store/model/User;52
+
+getUserByEmail53
+c
+]com.se300.store.repository.UserRepository#findByEmail(Ljava/lang/String;)Ljava/util/Optional;55
+“
+Œcom.se300.store.service.AuthenticationService#updateUser(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lcom/se300/store/model/User;57
+
+
+updateUser58
+A
+;com.se300.store.model.User#setPassword(Ljava/lang/String;)V60
+=
+7com.se300.store.model.User#setName(Ljava/lang/String;)V62
+S
+Mcom.se300.store.service.AuthenticationService#deleteUser(Ljava/lang/String;)Z64
+
+
+deleteUser65
+K
+Ecom.se300.store.repository.UserRepository#delete(Ljava/lang/String;)V67J#
+!
+1
+12
+
+3
+4
+
+5
+6Z
+
+7
+7982
+
+
+5
+6j”
+B
+41<
+414229 *
+1$ $(210:7B
+
+
+13
+14
+
+
+15
+43
+B
+17<
+171819 *
+1 (210:7B
+
+
+13
+20
+
+
+15
+21
+B
+51<
+515229 *
+12 2(210:7B
+
+
+13
+14
+
+
+15
+53
+
+61
+616224
+
+44
+444524
+
+22
+222324
+B
+63<
+636429 *
+1N N(210:7B
+
+
+13
+14
+
+
+15
+65
+
+59
+596024
+B
+56<
+565729 *
+19 9(210:7B
+
+
+13
+14
+
+
+15
+58
+B
+33<
+333429 *
+1 (210:7B
+
+
+13
+14
+
+
+15
+35
+>
+108
+101112 *
+1 (#:7B
+
+
+13
+14
+
+
+15
+16
+
+66
+666724
+B
+27<
+272829 *
+1 (210:7B
+
+
+13
+14
+
+
+15
+16
+B
+46<
+464729 *
+1+ +(210:7B
+
+
+13
+14
+
+
+15
+48
+
+54
+545524
+
+49
+495024
+
+36
+363724
+
+39
+394024râ
+
+172225*
+1 (!
+
+172226*
+1 (!
+
+172226*
+1" (0
+
+272230*
+1" (0
+
+271031*
+1 (!
+
+272225*
+11 (?
+
+272226*
+1" (0
+
+271026*
+1	 (
+
+271032*
+1	 (
+
+272226*
+1 (
+
+271732*
+1 (
+
+333638*
+1 (
+
+333626*
+1 (
+
+333625*
+1 (
+
+333626*
+1	 (
+
+333631*
+1 (
+
+332232*
+1	 (
+
+333931*
+1 (
+
+331732*
+1	 (
+
+332226*
+1	 (
+
+331732*
+1	 (
+
+412232*
+1% %(
+
+414431*
+1% %(,
+
+411732*
+1% %(
+
+412226*
+1% %(
+
+411732*
+1% %(
+
+463626*
+1+ +(
+
+462232*
+1, ,(
+
+464931*
+1, ,(&
+
+461732*
+1, ,(
+
+462226*
+1, ,(
+
+461732*
+1, ,(
+
+513638*
+12 2(
+
+513626*
+12 2(
+
+513638*
+13 3(
+
+512232*
+13 3(
+
+515431*
+13 3(*
+
+511732*
+13 3(
+
+512226*
+13 3(
+
+511732*
+13 3(
+
+563638*
+19 9(
+
+563626*
+19 9(
+
+563626*
+1: :(
+
+562232*
+1:" :(0
+
+565431*
+1:1 :(<
+
+561732*
+1:" :(0
+
+562226*
+1:" :(0
+
+561732*
+1:" :(0
+
+563625*
+1? ?(
+
+563626*
+1?	 ?(
+
+563638*
+1? ?(
+
+563632*
+1A A(
+
+565931*
+1A A(
+
+563632*
+1D D(
+
+566131*
+1D D(
+
+562232*
+1G	 G(
+
+563931*
+1G G(
+
+561732*
+1G	 G(
+
+562226*
+1G	 G(
+
+561732*
+1G	 G(
+
+632232*
+1O O(
+
+634431*
+1O O(*
+
+631732*
+1O O(
+
+632226*
+1O O(
+
+631732*
+1O O(
+
+632232*
+1R	 R(
+
+636631*
+1R R(
+
+631732*
+1R	 R(
+
+632226*
+1R	 R(
+
+631732*
+1R	 R(

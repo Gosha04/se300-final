@@ -1,0 +1,37 @@
+
+,__sonar_lambda_0$com.se300.store.model.Aislem
+c/Users/gosha04/Documents/CPSC_Courses/SE/se300-final/src/main/java/com/se300/store/model/Aisle.javax x(G"startingBlock*·
+startingBlockx x(G–
+“
+
+__unknown_file ()
+level com.se300.store.model.ShelfLevel"__id*F
+
+__unknown_file (**(
+com.se300.store.model.Aisle"
+level*
+1*ö
+1x% x(*ÓÐ
+x2 x(F&
+%6 com.se300.store.model.ShelfLevel"Hcom.se300.store.model.Shelf#getLevel()Lcom/se300/store/model/ShelfLevel;*F
+
+__unknown_file (*
+(
+	tempShelfcom.se300.store.model.Shelf2
+getLevel()óð
+x% x(G
+%7boolean"*java.lang.Enum#equals(Ljava/lang/Object;)Z*G
+
+__unknown_file (+
+)
+level com.se300.store.model.ShelfLevel*D
+
+__unknown_file ((
+&
+%6 com.se300.store.model.ShelfLevel2equals(Ljava/lang/Object;)"
+x% x(G
+
+%7boolean:4
+x x(!(
+	tempShelfcom.se300.store.model.ShelfB 
+java.util.function.Predicate

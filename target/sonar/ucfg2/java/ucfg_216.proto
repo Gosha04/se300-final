@@ -1,0 +1,133 @@
+
+Œcom.se300.store.service.AuthenticationService#updateUser(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lcom/se300/store/model/User;
+u/Users/gosha04/Documents/CPSC_Courses/SE/se300-final/src/main/java/com/se300/store/service/AuthenticationService.java9 9("7*þ
+2D D(éæ
+D D(
+
+%7void"7com.se300.store.model.User#setName(Ljava/lang/String;)V*@
+
+__unknown_file ($
+"
+usercom.se300.store.model.User*6
+
+__unknown_file (
+
+namejava.lang.String2setName(Ljava/lang/String;)*
+1*
+3C C(v
+t
+C C(
+%6boolean"	__compare*
+C C(
+!=*&
+C C(
+
+namejava.lang.String*
+C C(
+""*
+2
+1*Š
+4A A(õò
+A A(&
+
+%5void";com.se300.store.model.User#setPassword(Ljava/lang/String;)V*@
+
+__unknown_file ($
+"
+usercom.se300.store.model.User*:
+
+__unknown_file (
+
+passwordjava.lang.String2setPassword(Ljava/lang/String;)*
+3*«
+5? ?(Ÿœ
+? ?(! 
+%3com.se300.store.model.User"*java.util.Optional#get()Ljava/lang/Object;*;
+
+__unknown_file (
+
+userOptjava.util.Optional2get()v
+t
+? ?(""
+usercom.se300.store.model.User"__id*>
+
+__unknown_file ("
+ 
+%3com.se300.store.model.Userz
+x
+@ @(
+%4boolean"	__compare*
+@ @(
+!=**
+@ @(
+
+passwordjava.lang.String*
+@ @(
+""*
+3
+4*!
+6< <("
+< <(
+""*â
+7:! :(/§
+¤
+:! :(//
+%0)com.se300.store.repository.UserRepository"__id*a
+
+__unknown_file (E*C/
+-com.se300.store.service.AuthenticationService"
+userRepository¯¬
+:! :(B
+%1java.util.Optional"]com.se300.store.repository.UserRepository#findByEmail(Ljava/lang/String;)Ljava/util/Optional;*M
+
+__unknown_file (1
+/
+%0)com.se300.store.repository.UserRepository*7
+
+__unknown_file (
+
+emailjava.lang.String2findByEmail(Ljava/lang/String;)i
+g
+: :(C
+userOptjava.util.Optional"__id*6
+
+__unknown_file (
+
+%1java.util.Optionalƒ€
+; ;(
+%2boolean"java.util.Optional#isEmpty()Z*;
+
+__unknown_file (
+
+userOptjava.util.Optional2	isEmpty()*
+5
+6*‰
+1G G(§
+¤
+G G(/
+%8)com.se300.store.repository.UserRepository"__id*a
+
+__unknown_file (E*C/
+-com.se300.store.service.AuthenticationService"
+userRepositoryš
+G G(!
+
+%9void"Mcom.se300.store.repository.UserRepository#save(Lcom/se300/store/model/User;)V*M
+
+__unknown_file (1
+/
+%8)com.se300.store.repository.UserRepository*@
+
+__unknown_file ($
+"
+usercom.se300.store.model.User2"save(Lcom/se300/store/model/User;)"0
+H H($
+"
+usercom.se300.store.model.User:%
+9 9((
+emailjava.lang.String:(
+9) 9(9
+passwordjava.lang.String:$
+9: 9(E
+namejava.lang.StringB1/
+-com.se300.store.service.AuthenticationServiceH
