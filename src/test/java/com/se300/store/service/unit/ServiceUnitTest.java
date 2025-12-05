@@ -53,7 +53,7 @@ import com.se300.store.service.StoreService;
 @ExtendWith(MockitoExtension.class)
 public class ServiceUnitTest {
 
-    //TODO: Implement Unit Tests for the Smart Store Services
+    //COMPLETE: Implement Unit Tests for the Smart Store Services
 
     @Mock
     private UserRepository userRepository;

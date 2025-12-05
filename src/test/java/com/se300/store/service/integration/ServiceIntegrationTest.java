@@ -92,7 +92,7 @@ public class ServiceIntegrationTest {
     @DisplayName("Integration: Store with Aisles and Shelves")
     public void testStoreWithAislesAndShelves() throws StoreException {
         storeService.provisionStore("S1", "Main Store", "123 Road", "admin");
-        Aisle a = storeService.provisionAisle("S1","A1","Fresh","Produce",null,"t");
+        Aisle a = storeService.provisionAisle("S1","A1","Fresh","Produce", AisleLocation.floor,"t");
         assertEquals("A1",a.getNumber());
         Shelf sh = storeService.provisionShelf("S1","A1","SH1","Top",ShelfLevel.high,"Cool",Temperature.ambient,"t");
         assertEquals("SH1",sh.getId());
@@ -122,8 +122,8 @@ public class ServiceIntegrationTest {
     @Order(4)
     @DisplayName("Integration: Customer and Basket workflow")
     public void testCustomerAndBasketWorkflow() throws StoreException {
-        String customerId = "C_INTEGRATION_1";
-        String basketId   = "B_INTEGRATION_1";
+        String customerId = "C11";
+        String basketId   = "B11";
 
         Customer customer = storeService.provisionCustomer(
                 customerId, "John", "Doe", CustomerType.registered,
@@ -143,6 +143,7 @@ public class ServiceIntegrationTest {
         Basket assigned = storeService.assignCustomerBasket(customerId, basketId, "admin");
         assertEquals(basketId, assigned.getId());
 
+
         Basket customerBasket = storeService.getCustomerBasket(customerId, "admin");
         assertEquals(basketId, customerBasket.getId());
         assertNotNull(customerBasket.getCustomer());
@@ -150,10 +151,13 @@ public class ServiceIntegrationTest {
         assertNotNull(customerBasket.getStore());
         assertEquals("S1", customerBasket.getStore().getId());  
 
+        assertDoesNotThrow(() -> storeService.addBasketProduct("B11", "P1", 1, "token" ));
+        assertDoesNotThrow(() -> storeService.removeBasketProduct(basketId, "P1", 1, "token"));
+
         storeService.provisionStore("S3", "test", "add", "admin");
         storeService.provisionAisle("S3", "A33", "aisle", "dad", AisleLocation.floor, "admin");
-       // storeService.assignCustomerBasket("C_INTEGRATION_1", "B_INTEGRATION_1", "admin");
-        assertDoesNotThrow(() ->  storeService.updateCustomer("C_INTEGRATION_1", "S3", "A33", "admin"));
+        assertDoesNotThrow(() ->  storeService.updateCustomer("C11", "S3", "A33", "admin"));
+        assertNull(storeService.showBasket("B11", "token").getCustomer());
     }
 
     @Test

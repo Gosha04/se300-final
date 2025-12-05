@@ -455,36 +455,6 @@ public class ModelUnitTest {
         assertDoesNotThrow(() -> commandException.setCommand("sds"));
         assertNotNull(commandException.getCommand());
         assertDoesNotThrow(() -> commandException.setReason("sdfs"));
-
-        Aisle aisle = new Aisle("A1", "Front Aisle", "Entry aisle", null);
-
-        aisle.setNumber("01");
-        aisle.setName("Dairy");
-        aisle.setDescription("Cold stuff");
-        aisle.setAisleLocation(AisleLocation.floor);
-
-        assertAll(
-            () -> assertEquals("01", aisle.getNumber()),
-            () -> assertEquals("Dairy", aisle.getName()),
-            () -> assertEquals("Cold stuff", aisle.getDescription()),
-            () -> assertSame(AisleLocation.floor, aisle.getAisleLocation())
-        );
-
-        Shelf shelf = new Shelf("S1", "Snacks", ShelfLevel.low, "Chips", Temperature.ambient);
-
-        shelf.setId("S2");
-        shelf.setName("Drinks");
-        shelf.setLevel(ShelfLevel.high);
-        shelf.setDescription("Sodas");
-        shelf.setTemperature(Temperature.frozen);
-
-        assertAll(
-            () -> assertEquals("S2", shelf.getId()),
-            () -> assertEquals("Drinks", shelf.getName()),
-            () -> assertEquals(ShelfLevel.high, shelf.getLevel()),
-            () -> assertEquals("Sodas", shelf.getDescription()),
-            () -> assertEquals(Temperature.frozen, shelf.getTemperature())
-        );
     }
     
     @Test

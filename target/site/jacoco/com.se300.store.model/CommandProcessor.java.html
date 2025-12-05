@@ -187,13 +187,13 @@ import com.se300.store.service.StoreService;
 <span class="fc bfc" id="L187" title="All 4 branches covered.">            if(!temp.trim().startsWith(&quot;#&quot;) &amp;&amp; !temp.trim().isEmpty()) {</span>
                 try {
 <span class="fc" id="L189">                    processCommand(temp);</span>
-<span class="fc" id="L190">                } catch (CommandException e) { // none of these will ever catch</span>
-<span class="fc" id="L191">                    e.setLineNumber(i + 1);</span>
-<span class="fc" id="L192">                    System.out.println(&quot;\u001B[31m&quot; + &quot;Failed due to: &quot; + e.getReason() + &quot; for Command: &quot; + e.getCommand()</span>
-<span class="fc" id="L193">                            + &quot; On Line Number: &quot; + e.getLineNumber() + &quot;\u001B[0m&quot;);</span>
+<span class="nc" id="L190">                } catch (CommandException e) { // none of these will ever catch</span>
+<span class="nc" id="L191">                    e.setLineNumber(i + 1);</span>
+<span class="nc" id="L192">                    System.out.println(&quot;\u001B[31m&quot; + &quot;Failed due to: &quot; + e.getReason() + &quot; for Command: &quot; + e.getCommand()</span>
+<span class="nc" id="L193">                            + &quot; On Line Number: &quot; + e.getLineNumber() + &quot;\u001B[0m&quot;);</span>
 <span class="nc" id="L194">                } catch (StoreException e) {</span>
 <span class="nc" id="L195">                    System.out.println(&quot;\u001B[31m&quot; + &quot;Failed due to: &quot; + e.getReason() + &quot; for Command: &quot; + e.getAction() + &quot;\u001B[0m&quot;);</span>
-<span class="fc" id="L196">                }</span>
+<span class="pc" id="L196">                }</span>
             }
         }
 
