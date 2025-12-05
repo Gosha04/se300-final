@@ -1,222 +1,0 @@
-
-1.0Gosha04_se300_finalJavaFrontend"1764930791506*java2.Bü
-?
-:src/main/java/com/se300/store/model/InventoryLocation.java2
-	
-type3
-	
-MAIN4
-
-
-module-key5
-
-Gosha04_se300_final6
-
-package8
-.
-)Gosha04_se300_final:com.se300.store.model9
--
-'com.se300.store.model.InventoryLocation11
-
-class12
-
-access13
-
-public14
-
-simple-name15
-
-InventoryLocation16
-)
-#com.se300.store.model.StoreLocation18
-
-unknown19
-
-extends20
-
-
-uses21
-5
-/com.se300.store.model.InventoryLocation.shelfId23
-
-field24
-
-private25
-
-shelfId26
-m
-gcom.se300.store.model.InventoryLocation#<init>(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V28
-
-method29
-
-calls30
-
-
-references31
-L
-Fcom.se300.store.model.InventoryLocation#getShelfId()Ljava/lang/String;33
-
-
-getShelfId34
-M
-Gcom.se300.store.model.InventoryLocation#setShelfId(Ljava/lang/String;)V36
-
-
-setShelfId37
-J
-Dcom.se300.store.model.InventoryLocation#toString()Ljava/lang/String;39
-
-toString40
-F
-@com.se300.store.model.StoreLocation#toString()Ljava/lang/String;42J#
-!
-1
-12
-
-3
-4
-
-5
-6Z
-
-7
-7982
-
-
-5
-6j¼
-B
-22<
-222324 *
-1 (210:7B
-
-
-13
-25
-
-
-15
-26
-
-41
-414219
->
-108
-101112 *
-1 (:7B
-
-
-13
-14
-
-
-15
-16
-B
-27<
-272829 *
-1 (210:7B
-
-
-13
-14
-
-
-15
-16
-B
-32<
-323329 *
-1 (210:7B
-
-
-13
-14
-
-
-15
-34
-
-17
-171819
-B
-35<
-353629 *
-1 (210:7B
-
-
-13
-14
-
-
-15
-37
-B
-38<
-383929 *
-1 (210:7B
-
-
-13
-14
-
-
-15
-40r
-
-101720*
-1( (5
-
-101721*
-1( (5
-
-271030*
-1 (
-
-271731*
-1	 (
-
-271730*
-1	 (
-
-271730*
-1	 (
-
-271021*
-1		 	(
-
-271031*
-1		 	(
-
-272231*
-1	 	(
-
-322231*
-1 (
-
-351021*
-1	 (
-
-351031*
-1	 (
-
-352231*
-1 (
-
-381731*
-1% (*
-
-384130*
-1+ (3
-
-381031*
-1% (*
-
-381721*
-1% (*
-
-381031*
-1% (*
-
-382231*
-1! ((

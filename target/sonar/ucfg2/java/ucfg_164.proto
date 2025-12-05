@@ -1,30 +1,0 @@
-
-9com.se300.store.model.Basket#getProducts()Ljava/util/Map;p
-d/Users/gosha04/Documents/CPSC_Courses/SE/se300-final/src/main/java/com/se300/store/model/Basket.javaÕ  Õ(+"1*…
-1
-Ö Ö(w
-u
-
-Ö+ Ö(:
-%0java.util.Map"__id*L
-
-__unknown_file (0*.
-com.se300.store.model.Basket"
-
-productMapÕ
-Ò
-
-Ö Ö(;
-%1java.util.Map"Ejava.util.Collections#unmodifiableMap(Ljava/util/Map;)Ljava/util/Map;*5
-
-__unknown_file ("
-java.util.Collections*1
-
-__unknown_file (
-
-%0java.util.Map"#
-
-Ö Ö(<
-
-%1java.util.MapB 
-com.se300.store.model.BasketH

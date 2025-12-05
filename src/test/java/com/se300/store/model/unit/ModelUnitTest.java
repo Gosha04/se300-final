@@ -1,5 +1,4 @@
 package com.se300.store.model.unit;
-import static io.restassured.RestAssured.when;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
@@ -10,15 +9,12 @@ import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.io.BufferedReader;
-import java.io.StringReader;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 
 import com.se300.store.model.Aisle;
 import com.se300.store.model.AisleLocation;
@@ -40,8 +36,6 @@ import com.se300.store.model.StoreLocation;
 import com.se300.store.model.Temperature;
 import com.se300.store.model.User;
 import com.se300.store.servlet.JsonHelper;
-
-import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * The ModelUnitTest class contains unit tests for various models used in the Smart Store application.
@@ -455,6 +449,22 @@ public class ModelUnitTest {
         assertDoesNotThrow(() -> commandException.setCommand("sds"));
         assertNotNull(commandException.getCommand());
         assertDoesNotThrow(() -> commandException.setReason("sdfs"));
+
+        Shelf shelf = new Shelf("S1", "Snacks", ShelfLevel.low, "Chips", Temperature.ambient);
+
+        shelf.setId("S2");
+        shelf.setName("Drinks");
+        shelf.setLevel(ShelfLevel.high);
+        shelf.setDescription("Sodas");
+        shelf.setTemperature(Temperature.frozen);
+
+        assertAll(
+            () -> assertEquals("S2", shelf.getId()),
+            () -> assertEquals("Drinks", shelf.getName()),
+            () -> assertEquals(ShelfLevel.high, shelf.getLevel()),
+            () -> assertEquals("Sodas", shelf.getDescription()),
+            () -> assertEquals(Temperature.frozen, shelf.getTemperature())
+        );
     }
     
     @Test

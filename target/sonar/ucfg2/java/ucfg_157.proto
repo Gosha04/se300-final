@@ -1,36 +1,0 @@
-
--__sonar_lambda_2$com.se300.store.model.Basketn
-d/Users/gosha04/Documents/CPSC_Courses/SE/se300-final/src/main/java/com/se300/store/model/Basket.javaV V(O"startingBlock*∞
-startingBlockV V(Oè
-å
-
-__unknown_file (
-	productIdjava.lang.String"__id*K
-
-__unknown_file (/*-
-com.se300.store.model.Basket"
-	productId*
-1*–
-1V% V(.ƒ¡
-V6 V(N
-%20java.lang.String"@com.se300.store.model.Inventory#getProductId()Ljava/lang/String;*J
-
-__unknown_file (.
-,
-	inventorycom.se300.store.model.Inventory2getProductId()€ÿ
-V% V(O
-%21boolean",java.lang.String#equals(Ljava/lang/Object;)Z*;
-
-__unknown_file (
-
-	productIdjava.lang.String*5
-
-__unknown_file (
-
-%20java.lang.String2equals(Ljava/lang/Object;)"
-V% V(O
-
-%21boolean:8
-V V(!,
-	inventorycom.se300.store.model.InventoryB 
-java.util.function.Predicate

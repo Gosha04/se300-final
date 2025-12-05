@@ -1,7 +1,0 @@
-organization=gosha04
-projectKey=Gosha04_se300_final
-serverUrl=https://sonarcloud.io
-serverVersion=8.0.0.77094
-dashboardUrl=https://sonarcloud.io/dashboard?id=Gosha04_se300_final
-ceTaskId=AZruE1pR6y5_2ernRSaS
-ceTaskUrl=https://sonarcloud.io/api/ce/task?id=AZruE1pR6y5_2ernRSaS
